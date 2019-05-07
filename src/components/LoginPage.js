@@ -2,10 +2,10 @@ import React, { Component, Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Button, Row, Form, Icon, Input } from 'antd'
 import { graphql } from 'react-apollo'
-import  { gql } from 'apollo-boost'
+import { gql } from 'apollo-boost'
 import { AUTH_TOKEN } from '../constant'
 
-import styles from './LoginPage.css'
+import './LoginPage.css'
 const FormItem = Form.Item
 
 class LoginPage extends Component {
@@ -15,60 +15,48 @@ class LoginPage extends Component {
     }
 
     render() {
+        const { loading, form, i18n } = this.props;
         return (
-            <div className="pa4 flex justify-center bg-white">
+            <Fragment>
 
                 <Fragment>
-                    <div className={styles.form}>
-                        <div className={styles.logo}>
-                            <img alt="logo"  />
-                            <span>asdas</span>
+                    <div className='form'>
+                        <div className='logo'>
+                            <img alt="logo" src='https://antd-admin.zuiidea.com/logo.svg'/>
+                            <span>RO PLANT</span>
                         </div>
                         <form>
                             <FormItem hasFeedback>
-
                                 <Input
                                     onPressEnter={this.handleOk}
-                                    // placeholder={i18n.t`Username`}
+                                    placeholder={`Username`}
                                 />
-
                             </FormItem>
                             <FormItem hasFeedback>
-
                                 <Input
                                     type="password"
                                     onPressEnter={this.handleOk}
-                                    // placeholder={i18n.t`Password`}
+                                    placeholder={`Password`}
                                 />
-
                             </FormItem>
                             <Row>
                                 <Button
                                     type="primary"
-                                    // onClick={this.handleOk}
-                                    // loading={loading.effects.login}
+                                    onClick={this.handleOk}
                                 >
-                                    Sign in
+                                    <span>Sign in</span>
                                 </Button>
-                                <p>
-                <span>
-                  Username
-                  ：guest
-                </span>
-                                    <span>
-                  Password
-                  ：guest
-                </span>
-                                </p>
                             </Row>
+                            <h3>
+                                Don't have an account? <a href="/signup">Signup</a>
+                            </h3>
                         </form>
                     </div>
-                    <div className={styles.footer}>
-                    </div>
+
                 </Fragment>
 
 
-                <div>
+                {/* <div>
                     <h3>
                         Don't have an account? <a href="/signup">Signup</a>
                     </h3>
@@ -89,18 +77,17 @@ class LoginPage extends Component {
                         value={this.state.password}
                     />
                     {this.state.mobile &&
-                    this.state.password && (
-                        <Button
-                            type="primary"
-                            onClick={this._login}
-                            // loading={loading.effects.login}
-                        >
-                            Sign in
+                        this.state.password && (
+                            <Button
+                                type="primary"
+                                onClick={this._login}
+                            >
+                                Sign in
                         </Button>
 
-                    )}
-                </div>
-            </div>
+                        )}
+                </div> */}
+            </Fragment>
         )
     }
     _login = async e => {
@@ -115,9 +102,9 @@ class LoginPage extends Component {
             .then(result => {
                 const token = result.data.login.token
                 this.props.refreshTokenFn &&
-                this.props.refreshTokenFn({
-                    [AUTH_TOKEN]: token,
-                })
+                    this.props.refreshTokenFn({
+                        [AUTH_TOKEN]: token,
+                    })
                 this.props.history.replace('/');
                 window.location.reload()
             })
@@ -138,6 +125,8 @@ const LOGIN_USER_MUTATION = gql`
         }
     }
 `
+
+
 export default graphql(LOGIN_USER_MUTATION, { name: 'loginMutation' })(
     withRouter(LoginPage),
 )

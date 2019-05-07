@@ -1,8 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
 import { graphql } from 'react-apollo'
 import  { gql } from 'apollo-boost'
 import { AUTH_TOKEN } from '../constant'
+import { Button, Row, Form, Icon, Input } from 'antd'
+const FormItem = Form.Item
 
 class SignupPage extends Component {
     state = {
@@ -13,7 +15,51 @@ class SignupPage extends Component {
 
     render() {
         return (
-            <div className="pa4 flex justify-center bg-white">
+
+
+                <Fragment>
+                    <div className='form'>
+                        <div className='logo'>
+                            <img alt="logo" src='https://antd-admin.zuiidea.com/logo.svg'/>
+                            <span>RO PLANT</span>
+                        </div>
+                        <form>
+                             <FormItem hasFeedback>
+                                <Input
+                                    onPressEnter={this.handleOk}
+                                    placeholder={`Username`}
+                                />
+                            </FormItem>
+                            <FormItem hasFeedback>
+                                <Input
+                                    onPressEnter={this.handleOk}
+                                    placeholder={`Email`}
+                                />
+                            </FormItem>
+                            <FormItem hasFeedback>
+                                <Input
+                                    type="password"
+                                    onPressEnter={this.handleOk}
+                                    placeholder={`Password`}
+                                />
+                            </FormItem>
+                            <Row>
+                                <Button
+                                    type="primary"
+                                    onClick={this.handleOk}
+                                >
+                                    <span>Sign Up</span>
+                                </Button>
+                            </Row>
+                            <h3>
+                                Already have an account!!! <a href="/login">Login</a>
+                            </h3>
+                        </form>
+                    </div>
+
+                </Fragment>
+
+            /* <div className="pa4 flex justify-center bg-white">
                 <form onSubmit={this._signup}>
                     <h3>
                         Already have an account!!! <a href="/login"> Login</a>
@@ -52,7 +98,7 @@ class SignupPage extends Component {
                       value="Sign Up"
                 />
             </form>
-    </div>
+    </div> */
     )
     }
 
