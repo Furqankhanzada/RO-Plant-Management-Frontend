@@ -14,80 +14,89 @@ class LoginPage extends Component {
         password: '',
     }
 
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                const { mobile, password } = this.state
+                this.props
+                    .loginMutation({
+                        variables: {
+                            mobile,
+                            password,
+                        },
+                    })
+                    .then(result => {
+                        const token = result.data.login.token
+                        this.props.refreshTokenFn &&
+                        this.props.refreshTokenFn({
+                            [AUTH_TOKEN]: token,
+                        })
+                        this.props.history.replace('/');
+                        window.location.reload()
+                    })
+                    .catch(err => {
+                        console.log('error')
+                    })
+            }
+        });
+    }
     render() {
         const { loading, form, i18n } = this.props;
-        return (
-            <Fragment>
+        const { getFieldDecorator } = form;
 
+        return (
                 <Fragment>
                     <div className='form'>
                         <div className='logo'>
-                            <img alt="logo" src='https://antd-admin.zuiidea.com/logo.svg'/>
-                            <span>RO PLANT</span>
+                            <img alt="logo" src={require('../assests/images/labbaik.png')} className = "login-signup-logo"/>
                         </div>
-                        <form>
+                        <Form onSubmit={this.handleSubmit} className="login-form">
                             <FormItem hasFeedback>
-                                <Input
-                                    onPressEnter={this.handleOk}
-                                    placeholder={`Username`}
-                                />
+                                {getFieldDecorator('username', {
+                                    rules: [
+                                        {
+                                            required: true,
+                                        },
+                                    ],
+                                })(
+                                    <Input
+                                        onPressEnter={this.handleOk}
+                                        placeholder={`Username`}
+                                        />
+                                )}
                             </FormItem>
                             <FormItem hasFeedback>
-                                <Input
-                                    type="password"
-                                    onPressEnter={this.handleOk}
-                                    placeholder={`Password`}
-                                />
+                                {getFieldDecorator('password', {
+                                    rules: [
+                                        {
+                                            required: true,
+                                        },
+                                    ],
+                                })(
+                                    <Input
+                                        type="password"
+                                        onPressEnter={this.handleOk}
+                                        placeholder={`Password`}
+                                        />
+                                )}
                             </FormItem>
+
                             <Row>
                                 <Button
-                                    type="primary"
-                                    onClick={this.handleOk}
-                                >
-                                    <span>Sign in</span>
-                                </Button>
+                                    type="primary" htmlType="submit" className="login-form-button"
+                                >Sign in</Button>
                             </Row>
-                            <h3>
-                                Don't have an account? <a href="/signup">Signup</a>
+                            <h3 class="login-signup-switcher">
+                                Don't have an account? <a href="/signup" className="signup-link">Signup</a>
                             </h3>
-                        </form>
+                        </Form>
                     </div>
 
                 </Fragment>
 
 
-                {/* <div>
-                    <h3>
-                        Don't have an account? <a href="/signup">Signup</a>
-                    </h3>
-                    <input
-                        autoFocus
-                        className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                        placeholder="Email"
-                        type="mobile"
-                        onChange={e => this.setState({ mobile: e.target.value })}
-                        value={this.state.mobile}
-                    />
-                    <input
-                        autoFocus
-                        className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                        placeholder="Password"
-                        type="password"
-                        onChange={e => this.setState({ password: e.target.value })}
-                        value={this.state.password}
-                    />
-                    {this.state.mobile &&
-                        this.state.password && (
-                            <Button
-                                type="primary"
-                                onClick={this._login}
-                            >
-                                Sign in
-                        </Button>
-
-                        )}
-                </div> */}
-            </Fragment>
         )
     }
     _login = async e => {
@@ -126,7 +135,8 @@ const LOGIN_USER_MUTATION = gql`
     }
 `
 
+const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(LoginPage);
 
 export default graphql(LOGIN_USER_MUTATION, { name: 'loginMutation' })(
-    withRouter(LoginPage),
+    withRouter(WrappedNormalLoginForm),
 )

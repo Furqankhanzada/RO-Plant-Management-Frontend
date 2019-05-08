@@ -12,94 +12,120 @@ class SignupPage extends Component {
         password: '',
         name: '',
     }
-
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+            }
+        });
+    }
     render() {
+        const { loading, form, i18n } = this.props;
+        const { getFieldDecorator } = form;
         return (
 
 
-                <Fragment>
-                    <div className='form'>
-                        <div className='logo'>
-                            <img alt="logo" src='https://antd-admin.zuiidea.com/logo.svg'/>
-                            <span>RO PLANT</span>
-                        </div>
-                        <form>
-                             <FormItem hasFeedback>
+            <Fragment>
+                <div className='form'>
+                    <div className='logo'>
+                        <img alt="logo" src={require('../assests/images/labbaik.png')} className = "login-signup-logo"/>
+                    </div>
+                    <Form  onSubmit={this.handleSubmit} className="login-form">
+                        <FormItem hasFeedback>
+                            {getFieldDecorator('username', {
+                                rules: [
+                                    {
+                                        required: true,
+                                    },
+                                ],
+                            })(
                                 <Input
                                     onPressEnter={this.handleOk}
                                     placeholder={`Username`}
-                                />
-                            </FormItem>
-                            <FormItem hasFeedback>
+                                    />
+                            )}
+                        </FormItem>
+                        <FormItem hasFeedback>
+                            {getFieldDecorator('email', {
+                                rules: [
+                                    {
+                                        required: true,
+                                    },
+                                ],
+                            })(
                                 <Input
                                     onPressEnter={this.handleOk}
                                     placeholder={`Email`}
-                                />
-                            </FormItem>
-                            <FormItem hasFeedback>
+                                    />
+                            )}
+                        </FormItem>
+                        <FormItem hasFeedback>
+                            {getFieldDecorator('password', {
+                                rules: [
+                                    {
+                                        required: true,
+                                    },
+                                ],
+                            })(
                                 <Input
-                                    type="password"
                                     onPressEnter={this.handleOk}
                                     placeholder={`Password`}
-                                />
-                            </FormItem>
-                            <Row>
-                                <Button
-                                    type="primary"
-                                    onClick={this.handleOk}
-                                >
-                                    <span>Sign Up</span>
-                                </Button>
-                            </Row>
-                            <h3>
-                                Already have an account!!! <a href="/login">Login</a>
-                            </h3>
-                        </form>
-                    </div>
+                                    />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            <Button type="primary" htmlType="submit" className="login-form-button">Sign Up</Button>
+                        </FormItem>
+                        <h3 class="login-signup-switcher">
+                            Already have an account!!! <a href="/login" className="signup-link">Login</a>
+                        </h3>
+                    </Form>
+                </div>
 
-                </Fragment>
+            </Fragment>
 
             /* <div className="pa4 flex justify-center bg-white">
-                <form onSubmit={this._signup}>
-                    <h3>
-                        Already have an account!!! <a href="/login"> Login</a>
-                    </h3>
-                    <input
-                        autoFocus
-                        className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                        placeholder="Name"
-                        type="text"
-                        onChange={e => this.setState({ name: e.target.value })}
-                        value={this.state.name}
-                    />
-                    <input
-                        autoFocus
-                        className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                        placeholder="Email"
-                        type="mobile"
-                        onChange={e => this.setState({ mobile: e.target.value })}
-                        value={this.state.mobile}
-                    />
-                    <input
-                        autoFocus
-                        className="w-100 pa2 mv2 br2 b--black-20 bw1"
-                        placeholder="Enter Password"
-                        type="password"
-                        onChange={e => this.setState({ password: e.target.value })}
-                        value={this.state.password}
-                    />
+             <form onSubmit={this._signup}>
+             <h3>
+             Already have an account!!! <a href="/login"> Login</a>
+             </h3>
+             <input
+             autoFocus
+             className="w-100 pa2 mv2 br2 b--black-20 bw1"
+             placeholder="Name"
+             type="text"
+             onChange={e => this.setState({ name: e.target.value })}
+             value={this.state.name}
+             />
+             <input
+             autoFocus
+             className="w-100 pa2 mv2 br2 b--black-20 bw1"
+             placeholder="Email"
+             type="mobile"
+             onChange={e => this.setState({ mobile: e.target.value })}
+             value={this.state.mobile}
+             />
+             <input
+             autoFocus
+             className="w-100 pa2 mv2 br2 b--black-20 bw1"
+             placeholder="Enter Password"
+             type="password"
+             onChange={e => this.setState({ password: e.target.value })}
+             value={this.state.password}
+             />
 
-                    <input
-                        className={`pa3 bg-black-10 dim pointer}`}
-                    disabled={
-                    !this.state.mobile || !this.state.name || !this.state.password
-                }
-                      type="submit"
-                      value="Sign Up"
-                />
-            </form>
-    </div> */
-    )
+             <input
+             className={`pa3 bg-black-10 dim pointer}`}
+             disabled={
+             !this.state.mobile || !this.state.name || !this.state.password
+             }
+             type="submit"
+             value="Sign Up"
+             />
+             </form>
+             </div> */
+        )
     }
 
     _signup = async e => {
@@ -139,6 +165,8 @@ const SIGNUP_USER_MUTATION = gql`
     }
 `
 
+const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(SignupPage);
+
 export default graphql(SIGNUP_USER_MUTATION, { name: 'signupMutation' })(
-    withRouter(SignupPage),
+    withRouter(WrappedNormalLoginForm),
 )

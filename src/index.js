@@ -50,7 +50,7 @@ const link = split(
         return kind === 'OperationDefinition' && operation === 'subscription'
     },
     wsLink,
-    httpLinkAuth,
+    httpLinkAuth
 );
 
 // apollo client setup
