@@ -71,3 +71,30 @@ span {
     width: 100%;
     bottom: 0;
 }
+#components-layout-demo-top-side-2 .logo {
+    width: 120px;
+    height: 31px;
+    background: rgba(255,255,255,.2);
+    margin: 16px 28px 16px 0;
+    float: left;
+}
+.dashboard-main{
+    min-height: 100vh;
+}
+.header-custom{
+    box-shadow: 0 0 5px 0 #cecece;
+    background: #001529;
+    position: relative;
+    z-index: 1;
+}
+.nav-logo{
+    cursor: pointer;
+    margin-bottom: 0;
+    display:inline-block;
+}
+.nav-ul {
+    border-bottom: 0;
+    box-shadow: none;
+    float: right;
+    margin-top: 10px;
+}
