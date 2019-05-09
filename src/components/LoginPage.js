@@ -1,25 +1,36 @@
 import React, { Component, Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Button, Row, Form, Icon, Input } from 'antd'
+import { Button, Row, Form, Input } from 'antd'
 import { graphql } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import { AUTH_TOKEN } from '../constant'
 
 import './LoginPage.css'
-const FormItem = Form.Item
+
+const FormItem = Form.Item;
+
+function hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
 
 class LoginPage extends Component {
-    state = {
-        mobile: '',
-        password: '',
+    constructor(props) {
+        super(props);
+        this.state = {
+            mobile: '',
+            password: '',
+            loading: false
+        };
     }
 
-
-    handleSubmit = (e) => {
+    handleSubmit (e) {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const { mobile, password } = this.state
+                this.setState({
+                    loading: true
+                });
+                const { mobile, password } = this.state;
                 this.props
                     .loginMutation({
                         variables: {
@@ -28,100 +39,78 @@ class LoginPage extends Component {
                         },
                     })
                     .then(result => {
-                        const token = result.data.login.token
+                        const token = result.data.login.token;
                         this.props.refreshTokenFn &&
                         this.props.refreshTokenFn({
                             [AUTH_TOKEN]: token,
-                        })
+                        });
                         this.props.history.replace('/');
                         window.location.reload()
                     })
                     .catch(err => {
-                        console.log('error')
+                        console.log('error', err);
+                        this.setState({
+                            loading: false
+                        });
                     })
             }
         });
     }
     render() {
-        const { loading, form, i18n } = this.props;
-        const { getFieldDecorator } = form;
+        const { form } = this.props;
+        const { loading } = this.state;
+        const { getFieldDecorator, getFieldsError } = form;
 
         return (
-                <Fragment>
-                    <div className='form'>
-                        <div className='logo'>
-                            <img alt="logo" src={require('../assests/images/labbaik.png')} className = "login-signup-logo"/>
-                        </div>
-                        <Form onSubmit={this.handleSubmit} className="login-form">
-                            <FormItem hasFeedback>
-                                {getFieldDecorator('username', {
-                                    rules: [
-                                        {
-                                            required: true,
-                                        },
-                                    ],
-                                })(
-                                    <Input
-                                        onPressEnter={this.handleOk}
-                                        placeholder={`Username`}
-                                        />
-                                )}
-                            </FormItem>
-                            <FormItem hasFeedback>
-                                {getFieldDecorator('password', {
-                                    rules: [
-                                        {
-                                            required: true,
-                                        },
-                                    ],
-                                })(
-                                    <Input
-                                        type="password"
-                                        onPressEnter={this.handleOk}
-                                        placeholder={`Password`}
-                                        />
-                                )}
-                            </FormItem>
-
-                            <Row>
-                                <Button
-                                    type="primary" htmlType="submit" className="login-form-button"
-                                >Sign in</Button>
-                            </Row>
-                            <h3 class="login-signup-switcher">
-                                Don't have an account? <a href="/signup" className="signup-link">Signup</a>
-                            </h3>
-                        </Form>
+            <Fragment>
+                <div className='form'>
+                    <div className='logo'>
+                        <img alt="logo" src={require('../assests/images/labbaik.png')} className = "login-signup-logo"/>
                     </div>
+                    <Form onSubmit={this.handleSubmit.bind(this)} className="login-form">
+                        <FormItem hasFeedback>
+                            {getFieldDecorator('mobile', {
+                                rules: [
+                                    {
+                                        required: true,
+                                    },
+                                ],
+                            })(
+                                <Input
+                                    onPressEnter={this.handleOk}
+                                    placeholder={`Mobile`}
+                                    onChange={e => this.setState({ mobile: e.target.value })}
+                                />
+                            )}
+                        </FormItem>
+                        <FormItem hasFeedback>
+                            {getFieldDecorator('password', {
+                                rules: [
+                                    {
+                                        required: true,
+                                    },
+                                ],
+                            })(
+                                <Input
+                                    type="password"
+                                    onChange={e => this.setState({ password: e.target.value })}
+                                    placeholder={`Password`}
+                                />
+                            )}
+                        </FormItem>
 
-                </Fragment>
-
-
+                        <Row>
+                            <Button loading={loading} type="primary" htmlType="submit" className="login-form-button" disabled={hasErrors(getFieldsError())}>
+                                Sign in
+                            </Button>
+                        </Row>
+                    </Form>
+                </div>
+            </Fragment>
         )
     }
-    _login = async e => {
-        const { mobile, password } = this.state
-        this.props
-            .loginMutation({
-                variables: {
-                    mobile,
-                    password,
-                },
-            })
-            .then(result => {
-                const token = result.data.login.token
-                this.props.refreshTokenFn &&
-                    this.props.refreshTokenFn({
-                        [AUTH_TOKEN]: token,
-                    })
-                this.props.history.replace('/');
-                window.location.reload()
-            })
-            .catch(err => {
-                console.log('error')
-            })
-    }
 }
+
 const LOGIN_USER_MUTATION = gql`
     mutation LoginMutation($mobile: String!, $password: String!) {
         login(mobile: $mobile, password: $password) {
@@ -133,7 +122,7 @@ const LOGIN_USER_MUTATION = gql`
             }
         }
     }
-`
+`;
 
 const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(LoginPage);
 
