@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { FilterItem } from 'components'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader } from 'antd'
-import city from 'utils/city'
-
+//import city from 'utils/city'
+const city = []
 const { Search } = Input
 const { RangePicker } = DatePicker
 
@@ -76,7 +76,6 @@ class Filter extends Component {
 
     render() {
         const { onAdd, filter, form, i18n } = this.props
-        const { getFieldDecorator } = form
         const { name, address } = filter
 
         let initialCreateTime = []
@@ -90,12 +89,10 @@ class Filter extends Component {
         return (
             <Row gutter={24}>
                 <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-                    {getFieldDecorator('name', { initialValue: name })(
                         <Search
-                            placeholder={i18n.t`Search Name`}
+                            placeholder={`Search Name`}
                             onSearch={this.handleSubmit}
                             />
-                    )}
                 </Col>
                 <Col
                     {...ColProps}
@@ -103,17 +100,15 @@ class Filter extends Component {
                     md={{ span: 8 }}
                     id="addressCascader"
                     >
-                    {getFieldDecorator('address', { initialValue: address })(
                         <Cascader
                             style={{ width: '100%' }}
                             options={city}
-                            placeholder={i18n.t`Please pick an address`}
+                            placeholder={`Please pick an address`}
                             onChange={this.handleChange.bind(this, 'address')}
                             getPopupContainer={() =>
                 document.getElementById('addressCascader')
               }
                             />
-                    )}
                 </Col>
                 <Col
                     {...ColProps}
@@ -122,10 +117,8 @@ class Filter extends Component {
                     sm={{ span: 12 }}
                     id="createTimeRangePicker"
                     >
-                    <FilterItem label={i18n.t`CreateTime`}>
-                        {getFieldDecorator('createTime', {
-                            initialValue: initialCreateTime,
-                        })(
+                    <FilterItem label={`CreateTime`}>
+
                             <RangePicker
                                 style={{ width: '100%' }}
                                 onChange={this.handleChange.bind(this, 'createTime')}
@@ -133,7 +126,6 @@ class Filter extends Component {
                   return document.getElementById('createTimeRangePicker')
                 }}
                                 />
-                        )}
                     </FilterItem>
                 </Col>
                 <Col

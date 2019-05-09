@@ -98,3 +98,12 @@ span {
     float: right;
     margin-top: 10px;
 }
+
+.table{
+    white-space: nowrap;
+
+}
+.ant-table td {
+    white-space: nowrap;
+}
+

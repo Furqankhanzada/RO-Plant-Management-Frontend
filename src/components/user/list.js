@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Avatar } from 'antd'
-//import { DropOption } from 'components'
-import Link from 'umi/link'
 //import styles from './List.less'
 
 const { confirm } = Modal
@@ -39,7 +37,6 @@ class List extends PureComponent {
                 title: <span>Name</span>,
                 dataIndex: 'name',
                 key: 'name',
-                render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
             },
             {
                 title: <span>NickName</span>,
@@ -83,13 +80,7 @@ class List extends PureComponent {
                 fixed: 'right',
                 render: (text, record) => {
                     return (
-                        <DropOption
-                            onMenuClick={e => this.handleMenuClick(record, e)}
-                            menuOptions={[
-                { key: '1', name: i18n.t`Update` },
-                { key: '2', name: i18n.t`Delete` },
-              ]}
-                            />
+                       <span>Dropdown here</span>
                     )
                 },
             },
@@ -100,7 +91,7 @@ class List extends PureComponent {
                 {...tableProps}
                 pagination={{
           ...tableProps.pagination,
-          showTotal: total => i18n.t`Total ${total} Items`,
+          showTotal: total =>`Total ${total} Items`,
         }}
                 //className={styles.table}
                 bordered

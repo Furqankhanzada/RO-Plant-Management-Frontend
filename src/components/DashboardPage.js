@@ -4,7 +4,7 @@ import  { gql } from 'apollo-boost'
 import {
     Layout, Menu, Breadcrumb, Icon,
 } from 'antd';
-//import User from './user/index.js'
+import User from './user/index.js'
 
 class DashboardPage extends Component {
     componentWillReceiveProps(nextProps) {
@@ -72,7 +72,8 @@ class DashboardPage extends Component {
                                 <Menu.Item key="5"><Icon type="team" />Customers</Menu.Item>
                             </Menu>
                         </Sider>
-                        <Layout style={{ padding: '0 24px 24px' }}>
+                        <Layout style={{ padding: '30px 24px 70px', height:'100vh' }}>
+                            <User/>
                         </Layout>
                     </Layout>
                 </Layout>,
