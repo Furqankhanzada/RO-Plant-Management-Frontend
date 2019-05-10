@@ -1,25 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { FilterItem } from 'components'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader } from 'antd'
 //import city from 'utils/city'
-const city = []
-const { Search } = Input
-const { RangePicker } = DatePicker
+const city = [];
+const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 const ColProps = {
     xs: 24,
     sm: 12,
     style: {
-        marginBottom: 16,
-    },
-}
+        marginBottom: 16
+    }
+};
 
 const TwoColProps = {
     ...ColProps,
-    xl: 96,
-}
+    xl: 96
+};
 
 class Filter extends Component {
     componentDidUpdate(prevProps, prevState) {
@@ -28,30 +27,30 @@ class Filter extends Component {
         }
     }
     handleFields = fields => {
-        const { createTime } = fields
+        const { createTime } = fields;
         if (createTime.length) {
             fields.createTime = [
                 moment(createTime[0]).format('YYYY-MM-DD'),
-                moment(createTime[1]).format('YYYY-MM-DD'),
+                moment(createTime[1]).format('YYYY-MM-DD')
             ]
         }
         return fields
-    }
+    };
 
     handleSubmit = () => {
-        const { onFilterChange, form } = this.props
-        const { getFieldsValue } = form
+        const { onFilterChange, form } = this.props;
+        const { getFieldsValue } = form;
 
-        let fields = getFieldsValue()
-        fields = this.handleFields(fields)
+        let fields = getFieldsValue();
+        fields = this.handleFields(fields);
         onFilterChange(fields)
-    }
+    };
 
     handleReset = () => {
-        const { form } = this.props
-        const { getFieldsValue, setFieldsValue } = form
+        const { form } = this.props;
+        const { getFieldsValue, setFieldsValue } = form;
 
-        const fields = getFieldsValue()
+        const fields = getFieldsValue();
         for (let item in fields) {
             if ({}.hasOwnProperty.call(fields, item)) {
                 if (fields[item] instanceof Array) {
@@ -61,24 +60,42 @@ class Filter extends Component {
                 }
             }
         }
-        setFieldsValue(fields)
+        setFieldsValue(fields);
         this.handleSubmit()
-    }
+    };
     handleChange = (key, values) => {
-        const { form, onFilterChange } = this.props
-        const { getFieldsValue } = form
+        const { form, onFilterChange } = this.props;
+        const { getFieldsValue } = form;
 
-        let fields = getFieldsValue()
-        fields[key] = values
-        fields = this.handleFields(fields)
+        let fields = getFieldsValue();
+        fields[key] = values;
+        fields = this.handleFields(fields);
         onFilterChange(fields)
-    }
+    };
 
     render() {
-        const { onAdd, filter, form, i18n } = this.props
-        const { name, address } = filter
-
-        let initialCreateTime = []
+        const { onAdd, filter, form, i18n } = this.props;
+        const { name, address } = filter;
+        const FilterItem = ({ label = '', children }) => {
+            const labelArray = label.split('')
+            return (
+                <div className='filterItem'>
+                    {labelArray.length > 0 ? (
+                        <div className='labelWrap '>
+                            {labelArray.map((item, index) => (
+                                <span className="labelText" key={index}>
+              {item}
+            </span>
+                            ))}
+                        </div>
+                    ) : (
+                        ''
+                    )}
+                    <div className='item'>{children}</div>
+                </div>
+            )
+        }
+        let initialCreateTime = [];
         if (filter.createTime && filter.createTime[0]) {
             initialCreateTime[0] = moment(filter.createTime[0])
         }
@@ -96,7 +113,7 @@ class Filter extends Component {
                 </Col>
                 <Col
                     {...ColProps}
-                    xl={{ span: 4 }}
+                    xl={{ span: 5 }}
                     md={{ span: 8 }}
                     id="addressCascader"
                     >
@@ -112,12 +129,12 @@ class Filter extends Component {
                 </Col>
                 <Col
                     {...ColProps}
-                    xl={{ span: 6 }}
+                    xl={{ span: 7 }}
                     md={{ span: 8 }}
                     sm={{ span: 12 }}
                     id="createTimeRangePicker"
                     >
-                    <FilterItem label={`CreateTime`}>
+                    <FilterItem label={`CreateTime`} >
 
                             <RangePicker
                                 style={{ width: '100%' }}
@@ -130,7 +147,7 @@ class Filter extends Component {
                 </Col>
                 <Col
                     {...TwoColProps}
-                    xl={{ span: 10 }}
+                    xl={{ span: 8 }}
                     md={{ span: 24 }}
                     sm={{ span: 24 }}
                     >
@@ -138,7 +155,7 @@ class Filter extends Component {
                         <div>
                             <Button
                                 type="primary"
-                                className="margin-right"
+                                className="margin-right search-btn"
                                 onClick={this.handleSubmit}
                                 >
                                 <span>Search</span>

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Button, Row, Form, Input } from 'antd'
+import { Button, Row, Form, Input, message } from 'antd'
 import { graphql } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import { AUTH_TOKEN } from '../constant'
@@ -35,20 +35,21 @@ class LoginPage extends Component {
                     .loginMutation({
                         variables: {
                             mobile,
-                            password,
-                        },
+                            password
+                        }
                     })
                     .then(result => {
                         const token = result.data.login.token;
                         this.props.refreshTokenFn &&
                         this.props.refreshTokenFn({
-                            [AUTH_TOKEN]: token,
+                            [AUTH_TOKEN]: token
                         });
+                        message.success('Login SuccessFully');
                         this.props.history.replace('/');
                         window.location.reload()
                     })
                     .catch(err => {
-                        console.log('error', err);
+                        message.error('User Does Not Matched');
                         this.setState({
                             loading: false
                         });
@@ -127,5 +128,5 @@ const LOGIN_USER_MUTATION = gql`
 const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(LoginPage);
 
 export default graphql(LOGIN_USER_MUTATION, { name: 'loginMutation' })(
-    withRouter(WrappedNormalLoginForm),
+    withRouter(WrappedNormalLoginForm)
 )

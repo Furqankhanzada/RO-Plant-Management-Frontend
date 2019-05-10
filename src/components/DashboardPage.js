@@ -72,7 +72,7 @@ class DashboardPage extends Component {
                                 <Menu.Item key="5"><Icon type="team" />Customers</Menu.Item>
                             </Menu>
                         </Sider>
-                        <Layout style={{ padding: '30px 24px 70px', height:'100vh' }}>
+                        <Layout style={{ padding: '30px 24px 0', height:'100vh' }}>
                             <User/>
                         </Layout>
                     </Layout>

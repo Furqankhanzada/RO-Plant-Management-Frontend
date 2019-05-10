@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Avatar } from 'antd'
+import { Table, Modal, Avatar, Dropdown, Menu, Icon, Button } from 'antd'
+
 //import styles from './List.less'
 
 const { confirm } = Modal
@@ -23,7 +24,27 @@ class List extends PureComponent {
 
     render() {
         const { onDeleteItem, onEditItem, i18n, ...tableProps } = this.props
-
+        const DropOption = ({
+            onMenuClick,
+            menuOptions = [],
+            buttonStyle,
+            dropdownProps,
+            }) => {
+            const menu = menuOptions.map(item => (
+                <Menu.Item key={item.key}>{item.name}</Menu.Item>
+            ))
+            return (
+                <Dropdown
+                    overlay={<Menu onClick={onMenuClick}>{menu}</Menu>}
+                    {...dropdownProps}
+                    >
+                    <Button style={{ border: 'none', ...buttonStyle }}>
+                        <Icon style={{ marginRight: 2 }} type="bars" />
+                        <Icon type="down" />
+                    </Button>
+                </Dropdown>
+            )
+        }
         const columns = [
             {
                 title: <span>Avatar</span>,
@@ -80,7 +101,13 @@ class List extends PureComponent {
                 fixed: 'right',
                 render: (text, record) => {
                     return (
-                       <span>Dropdown here</span>
+                        <DropOption
+                            onMenuClick={e => this.handleMenuClick(record, e)}
+                            menuOptions={[
+                { key: '1', name: `Update` },
+                { key: '2', name: `Delete` },
+              ]}
+                            />
                     )
                 },
             },

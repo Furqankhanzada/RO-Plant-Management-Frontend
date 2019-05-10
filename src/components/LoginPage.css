@@ -25,9 +25,12 @@
 .login-signup-switcher{
     margin-top: 5px;
 }
-button {
+.login-form-button{
     width: 100%;
 }
+/*button {*/
+    /*width: login-form-button;*/
+/*}*/
 .ant-form-item-children{
     width: 100%;
 }
@@ -107,3 +110,46 @@ span {
     white-space: nowrap;
 }
 
+.filterItem {
+    display: flex;
+    justify-content: space-between;
+}
+.filterItem .labelWrap {
+    width: 80px;
+    line-height: 28px;
+    margin-right: 12px;
+    justify-content: space-between;
+    display: flex;
+    overflow: hidden;
+}
+
+.filterItem .item {
+    flex: 1;
+}
+.search-btn{
+    margin-right: 18px;
+}
+
+
+.ant-table-body::-webkit-scrollbar {
+    width: 1em;
+    height: 8px;
+    background-color: white;
+
+}
+
+.ant-table-body::-webkit-scrollbar-track {
+    -webkit-box-shadow: 0 0 0 0;
+}
+
+.ant-table-body::-webkit-scrollbar-thumb {
+    background-color: #e6e6e6;
+}
+.user-main-div{
+    background: #fff;
+    padding: 24px;
+    box-shadow: @shadow-1;
+    min-height: ~'calc(100vh - 230px)';
+    position: relative;
+    margin-bottom: 80px;
+}

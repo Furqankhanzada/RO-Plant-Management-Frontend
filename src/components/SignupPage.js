@@ -36,9 +36,9 @@ class SignupPage extends Component {
                             {getFieldDecorator('username', {
                                 rules: [
                                     {
-                                        required: true,
-                                    },
-                                ],
+                                        required: true
+                                    }
+                                ]
                             })(
                                 <Input
                                     onPressEnter={this.handleOk}
@@ -50,9 +50,9 @@ class SignupPage extends Component {
                             {getFieldDecorator('email', {
                                 rules: [
                                     {
-                                        required: true,
-                                    },
-                                ],
+                                        required: true
+                                    }
+                                ]
                             })(
                                 <Input
                                     onPressEnter={this.handleOk}
@@ -64,9 +64,9 @@ class SignupPage extends Component {
                             {getFieldDecorator('password', {
                                 rules: [
                                     {
-                                        required: true,
-                                    },
-                                ],
+                                        required: true
+                                    }
+                                ]
                             })(
                                 <Input
                                     onPressEnter={this.handleOk}
@@ -129,25 +129,25 @@ class SignupPage extends Component {
     }
 
     _signup = async e => {
-        e.preventDefault()
-        const { mobile, name, password } = this.state
+        e.preventDefault();
+        const { mobile, name, password } = this.state;
         const result = await this.props.signupMutation({
             variables: {
                 name,
                 mobile,
-                password,
-            },
-        })
+                password
+            }
+        });
 
-        const token = result.data.signup.token
-        localStorage.setItem(AUTH_TOKEN, token)
+        const token = result.data.signup.token;
+        localStorage.setItem(AUTH_TOKEN, token);
 
         this.props.refreshTokenFn &&
         this.props.refreshTokenFn({
-            [AUTH_TOKEN]: token,
-        })
+            [AUTH_TOKEN]: token
+        });
 
-        this.props.history.replace('/')
+        this.props.history.replace('/');
         window.location.reload()
     }
 }
@@ -163,7 +163,7 @@ const SIGNUP_USER_MUTATION = gql`
             }
         }
     }
-`
+`;
 
 const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(SignupPage);
 
