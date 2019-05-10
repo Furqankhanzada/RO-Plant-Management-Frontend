@@ -57,11 +57,7 @@ img {
     margin-right: 8px;
 }
 
-span {
-    vertical-align: text-bottom;
-    /*color: @primary-color;*/
-/*.text-gradient();*/
-}
+
 
 
 .ant-spin-container,
