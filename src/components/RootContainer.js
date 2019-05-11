@@ -12,6 +12,7 @@ import SignupPage from './SignupPage'
 import PageNotFound from './PageNotFound'
 import LogoutPage from './LogoutPage'
 import DashboardPage from './DashboardPage'
+import CreateCustomer from './CreateCustomer'
 import { AUTH_TOKEN } from '../constant'
 import { isTokenExpired } from '../helper/jwtHelper'
 import { graphql } from 'react-apollo'
@@ -220,7 +221,8 @@ class RootContainer extends Component {
         return (
             <div className="fl w-100 pl4 pr4">
                 <Switch>
-                    {/* <Route exact path="/" token={this.state.token} component={DashboardPage} /> */}
+                    <ProtectedRoute exact path="/customers" token={this.state.token} component={DashboardPage}/>
+                    <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
 
                     <ProtectedRoute exact token={this.state.token} path="/" component={DashboardPage} />
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />

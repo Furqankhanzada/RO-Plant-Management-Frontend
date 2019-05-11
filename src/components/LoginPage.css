@@ -166,6 +166,7 @@ img {
     position: relative;
     margin-bottom: 80px;
 }
+<<<<<<< HEAD
 
 
 
@@ -229,4 +230,9 @@ img {
     100% {
         transform: rotate(360deg);
     }
+=======
+.ant-menu-inline {
+    width: 100% !important;
+    height: auto !important;
+>>>>>>> 9ad16b3f3240ac8e594131cc9139a24e65c853fd
 }
