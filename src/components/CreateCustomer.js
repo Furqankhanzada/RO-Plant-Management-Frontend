@@ -2,39 +2,31 @@ import React, { Component, Fragment } from 'react'
 import { graphql } from 'react-apollo'
 import  { gql } from 'apollo-boost'
 import {
-    Layout, Menu, Breadcrumb, Icon, Avatar
+    Layout, Menu, Breadcrumb, Icon, Avatar, Button, Checkbox, Input, Form
 } from 'antd';
-import User from './user/index.js'
 
-class DashboardPage extends Component {
+
+class CreateCustomer extends Component {
     componentWillReceiveProps(nextProps) {
-        if (this.props.location.key !== nextProps.location.key) {
-            // this.props.feedQuery.refetch()
-        }
+        //if (this.props.location.key !== nextProps.location.key) {
+        //    // this.props.feedQuery.refetch()
+        //}
     }
 
-    state = {
-        current: 'mail'
-    };
-
-    handleClick = (e) => {
-        console.log('click ', e);
-        this.setState({
-            current: e.key
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+            }
         });
     };
 
     render() {
+        const { getFieldDecorator } = this.props.form;
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
-        if (this.props.feedQuery.loading) {
-            return (
-                <div className="flex w-100 h-100 items-center justify-center pt7">
-                    <div>Loading (from {process.env.REACT_APP_GRAPHQL_ENDPOINT})</div>
-                </div>
-            )
-        }
         return (
             <Fragment>
 
@@ -92,15 +84,42 @@ class DashboardPage extends Component {
                             </Menu>
                         </Sider>
                         <Layout style={{ padding: '30px 24px 0', height:'100vh' }}>
-                            <User/>
+                            <Form onSubmit={this.handleSubmit} className="login-form">
+                                <Form.Item>
+                                    {getFieldDecorator('username', {
+                                        rules: [{ required: true, message: 'Please input your username!' }],
+                                    })(
+                                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+                                    )}
+                                </Form.Item>
+                                <Form.Item>
+                                    {getFieldDecorator('password', {
+                                        rules: [{ required: true, message: 'Please input your Password!' }],
+                                    })(
+                                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+                                    )}
+                                </Form.Item>
+                                <Form.Item>
+                                    {getFieldDecorator('remember', {
+                                        valuePropName: 'checked',
+                                        initialValue: true,
+                                    })(
+                                        <Checkbox>Remember me</Checkbox>
+                                    )}
+                                    <a className="login-form-forgot" href="">Forgot password</a>
+                                    <Button type="primary" htmlType="submit" className="login-form-button">
+                                        Log in
+                                    </Button>
+                                    Or <a href="">register now!</a>
+                                </Form.Item>
+                            </Form>
                         </Layout>
                     </Layout>
-                </Layout>,
+                </Layout>
             </Fragment>
         )
     }
 }
-
 const FEED_QUERY = gql`
     query FeedQuery {
         feed {
@@ -130,29 +149,8 @@ const FEED_SUBSCRIPTION = gql`
     }
 `
 
-export default graphql(FEED_QUERY, {
-    name: 'feedQuery', // name of the injected prop: this.props.feedQuery...
-    options: {
-        fetchPolicy: 'network-only',
-    },
-    props: props =>
-        Object.assign({}, props, {
-            subscribeToNewFeed: params => {
-                return props.feedQuery.subscribeToMore({
-                    document: FEED_SUBSCRIPTION,
-                    updateQuery: (prev, { subscriptionData }) => {
-                        if (!subscriptionData.data) {
-                            return prev
-                        }
-                        const newPost = subscriptionData.data.feedSubscription.node
-                        if (prev.feed.find(post => post.id === newPost.id)) {
-                            return prev
-                        }
-                        return Object.assign({}, prev, {
-                            feed: [...prev.feed, newPost],
-                        })
-                    },
-                })
-            },
-        }),
-})(DashboardPage)
+
+
+const CreateCustomerData = Form.create({ name: 'normal_login' })(CreateCustomer);
+
+export default CreateCustomerData

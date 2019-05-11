@@ -149,3 +149,7 @@ img {
     position: relative;
     margin-bottom: 80px;
 }
+.ant-menu-inline {
+    width: 100% !important;
+    height: auto !important;
+}
