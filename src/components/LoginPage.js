@@ -17,8 +17,8 @@ class LoginPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mobile: '',
-            password: '',
+            mobile: '03122052950',
+            password: 'secret42',
             loading: false
         };
     }
@@ -40,16 +40,16 @@ class LoginPage extends Component {
                     })
                     .then(result => {
                         const token = result.data.login.token;
-                        this.props.refreshTokenFn &&
-                        this.props.refreshTokenFn({
-                            [AUTH_TOKEN]: token
-                        });
-                        message.success('Login SuccessFully');
+                        localStorage.setItem(AUTH_TOKEN, token)
                         this.props.history.replace('/');
                         window.location.reload()
                     })
                     .catch(err => {
-                        message.error('User Does Not Matched');
+                        const { graphQLErrors } = err;
+                        console.log(graphQLErrors,'err login====');
+                        graphQLErrors.forEach(element => {
+                            message.error(element.message);
+                        });
                         this.setState({
                             loading: false
                         });
@@ -61,7 +61,7 @@ class LoginPage extends Component {
         const { form } = this.props;
         const { loading } = this.state;
         const { getFieldDecorator, getFieldsError } = form;
-
+        console.log(this.props,'prop====')
         return (
             <Fragment>
                 <div className='form'>

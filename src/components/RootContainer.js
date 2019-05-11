@@ -27,6 +27,16 @@ const ProtectedRoute = ({ component: Component, token, ...rest }) => {
         <Redirect to="/login" />
     )
 };
+
+
+
+const UnProtectedRoute = ({ component: Component, token, ...rest }) => {
+    return !token ? (
+        <Route {...rest} render={matchProps => <Component {...matchProps} />} />
+    ) : (
+        <Redirect to="/" />
+    )
+};
 const { SubMenu } = Menu
 
 class RootContainer extends Component {
@@ -41,7 +51,7 @@ class RootContainer extends Component {
 
     refreshTokenFn(data = {}) {
         const token = data[AUTH_TOKEN];
-
+        console.log(token,'token===')
         if (token) {
             localStorage.setItem(AUTH_TOKEN, token)
         } else {
@@ -58,6 +68,7 @@ class RootContainer extends Component {
             const token = localStorage.getItem(AUTH_TOKEN);
             if (token !== null && token !== undefined) {
                 const expired = isTokenExpired(token);
+                console.log(expired,'====')
                 if (!expired) {
                     this.setState({ token: token })
                 } else {
@@ -66,7 +77,8 @@ class RootContainer extends Component {
                 }
             }
         } catch (e) {
-            console.log('')
+            localStorage.removeItem(AUTH_TOKEN);
+            this.setState({ token: null })
         }
     }
 
@@ -208,18 +220,16 @@ class RootContainer extends Component {
         return (
             <div className="fl w-100 pl4 pr4">
                 <Switch>
-                    <Route exact path="/" token={this.state.token} component={DashboardPage} />
+                    {/* <Route exact path="/" token={this.state.token} component={DashboardPage} /> */}
 
-                    {/*<ProtectedRoute*/}
-                    {/*token={this.state.token}*/}
-                    {/*path="/"*/}
-                    {/*component={DashboardPage}*/}
-                    {/*/>*/}
+                    <ProtectedRoute exact token={this.state.token} path="/" component={DashboardPage} />
+                    <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
 
+                    
                     <Route
                         token={this.state.token}
                         path="/login"
-                        render={props => <LoginPage refreshTokenFn={this.refreshTokenFn} />}
+                        render={props => <LoginPage refreshTokenFn={this.refreshTokenFn}  token={this.state.token} />}
                         />
                     <Route
                         token={this.state.token}
