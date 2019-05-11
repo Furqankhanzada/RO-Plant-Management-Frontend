@@ -35,7 +35,7 @@ const UnProtectedRoute = ({ component: Component, token, ...rest }) => {
     return !token ? (
         <Route {...rest} render={matchProps => <Component {...matchProps} />} />
     ) : (
-        <Redirect to="/" />
+        <Redirect to="/customers" />
     )
 };
 const { SubMenu } = Menu
@@ -93,7 +93,7 @@ class RootContainer extends Component {
             <Router>
                 <Fragment>
                     {
-                        //this.renderNavBar()
+                        // this.renderNavBar()
                     }
                     {this.renderRoute()}
                 </Fragment>
@@ -224,7 +224,7 @@ class RootContainer extends Component {
                     <ProtectedRoute exact path="/customers" token={this.state.token} component={DashboardPage}/>
                     <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
 
-                    <ProtectedRoute exact token={this.state.token} path="/" component={DashboardPage} />
+                    {/* <ProtectedRoute exact token={this.state.token} path="/" component={DashboardPage} /> */}
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
 
                     
