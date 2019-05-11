@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { graphql } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
 import { gql } from 'apollo-boost'
 import {
     Layout, Menu, Breadcrumb, Icon, Avatar
@@ -79,35 +80,25 @@ class DashboardPage extends Component {
                     </Header>
                     <Layout className="dashboard-main">
                         <Sider width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
-                            <Menu
+                            {/* <Menu
                                 mode="inline"
                                 defaultSelectedKeys={['1']}
                                 defaultOpenKeys={['sub1']}
                                 style={{ height: '100%', borderRight: 0 }}
                             >
                                 <Menu.Item key="5"><Icon type="team" />Customers</Menu.Item>
-                            </Menu>
+                            </Menu> */}
                             <Menu
                                 onClick={this.handleClick}
-                                style={{ width: 256 }}
-                                defaultSelectedKeys={['1']}
-                                defaultOpenKeys={['sub1']}
                                 mode="inline"
                                 >
-                                <SubMenu key="sub1" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>
-                                    <MenuItemGroup key="g1" title="Item 1">
-                                        <Menu.Item key="1">Option 1</Menu.Item>
-                                        <Menu.Item key="2">Option 2</Menu.Item>
-                                    </MenuItemGroup>
-                                    <MenuItemGroup key="g2" title="Item 2">
-                                        <Menu.Item key="3">Option 3</Menu.Item>
-                                        <Menu.Item key="4">Option 4</Menu.Item>
-                                    </MenuItemGroup>
+                                <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
+                                        <Menu.Item key="1" onClick={()=>this.props.history.push('/customers/create')}>Create</Menu.Item>
                                 </SubMenu>
                             </Menu>
                         </Sider>
                         <Layout style={{ padding: '30px 24px 0', height: '100vh' }}>
-                            <User customers={customers}/>
+                            <User customers={customers} history={this.props.history}/>
                         </Layout>
                     </Layout>
                 </Layout>,
@@ -146,6 +137,7 @@ customers{
 `;
 
 
+withRouter(DashboardPage)
 
 
 export default graphql(CUSTOMERS, {

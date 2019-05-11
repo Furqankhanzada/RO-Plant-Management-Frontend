@@ -9,7 +9,7 @@ import Modal from './modal.js'
 
 class User extends PureComponent {
     render() {
-        const { location, dispatch, i18n } = this.props;
+        const { location, dispatch, i18n, history } = this.props;
         console.log(this.props.customers,'customer child props')
         const loading = {
             effects:{
@@ -161,7 +161,7 @@ class User extends PureComponent {
 
         return (
             <div className="user-main-div">
-                <Filter {...filterProps} />
+                <Filter {...filterProps} history={history}/>
 
                 {selectedRowKeys.length > 0 && (
                     <Row style={{ marginBottom: 24, textAlign: 'right', fontSize: 13 }}>

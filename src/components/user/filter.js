@@ -164,7 +164,7 @@ class Filter extends Component {
                                 <span>Reset</span>
                             </Button>
                         </div>
-                        <Button type="ghost" onClick={onAdd}>
+                        <Button type="ghost" onClick={()=>this.props.history.push('/customers/create')}>
                             <span>Create</span>
                         </Button>
                     </Row>
