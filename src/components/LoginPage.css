@@ -147,7 +147,6 @@ img {
     width: 1em;
     height: 8px;
     background-color: white;
-
 }
 
 .ant-table-body::-webkit-scrollbar-track {
@@ -219,6 +218,20 @@ img {
     opacity: 0;
     transition: opacity 1s ease 0.5s, z-index 0.1s ease 1.5s;
 }
+
+
+.create-main-div{
+    background: #fff;
+    padding: 24px;
+    position: relative;
+    width: 500px;
+    border-radius: 5px;
+    margin: 0 auto 90px;
+    box-shadow: 0 0 4px 0 #cecece;
+}
+
+
+
 
 @keyframes spinner {
     0% {

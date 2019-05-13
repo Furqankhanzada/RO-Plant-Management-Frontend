@@ -2,10 +2,10 @@ import React, { Component, Fragment } from 'react'
 import { graphql } from 'react-apollo'
 import  { gql } from 'apollo-boost'
 import {
-    Layout, Menu, Breadcrumb, Icon, Avatar, Button, Checkbox, Input, Form
-} from 'antd';
+    Layout, Menu, Breadcrumb, Icon, Avatar, Button, Checkbox
+,  Form, Input, InputNumber, Radio, Modal, Cascader, Row } from 'antd';
 
-
+const FormItem = Form.Item
 class CreateCustomer extends Component {
     componentWillReceiveProps(nextProps) {
         //if (this.props.location.key !== nextProps.location.key) {
@@ -76,35 +76,100 @@ class CreateCustomer extends Component {
                             </Menu>
                         </Sider>
                         <Layout style={{ padding: '30px 24px 0', height:'100vh' }}>
-                            <Form onSubmit={this.handleSubmit} className="login-form">
-                                <Form.Item>
-                                    {getFieldDecorator('username', {
-                                        rules: [{ required: true, message: 'Please input your username!' }],
+                            <div className="create-main-div">
+
+                            <Form layout="horizontal">
+                                <FormItem label={`Name`} >
+                                    {getFieldDecorator('name', {
+                                        rules: [
+                                            {
+                                                required: true,
+                                            },
+                                        ],
+                                    })(<Input />)}
+                                </FormItem>
+                                <FormItem label={`NickName`} >
+                                    {getFieldDecorator('nickName', {
+                                        rules: [
+                                            {
+                                                required: true,
+                                            },
+                                        ],
+                                    })(<Input />)}
+                                </FormItem>
+                                <FormItem label={`Gender`} >
+                                    {getFieldDecorator('isMale', {
+                                        rules: [
+                                            {
+                                                required: true,
+                                                type: 'boolean',
+                                            },
+                                        ],
                                     })(
-                                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+                                        <Radio.Group>
+                                            <Radio value>
+                                                <span>Male</span>
+                                            </Radio>
+                                            <Radio value={false}>
+                                                <span>Female</span>
+                                            </Radio>
+                                        </Radio.Group>
                                     )}
-                                </Form.Item>
-                                <Form.Item>
-                                    {getFieldDecorator('password', {
-                                        rules: [{ required: true, message: 'Please input your Password!' }],
+                                </FormItem>
+                                <FormItem label={`Age`} >
+                                    {getFieldDecorator('age', {
+                                        rules: [
+                                            {
+                                                required: true,
+                                                type: 'number',
+                                            },
+                                        ],
+                                    })(<InputNumber min={18} max={100} />)}
+                                </FormItem>
+                                <FormItem label={`Phone`} >
+                                    {getFieldDecorator('phone', {
+                                        rules: [
+                                            {
+                                                required: true,
+                                                pattern: /^1[34578]\d{9}$/,
+                                                message: `The input is not valid phone!`,
+                                            },
+                                        ],
+                                    })(<Input />)}
+                                </FormItem>
+                                <FormItem label={`Email`} >
+                                    {getFieldDecorator('email', {
+                                        rules: [
+                                            {
+                                                required: true,
+                                                pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
+                                                message: `The input is not valid E-mail!`,
+                                            },
+                                        ],
+                                    })(<Input />)}
+                                </FormItem>
+                                <FormItem label={`Address`} >
+                                    {getFieldDecorator('address', {
+                                        rules: [
+                                            {
+                                                required: true,
+                                            },
+                                        ],
                                     })(
-                                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+                                        <Cascader
+                                            style={{ width: '100%' }}
+                                            options={[]}
+                                            placeholder={`Pick an address`}
+                                            />
                                     )}
-                                </Form.Item>
-                                <Form.Item>
-                                    {getFieldDecorator('remember', {
-                                        valuePropName: 'checked',
-                                        initialValue: true,
-                                    })(
-                                        <Checkbox>Remember me</Checkbox>
-                                    )}
-                                    <a className="login-form-forgot" href="">Forgot password</a>
-                                    <Button type="primary" htmlType="submit" className="login-form-button">
-                                        Log in
+                                </FormItem>
+                                <Row>
+                                    <Button  type="primary" htmlType="submit" className="login-form-button" >
+                                        Create
                                     </Button>
-                                    Or <a href="">register now!</a>
-                                </Form.Item>
+                                </Row>
                             </Form>
+                                </div>
                         </Layout>
                     </Layout>
                 </Layout>

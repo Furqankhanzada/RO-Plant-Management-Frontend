@@ -34,7 +34,7 @@ const middlewareLink = new ApolloLink((operation, forward) => {
 const httpLinkAuth = middlewareLink.concat(httpLink);
 
 const wsLink = new WebSocketLink({
-    uri: `ws://localhost:4000`,
+    uri: `ws://192.168.100.24:4000`,
     options: {
         reconnect: true,
         connectionParams: {

@@ -222,7 +222,7 @@ class RootContainer extends Component {
             <div className="fl w-100 pl4 pr4">
                 <Switch>
                     <ProtectedRoute exact path="/customers" token={this.state.token} component={DashboardPage}/>
-                    <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
+                                <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
 
                     {/* <ProtectedRoute exact token={this.state.token} path="/" component={DashboardPage} /> */}
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
