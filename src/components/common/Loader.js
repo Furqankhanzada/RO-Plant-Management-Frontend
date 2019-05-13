@@ -12,3 +12,4 @@ export const Loader = ({ spinning = true, fullScreen }) => {
       </div>
     )
   }
+  

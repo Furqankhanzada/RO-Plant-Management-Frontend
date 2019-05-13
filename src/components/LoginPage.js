@@ -41,7 +41,6 @@ class LoginPage extends Component {
                     .then(result => {
                         const token = result.data.login.token;
                         localStorage.setItem(AUTH_TOKEN, token)
-                        this.props.history.replace('/customers');
                         window.location.reload()
                     })
                     .catch(err => {
