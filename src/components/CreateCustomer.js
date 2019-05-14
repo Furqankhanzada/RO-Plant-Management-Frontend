@@ -2,14 +2,17 @@ import React, { Component, Fragment } from 'react';
 import  { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
 import {
-    Layout, Menu, Button, Form, Input, InputNumber, Radio, Cascader, Row } from 'antd';
+    Layout, Menu, Button, Form, Input, InputNumber, Radio, Cascader, Row, AutoComplete, Icon, Col } from 'antd';
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
+import { graphql } from 'react-apollo'
+import { Query } from 'react-apollo';
 
 const FormItem = Form.Item;
 let id = 0;
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
+
 function renderTitle(title) {
     return (
         <span>
@@ -40,25 +43,25 @@ class CreateCustomer extends Component {
                         product:''
                     }
                 ],
-                products:[
-                    {
-                        title: 'product 1'
-                    },
-                    {
-                        title: 'product 2'
-                    },
-                    {
-                        title: 'product 3'
-                    }
-                    ],
+                name: '',
+                password: '',
+                mobile: '',
+                town: '',
+                area: '',
+                block: '',
+                house: '',
+                products:[],
                 result: []
             }
     }
-    componentWillReceiveProps(nextProps) {
-        //if (this.props.location.key !== nextProps.location.key) {
-        //    // this.props.feedQuery.refetch()
-        //}
-    }
+    //componentWillReceiveProps(nextProps){
+    //    if(nextProps.data.products && nextProps.data){
+    //        console.log(nextProps.data.products,' nextProps.data.products')
+    //        this.setState({
+    //            products: nextProps.data.products
+    //        })
+    //    }
+    //}
 
     // add field method start here //
     remove = k => {
@@ -110,13 +113,17 @@ class CreateCustomer extends Component {
             discount
         })
     }
+    getCustomerDetails = (ev) => {
+        this.setState({
+            [ev.target.name]: ev.target.value
+        })
+    }
     handledSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const { keys, names } = values;
-                console.log('Received values of form: ', values);
-                console.log('Merged values:', keys.map(key => names[key]));
+               const {name, mobile, password, town, area, block, house, discount} = this.state;
+                console.log(name, mobile, password, town, area, block, house, discount,'name, mobile, password, town, area, block, house, discount')
             }
         });
     };
@@ -148,8 +155,8 @@ class CreateCustomer extends Component {
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
-        const { discount, products, result } = this.state;
-        console.log(discount,'=====pp')
+        const { discount, result } = this.state;
+        console.log(this.state.mobile,'=====pp')
         const children = result.map(email => <Option key={email}>{email}</Option>);
 
         // add field method start here //
@@ -225,13 +232,20 @@ class CreateCustomer extends Component {
             </div>
         ));
         // add field method end here //
-        const options = products
-            .map(group => (
-                <Option key={group.title} value={group.title}>
-                    {group.title}
-                </Option>
-            ))
+
         return (
+        <Query query={Products_QUERY}>
+            {({ data, loading }) => {
+                const {products} = data;
+                const options = products?products
+                    .map(group => (
+                        <Option key={group.name} value={group.name}>
+                            <span>Volume: {group.name}</span>
+                            <br/>
+                            <span>Price: {group.price}</span>
+                        </Option>
+                    )):[]
+                return (
             <Fragment>
 
                 <Layout>
@@ -270,7 +284,7 @@ class CreateCustomer extends Component {
                                                             required: true
                                                         }
                                                     ]
-                                                })(<Input />)}
+                                                })(<Input name="mobile" onChange={this.getCustomerDetails}/>)}
                                             </FormItem>
                                             <FormItem label={`Password Should be Number with Prefix`} >
                                                 {getFieldDecorator('password', {
@@ -279,18 +293,17 @@ class CreateCustomer extends Component {
                                                             required: true
                                                         }
                                                     ]
-                                                })(<Input />)}
+                                                })(<Input name="password" onChange={this.getCustomerDetails}/>)}
                                             </FormItem>
                                             <FormItem label={`Name`} >
                                                 {getFieldDecorator('name', {
                                                     rules: [
                                                         {
                                                             required: true,
-                                                            pattern: /^1[34578]\d{9}$/,
                                                             message: `The input is not valid phone!`
                                                         }
                                                     ]
-                                                })(<Input />)}
+                                                })(<Input name="name" onChange={this.getCustomerDetails}/>)}
                                             </FormItem>
                                         </Form>
                                     </Col>
@@ -304,7 +317,7 @@ class CreateCustomer extends Component {
                                                             required: true
                                                         }
                                                     ]
-                                                })(<Input />)}
+                                                })(<Input name="town" onChange={this.getCustomerDetails}/>)}
                                             </FormItem>
                                             <FormItem label={`Area`} >
                                                 {getFieldDecorator('area', {
@@ -313,29 +326,27 @@ class CreateCustomer extends Component {
                                                             required: true
                                                         }
                                                     ]
-                                                })(<Input />)}
+                                                })(<Input onChange={this.getCustomerDetails}/>)}
                                             </FormItem>
                                             <FormItem label={`Block`} >
                                                 {getFieldDecorator('block', {
                                                     rules: [
                                                         {
                                                             required: true,
-                                                            pattern: /^1[34578]\d{9}$/,
                                                             message: `The input is not valid phone!`
                                                         }
                                                     ]
-                                                })(<Input />)}
+                                                })(<Input name="block" onChange={this.getCustomerDetails}/>)}
                                             </FormItem>
                                             <FormItem label={`House`} >
                                                 {getFieldDecorator('house', {
                                                     rules: [
                                                         {
                                                             required: true,
-                                                            pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
-                                                            message: `The input is not valid E-mail!`
+                                                            message: `The input is not valid Address!`
                                                         }
                                                     ]
-                                                })(<Input />)}
+                                                })(<Input name="house" onChange={this.getCustomerDetails}/>)}
                                             </FormItem>
                                         </Form>
                                     </Col>
@@ -356,6 +367,9 @@ class CreateCustomer extends Component {
                                              {children}
                                              </AutoComplete>
                                              </div>*/}
+
+
+
                                             <div>
                                                 {
                                                     discount.map((value, index)=>{
@@ -368,6 +382,7 @@ class CreateCustomer extends Component {
                                                                     onClick={this.removeDiscount}
                                                                     />
                                                                 <Form.Item>
+
                                                                     <AutoComplete
                                                                         className="certain-category-search"
                                                                         dropdownClassName="certain-category-search-dropdown"
@@ -382,6 +397,7 @@ class CreateCustomer extends Component {
                                                                         >
                                                                         <Input suffix={<Icon type="search" className="certain-category-icon" />}/>
                                                                     </AutoComplete>
+
                                                                 </Form.Item>
                                                                 <Form.Item>
                                                                     <InputNumber
@@ -404,12 +420,13 @@ class CreateCustomer extends Component {
                                                     </Button>
                                                 </Form.Item>
                                             </div>
+
                                         </Form>
                                     </Col>
                                 </Row>
                                 <Row className="top-space" type="flex" justify="center">
                                     <Col span={4}>
-                                        <Button  type="primary" htmlType="submit" className="login-form-button" >
+                                        <Button  type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit}>
                                             Create
                                         </Button>
                                     </Col>
@@ -419,6 +436,9 @@ class CreateCustomer extends Component {
                     </Layout>
                 </Layout>
             </Fragment>
+                )
+            }}
+        </Query>
         )
     }
 }
@@ -456,14 +476,25 @@ const Products_QUERY = gql`
         products {
             id
             name
+            price
         }
     }
 `;
-
+const CREATE_CUSTOMER_MUTATION = gql`
+    mutation LoginMutation($mobile: String!, $password: String!) {
+        login(mobile: $mobile, password: $password) {
+            token
+            user {
+                id
+                name
+                mobile
+            }
+        }
+    }
+`;
 const CreateCustomerData = Form.create({ name: 'normal_login' })(CreateCustomer);
-export default graphql(Products_QUERY, {
-    options: {
-        errorPolicy: 'all',
-    },
-})(CreateCustomerData)
+
+export default CreateCustomerData
+
+
 
