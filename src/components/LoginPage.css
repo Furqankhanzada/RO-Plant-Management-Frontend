@@ -32,6 +32,7 @@
 
 .login-form-button {
     width: 100%;
+    height: 40px;
 }
 
 /*button {*/
@@ -221,15 +222,50 @@ img {
 
 
 .create-main-div{
-    background: #fff;
-    padding: 24px;
+    padding: 10px;
     position: relative;
-    width: 500px;
     border-radius: 5px;
-    margin: 0 auto 90px;
-    box-shadow: 0 0 4px 0 #cecece;
+    margin: 0 0 90px;
 }
-
+.create-main-div .ant-form {
+    border-radius: 5px;
+    background: white;
+    padding: 15px;
+    box-shadow: 0 2px 7px 0 #cecece;
+}
+.create-main-div .ant-form .ant-form-item {
+    margin-bottom: 5px;
+}
+.create-main-div .ant-form .ant-form-item .ant-form-item-label {
+    margin: 0 0 5px 0;
+    line-height: 19.9999px;
+}
+.top-space {
+    margin-top: 20px;
+}
+.ant-input-number {
+    width: 100%;
+    margin-bottom: 10px;
+}
+.create-main-div .ant-form .ant-select-show-search {
+    width: 100% !important;
+    margin-bottom: 20px;
+}
+.create-main-div .ant-form .ant-select-show-search:last-of-type {
+    margin-bottom: 5px;
+}
+.fields-adds .ant-form-item-control-wrapper {
+    width: 100%;
+    margin: 20px 0 0 0;
+}
+.passenger-input {
+    width: 90%;
+    margin-right: 15px;
+}
+.removeButtonDiscount{
+    display: inline-block;
+    float: right;
+}
 
 
 

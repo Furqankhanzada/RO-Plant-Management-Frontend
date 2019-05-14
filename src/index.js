@@ -16,7 +16,7 @@ import RootContainer from './components/RootContainer';
 import 'antd/dist/antd.css';  // or 'antd/dist/antd.less'
 import './index.css'
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000' });
+const httpLink = new HttpLink({ uri: 'http://192.168.100.24:4000' });
 
 const middlewareLink = new ApolloLink((operation, forward) => {
     // get the authentication token from local storage if it exists
