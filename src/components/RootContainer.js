@@ -56,7 +56,7 @@ class RootContainer extends Component {
         if (token) {
             localStorage.setItem(AUTH_TOKEN, token)
         } else {
-            localStorage.removeItem(AUTH_TOKEN)
+            localStorage.removeItem(AUTH_TOKEN) 
         }
 
         this.setState({
@@ -239,7 +239,7 @@ class RootContainer extends Component {
                         render={props => (
                             <SignupPage refreshTokenFn={this.refreshTokenFn} />
                         )}
-                        />
+                    />
                     <Route path="/logout" component={LogoutPage} />
                     <Route component={PageNotFound} />
                 </Switch>

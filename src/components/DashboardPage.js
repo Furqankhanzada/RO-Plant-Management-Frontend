@@ -5,8 +5,11 @@ import { gql } from 'apollo-boost'
 import {
     Layout, Menu, Breadcrumb, Icon, Avatar
 } from 'antd';
+
 import User from './user/index.js'
 import { Loader } from './common/Loader'
+import { Sidebar } from './common/sidebar'
+import { AppBar } from './common/header'
 
 
 class DashboardPage extends Component {
@@ -17,7 +20,17 @@ class DashboardPage extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        const { customers } = nextProps.customers;
+        const { customers, error } = nextProps.customers;
+        if(error){
+            const { graphQLErrors } = error;
+            graphQLErrors.map((value,index) => {
+                if(value.message === 'Not Authorised!') {
+                    localStorage.removeItem('AUTH_TOKEN')
+                    window.location.reload()
+                }
+            })
+        }
+
         if(customers){
             this.setState({
                 customers
@@ -42,68 +55,29 @@ class DashboardPage extends Component {
 
     render() {
         const SubMenu = Menu.SubMenu;
-        const MenuItemGroup = Menu.ItemGroup;
-        const { Header, Content, Sider } = Layout;
+        const { Header } = Layout;
         const { customers } = this.state;
-        console.log(customers,' state customers')
-        if (this.props.customers.loading) {
+        const { loading, error } = this.props.customers;
+        const { history } = this.props;
+        if (loading || error) {
             return (
                 <Loader spinning />
             )
-        }
-        return (
-            <Fragment>
-
-                <Layout>
-                    <Header className="header header-custom " style={{ backgroundColor: '#ffffff' }}>
-                        <div className='nav-logo'>
-                            <img alt="logo" src={require('../assests/images/labbaik.png')} className="login-signup-logo" />
-                        </div>
-                        <Menu key="user" mode="horizontal" onClick={this.handleClickMenu} className="nav-ul">
-                            <SubMenu
-                                title={
-                                    <Fragment>
-                                        <span style={{ color: '#999', marginRight: 4 }}>
-                                            <span>Hi,</span>
-                                        </span>
-                                        <span>Guest</span>
-                                        <Avatar style={{ marginLeft: 8 }} src="https://randomuser.me/api/portraits/men/43.jpg" />
-                                    </Fragment>
-                                }
-                            >
-                                <Menu.Item key="SignOut">
-                                    <span>Sign out</span>
-                                </Menu.Item>
-                            </SubMenu>
-                        </Menu>
-
-                    </Header>
-                    <Layout className="dashboard-main">
-                        <Sider width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
-                            {/* <Menu
-                                mode="inline"
-                                defaultSelectedKeys={['1']}
-                                defaultOpenKeys={['sub1']}
-                                style={{ height: '100%', borderRight: 0 }}
-                            >
-                                <Menu.Item key="5"><Icon type="team" />Customers</Menu.Item>
-                            </Menu> */}
-                            <Menu
-                                onClick={this.handleClick}
-                                mode="inline"
-                                >
-                                <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
-                                        <Menu.Item key="1" onClick={()=>this.props.history.push('/customers/create')}>Create</Menu.Item>
-                                </SubMenu>
-                            </Menu>
-                        </Sider>
-                        <Layout style={{ padding: '30px 24px 0', height: '100vh' }}>
-                            <User customers={customers} history={this.props.history}/>
+        } 
+            return (
+                <Fragment>
+    
+                    <Layout>
+                        <AppBar />
+                        <Layout className="dashboard-main">
+                            <Sidebar handleClick = {this.handleClick} history = {history}/>
+                            <Layout style={{ padding: '30px 24px 0', height: '100vh' }}>
+                                <User customers={customers} history={this.props.history}/>
+                            </Layout>
                         </Layout>
-                    </Layout>
-                </Layout>,
-            </Fragment>
-        )
+                    </Layout>,
+                </Fragment>
+            )
     }
 }
 

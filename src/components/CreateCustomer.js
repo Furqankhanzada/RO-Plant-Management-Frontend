@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from 'react'
-import { graphql } from 'react-apollo'
-import  { gql } from 'apollo-boost'
+import React, { Component, Fragment } from 'react';
+import  { gql } from 'apollo-boost';
+import { withRouter } from 'react-router-dom'
 import {
-    Layout, Menu, Breadcrumb, Icon, Avatar, Button, Checkbox
-    ,  Form, Input, InputNumber, Radio, Modal, Cascader, Row, Col, AutoComplete  } from 'antd';
+    Layout, Menu, Button, Form, Input, InputNumber, Radio, Cascader, Row } from 'antd';
+import { Sidebar } from './common/sidebar'
+import { AppBar } from './common/header'
 
 const FormItem = Form.Item;
 let id = 0;
@@ -234,29 +235,7 @@ class CreateCustomer extends Component {
             <Fragment>
 
                 <Layout>
-                    <Header className="header header-custom " style={{backgroundColor: '#ffffff'}}>
-                        <div className='nav-logo'>
-                            <img alt="logo" src={require('../assests/images/labbaik.png')} className = "login-signup-logo"/>
-                        </div>
-                        <Menu key="user" mode="horizontal" onClick={this.handleClickMenu} className="nav-ul">
-                            <SubMenu
-                                title={
-                                <Fragment>
-                                    <span style={{ color: '#999', marginRight: 4 }}>
-                                        <span>Hi,</span>
-                                    </span>
-                                    <span>Guest</span>
-                                    <Avatar style={{ marginLeft: 8 }} src="https://randomuser.me/api/portraits/men/43.jpg" />
-                                </Fragment>
-                             }
-                                >
-                                <Menu.Item key="SignOut">
-                                    <span>Sign out</span>
-                                </Menu.Item>
-                            </SubMenu>
-                        </Menu>
-
-                    </Header>
+                    <AppBar />
                     <Layout className="dashboard-main">
                         <Sider width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
                             {/* <Menu
