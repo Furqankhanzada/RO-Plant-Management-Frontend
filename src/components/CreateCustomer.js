@@ -225,9 +225,7 @@ class CreateCustomer extends Component {
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
-        const { discount, result, disableBtn, name, mobile, password, town, area, block, house, selectedValue } = this.state;
-
-        const { discount, result, drawer } = this.state;
+        const { disableBtn, name, mobile, password, town, area, block, house, selectedValue,discount, result, drawer } = this.state;
         console.log(drawer,'===drawer==pp')
         const children = result.map(email => <Option key={email}>{email}</Option>);
 
