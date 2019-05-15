@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import  { gql } from 'apollo-boost';
+import { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
 import {
-    Layout, Menu, Button, Form, Input, InputNumber, Radio, Cascader, Row, AutoComplete, Icon, Col } from 'antd';
+    Layout, Menu, Button, Form, Input, InputNumber, Radio, Cascader, Row, AutoComplete, Icon, Col, message
+} from 'antd';
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
 import { graphql } from 'react-apollo'
@@ -16,15 +17,15 @@ const OptGroup = AutoComplete.OptGroup;
 function renderTitle(title) {
     return (
         <span>
-      {title}
+            {title}
             <a
                 style={{ float: 'right' }}
                 href="https://www.google.com/search?q=antd"
                 target="_blank"
                 rel="noopener noreferrer"
-                >
+            >
             </a>
-    </span>
+        </span>
     );
 }
 
@@ -34,25 +35,27 @@ function renderTitle(title) {
 
 
 class CreateCustomer extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
-            this.state={
-                discount:[
-                    {
-                        percentage:0,
-                        product:''
-                    }
-                ],
-                name: '',
-                password: '',
-                mobile: '',
-                town: '',
-                area: '',
-                block: '',
-                house: '',
-                products:[],
-                result: []
-            }
+        this.state = {
+            discount: [
+                {
+                    discount: 0,
+                    product: ''
+                }
+            ],
+            name: '',
+            password: '',
+            mobile: '',
+            town: '',
+            area: '',
+            block: '',
+            house: '',
+            products: [],
+            result: [],
+            disableBtn: false,
+            selectedValue: ''
+        }
     }
     //componentWillReceiveProps(nextProps){
     //    if(nextProps.data.products && nextProps.data){
@@ -82,8 +85,8 @@ class CreateCustomer extends Component {
     add = () => {
         const { discount } = this.state;
         const discountObj = {
-            percentage:0,
-            product:''
+            percentage: 0,
+            product: ''
         }
 
         // can use data-binding to get
@@ -100,14 +103,27 @@ class CreateCustomer extends Component {
             discount
         })
     }
-    onChangeDiscount = (type, index , ev) => {
+    onChangeDiscount = (type, index, ev) => {
+        console.log(ev,'===ev')
         const { discount } = this.state;
-        console.log(ev,'evvv')
-        if(type == "percentage") {
-            discount[index].percentage = ev;
+        const discountObject = discount[index];
+        console.log(ev, 'evvv')
+        if (type == "percentage") {
+            discountObject.discount = ev;
         } else {
-            discount[index].product = ev;
+            const selectedProduct = JSON.parse(ev);
+            this.setState({
+                selectedValue: selectedProduct.name
+            })
+            console.log(selectedProduct,'selectp')
+            discountObject.product = {
+                create: {
+                    name: selectedProduct.name,
+                    price: selectedProduct.price
+                }
+            };
         }
+        discount[index] = discountObject
 
         this.setState({
             discount
@@ -120,10 +136,57 @@ class CreateCustomer extends Component {
     }
     handledSubmit = e => {
         e.preventDefault();
+
+        console.log(this.state.discount,'discounts======')
         this.props.form.validateFields((err, values) => {
             if (!err) {
-               const {name, mobile, password, town, area, block, house, discount} = this.state;
-                console.log(name, mobile, password, town, area, block, house, discount,'name, mobile, password, town, area, block, house, discount')
+                this.setState({
+                    disableBtn: true
+                })
+                const { name, mobile, password, town, area, block, house, discount } = this.state;
+
+                let customer = {
+                    data: {
+                        mobile: mobile,
+                        name: name,
+                        password: password,
+                        address: {
+                            create: {
+                                town: town,
+                                area: area,
+                                block: block,
+                                house: house
+                            }
+                        },
+                        discounts: discount
+                    }
+                }
+
+                console.log(customer, '===customer')
+                this.props
+                    .createCustomer({
+                        variables: customer
+                    })
+                    .then(result => {
+                        this.setState({disableBtn: false, name:'', mobile:'', password:'', town:'', area:'', block:'', house:''},() => 
+                        {
+                            message.success('Customer has been created successfully');
+                        })
+                        console.log(result, '=====result')
+                    })
+                    .catch(err => {
+                        this.setState({
+                            disableBtn: false
+                        })
+                        const { graphQLErrors } = err;
+                        console.log(err, 'errr');
+                        // graphQLErrors.forEach(element => {
+                        //     message.error(element.message);
+                        // });
+                        // this.setState({
+                        //     loading: false
+                        // });
+                    })
             }
         });
     };
@@ -151,12 +214,14 @@ class CreateCustomer extends Component {
         this.setState({ result });
     };
     render() {
+        console.log(this.state.discount,'dis=====')
+
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
-        const { discount, result } = this.state;
-        console.log(this.state.mobile,'=====pp')
+        const { discount, result, disableBtn, name, mobile, password, town, area, block, house, selectedValue } = this.state;
+
         const children = result.map(email => <Option key={email}>{email}</Option>);
 
         // add field method start here //
@@ -185,7 +250,7 @@ class CreateCustomer extends Component {
                     label={index === 0 ? '' : ''}
                     required={false}
                     key={k}
-                    >
+                >
                     {getFieldDecorator(`names[${k}]`, {
                         validateTrigger: ['onChange', 'onBlur'],
                         rules: [
@@ -201,7 +266,7 @@ class CreateCustomer extends Component {
                             className="dynamic-delete-button"
                             type="minus-circle-o"
                             onClick={() => this.remove(k)}
-                            />
+                        />
                     ) : null}
                 </Form.Item>
                 <Form.Item
@@ -209,7 +274,7 @@ class CreateCustomer extends Component {
                     label={index === 0 ? '' : ''}
                     required={false}
                     key={k}
-                    >
+                >
                     {getFieldDecorator(`names[${k}]`, {
                         validateTrigger: ['onChange', 'onBlur'],
                         rules: [
@@ -225,7 +290,7 @@ class CreateCustomer extends Component {
                             className="dynamic-delete-button"
                             type="minus-circle-o"
                             onClick={() => this.remove(k)}
-                            />
+                        />
                     ) : null}
                 </Form.Item>
 
@@ -234,25 +299,26 @@ class CreateCustomer extends Component {
         // add field method end here //
 
         return (
-        <Query query={Products_QUERY}>
-            {({ data, loading }) => {
-                const {products} = data;
-                const options = products?products
-                    .map(group => (
-                        <Option key={group.name} value={group.name}>
-                            <span>Volume: {group.name}</span>
-                            <br/>
-                            <span>Price: {group.price}</span>
-                        </Option>
-                    )):[]
-                return (
-            <Fragment>
+            <Query query={Products_QUERY}>
+                {({ data, loading }) => {
+                    const { products } = data;
+                    console.log(products,'options')
+                    const options = products ? products
+                        .map(group => (
+                            <Option key={group} value={JSON.stringify(group)}>
+                                <span>Volume: {group.name}</span>
+                                <br />
+                                <span>Price: {group.price}</span>
+                            </Option>
+                        )) : []
+                    return (
+                        <Fragment>
 
-                <Layout>
-                    <AppBar />
-                    <Layout className="dashboard-main">
-                        <Sider width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
-                            {/* <Menu
+                            <Layout>
+                                <AppBar />
+                                <Layout className="dashboard-main">
+                                    <Sider width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
+                                        {/* <Menu
                              mode="inline"
                              defaultSelectedKeys={['1']}
                              defaultOpenKeys={['sub1']}
@@ -260,100 +326,100 @@ class CreateCustomer extends Component {
                              >
                              <Menu.Item key="5"><Icon type="team" />Customers</Menu.Item>
                              </Menu> */}
-                            <Menu
-                                onClick={this.handleClick}
-                                mode="inline"
-                                defaultSelectedKeys={['1']}
-                                defaultOpenKeys={['sub1']}
-                                >
-                                <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
-                                    <Menu.Item key="1" onClick={()=>this.props.history.push('/customers/create')}>Create</Menu.Item>
-                                </SubMenu>
-                            </Menu>
-                        </Sider>
-                        <Layout style={{ padding: '30px 24px 0', height:'100vh' }}>
-                            <div className="create-main-div">
-                                <Row gutter={16}>
-                                    <Col span={8}>
-                                        <h3>General</h3>
-                                        <Form layout="horizontal">
-                                            <FormItem label={`Mobile Number`} >
-                                                {getFieldDecorator('number', {
-                                                    rules: [
-                                                        {
-                                                            required: true
-                                                        }
-                                                    ]
-                                                })(<Input name="mobile" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`Password Should be Number with Prefix`} >
-                                                {getFieldDecorator('password', {
-                                                    rules: [
-                                                        {
-                                                            required: true
-                                                        }
-                                                    ]
-                                                })(<Input name="password" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`Name`} >
-                                                {getFieldDecorator('name', {
-                                                    rules: [
-                                                        {
-                                                            required: true,
-                                                            message: `The input is not valid phone!`
-                                                        }
-                                                    ]
-                                                })(<Input name="name" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                        </Form>
-                                    </Col>
-                                    <Col span={8}>
-                                        <h3>Address</h3>
-                                        <Form layout="horizontal">
-                                            <FormItem label={`Town`} >
-                                                {getFieldDecorator('town', {
-                                                    rules: [
-                                                        {
-                                                            required: true
-                                                        }
-                                                    ]
-                                                })(<Input name="town" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`Area`} >
-                                                {getFieldDecorator('area', {
-                                                    rules: [
-                                                        {
-                                                            required: true
-                                                        }
-                                                    ]
-                                                })(<Input onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`Block`} >
-                                                {getFieldDecorator('block', {
-                                                    rules: [
-                                                        {
-                                                            required: true,
-                                                            message: `The input is not valid phone!`
-                                                        }
-                                                    ]
-                                                })(<Input name="block" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`House`} >
-                                                {getFieldDecorator('house', {
-                                                    rules: [
-                                                        {
-                                                            required: true,
-                                                            message: `The input is not valid Address!`
-                                                        }
-                                                    ]
-                                                })(<Input name="house" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                        </Form>
-                                    </Col>
-                                    <Col span={8}>
-                                        <h3>Discount</h3>
-                                        <Form layout="horizontal">
-                                            {/*<div>
+                                        <Menu
+                                            onClick={this.handleClick}
+                                            mode="inline"
+                                            defaultSelectedKeys={['1']}
+                                            defaultOpenKeys={['sub1']}
+                                        >
+                                            <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
+                                                <Menu.Item key="1" onClick={() => this.props.history.push('/customers/create')}>Create</Menu.Item>
+                                            </SubMenu>
+                                        </Menu>
+                                    </Sider>
+                                    <Layout style={{ padding: '30px 24px 0', height: '100vh' }}>
+                                        <div className="create-main-div">
+                                            <Row gutter={16}>
+                                                <Col span={8}>
+                                                    <h3>General</h3>
+                                                    <Form layout="horizontal">
+                                                        <FormItem label={`Mobile Number`} >
+                                                            {getFieldDecorator('number', {
+                                                                rules: [
+                                                                    {
+                                                                        required: true
+                                                                    }
+                                                                ]
+                                                            })(<Input name="mobile" onChange={this.getCustomerDetails} value={mobile}/>)}
+                                                        </FormItem>
+                                                        <FormItem label={`Password Should be Number with Prefix`} >
+                                                            {getFieldDecorator('password', {
+                                                                rules: [
+                                                                    {
+                                                                        required: true
+                                                                    }
+                                                                ]
+                                                            })(<Input name="password" onChange={this.getCustomerDetails} value={password}/>)}
+                                                        </FormItem>
+                                                        <FormItem label={`Name`} >
+                                                            {getFieldDecorator('name', {
+                                                                rules: [
+                                                                    {
+                                                                        required: true,
+                                                                        message: `The input is not valid phone!`
+                                                                    }
+                                                                ]
+                                                            })(<Input name="name" onChange={this.getCustomerDetails} value={name}/>)}
+                                                        </FormItem>
+                                                    </Form>
+                                                </Col>
+                                                <Col span={8}>
+                                                    <h3>Address</h3>
+                                                    <Form layout="horizontal">
+                                                        <FormItem label={`Town`} >
+                                                            {getFieldDecorator('town', {
+                                                                rules: [
+                                                                    {
+                                                                        required: true
+                                                                    }
+                                                                ]
+                                                            })(<Input name="town" onChange={this.getCustomerDetails} value={town}/>)}
+                                                        </FormItem>
+                                                        <FormItem label={`Area`} >
+                                                            {getFieldDecorator('area', {
+                                                                rules: [
+                                                                    {
+                                                                        required: true
+                                                                    }
+                                                                ]
+                                                            })(<Input name="area" onChange={this.getCustomerDetails} value={area}/>)}
+                                                        </FormItem>
+                                                        <FormItem label={`Block`} >
+                                                            {getFieldDecorator('block', {
+                                                                rules: [
+                                                                    {
+                                                                        required: true,
+                                                                        message: `The input is not valid phone!`
+                                                                    }
+                                                                ]
+                                                            })(<Input name="block" onChange={this.getCustomerDetails} value={block}/>)}
+                                                        </FormItem>
+                                                        <FormItem label={`House`} >
+                                                            {getFieldDecorator('house', {
+                                                                rules: [
+                                                                    {
+                                                                        required: true,
+                                                                        message: `The input is not valid Address!`
+                                                                    }
+                                                                ]
+                                                            })(<Input name="house" onChange={this.getCustomerDetails} value={house}/>)}
+                                                        </FormItem>
+                                                    </Form>
+                                                </Col>
+                                                <Col span={8}>
+                                                    <h3>Discount</h3>
+                                                    <Form layout="horizontal">
+                                                        {/*<div>
                                              <InputNumber
                                              defaultValue={100}
                                              min={0}
@@ -370,75 +436,76 @@ class CreateCustomer extends Component {
 
 
 
-                                            <div>
-                                                {
-                                                    discount.map((value, index)=>{
-                                                        console.log(value,'val======per')
-                                                        return(
-                                                            <div>
-                                                                <Icon
-                                                                    className="dynamic-delete-button removeButtonDiscount"
-                                                                    type="minus-circle-o"
-                                                                    onClick={this.removeDiscount}
-                                                                    />
-                                                                <Form.Item>
+                                                        <div>
+                                                            {
+                                                                discount.map((value, index) => {
+                                                                    console.log(value, 'val======per')
+                                                                    return (
+                                                                        <div>
+                                                                            <Icon
+                                                                                className="dynamic-delete-button removeButtonDiscount"
+                                                                                type="minus-circle-o"
+                                                                                onClick={this.removeDiscount}
+                                                                            />
+                                                                            <Form.Item>
 
-                                                                    <AutoComplete
-                                                                        className="certain-category-search"
-                                                                        dropdownClassName="certain-category-search-dropdown"
-                                                                        dropdownMatchSelectWidth={false}
-                                                                        dropdownStyle={{ width: 300 }}
-                                                                        size="large"
-                                                                        style={{ width: '100%' }}
-                                                                        dataSource={options}
-                                                                        placeholder="Products"
-                                                                        optionLabelProp="value"
-                                                                        onChange={this.onChangeDiscount.bind(this, 'product', index)}
-                                                                        >
-                                                                        <Input suffix={<Icon type="search" className="certain-category-icon" />}/>
-                                                                    </AutoComplete>
+                                                                                <AutoComplete
+                                                                                    className="certain-category-search"
+                                                                                    dropdownClassName="certain-category-search-dropdown"
+                                                                                    dropdownMatchSelectWidth={false}
+                                                                                    dropdownStyle={{ width: 300 }}
+                                                                                    size="large"
+                                                                                    style={{ width: '100%' }}
+                                                                                    dataSource={options}
+                                                                                    
+                                                                                    placeholder="Products"
+                                                                                    value = {selectedValue}
+                                                                                    onChange={this.onChangeDiscount.bind(this, 'product', index)}
+                                                                                >
+                                                                                    <Input suffix={<Icon type="search" className="certain-category-icon" />} />
+                                                                                </AutoComplete>
 
-                                                                </Form.Item>
-                                                                <Form.Item>
-                                                                    <InputNumber
-                                                                        defaultValue={value.percentage}
-                                                                        min={0}
-                                                                        max={100}
-                                                                        formatter={value => `${value}%`}
-                                                                        parser={value => value.replace('%', '')}
-                                                                        onChange={this.onChangeDiscount.bind(this, 'percentage', index)}
-                                                                        />
-                                                                </Form.Item>
-                                                            </div>
-                                                        )
+                                                                            </Form.Item>
+                                                                            <Form.Item>
+                                                                                <InputNumber
+                                                                                    defaultValue={value.percentage}
+                                                                                    min={0}
+                                                                                    max={100}
+                                                                                    formatter={value => `${value}%`}
+                                                                                    parser={value => value.replace('%', '')}
+                                                                                    onChange={this.onChangeDiscount.bind(this, 'percentage', index)}
+                                                                                />
+                                                                            </Form.Item>
+                                                                        </div>
+                                                                    )
 
-                                                    })
-                                                }
-                                                <Form.Item className="fields-adds" {...formItemLayoutWithOutLabel}>
-                                                    <Button type="dashed" onClick={this.add} style={{ width: '100%' }}>
-                                                        <Icon type="plus" /> Add field
+                                                                })
+                                                            }
+                                                            <Form.Item className="fields-adds" {...formItemLayoutWithOutLabel}>
+                                                                <Button type="dashed" onClick={this.add} style={{ width: '100%' }}>
+                                                                    <Icon type="plus" /> Add field
                                                     </Button>
-                                                </Form.Item>
-                                            </div>
+                                                            </Form.Item>
+                                                        </div>
 
-                                        </Form>
-                                    </Col>
-                                </Row>
-                                <Row className="top-space" type="flex" justify="center">
-                                    <Col span={4}>
-                                        <Button  type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit}>
-                                            Create
+                                                    </Form>
+                                                </Col>
+                                            </Row>
+                                            <Row className="top-space" type="flex" justify="center">
+                                                <Col span={4}>
+                                                    <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}>
+                                                        Create
                                         </Button>
-                                    </Col>
-                                </Row>
-                            </div>
-                        </Layout>
-                    </Layout>
-                </Layout>
-            </Fragment>
-                )
-            }}
-        </Query>
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    </Layout>
+                                </Layout>
+                            </Layout>
+                        </Fragment>
+                    )
+                }}
+            </Query>
         )
     }
 }
@@ -481,20 +548,17 @@ const Products_QUERY = gql`
     }
 `;
 const CREATE_CUSTOMER_MUTATION = gql`
-    mutation LoginMutation($mobile: String!, $password: String!) {
-        login(mobile: $mobile, password: $password) {
-            token
-            user {
-                id
-                name
-                mobile
-            }
-        }
+mutation createCustomer($data: UserCreateInput!) {
+    createCustomer(data: $data){
+        name
     }
+}
 `;
 const CreateCustomerData = Form.create({ name: 'normal_login' })(CreateCustomer);
 
-export default CreateCustomerData
 
 
 
+export default graphql(CREATE_CUSTOMER_MUTATION, { name: 'createCustomer' })(
+    withRouter(CreateCustomerData)
+)
