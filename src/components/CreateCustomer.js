@@ -51,7 +51,8 @@ class CreateCustomer extends Component {
                 block: '',
                 house: '',
                 products:[],
-                result: []
+                result: [],
+                drawer: false
             }
     }
     //componentWillReceiveProps(nextProps){
@@ -150,13 +151,18 @@ class CreateCustomer extends Component {
         }
         this.setState({ result });
     };
+    openDrawer = () => {
+        this.setState({
+            drawer: !this.state.drawer
+        })
+    };
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
-        const { discount, result } = this.state;
-        console.log(this.state.mobile,'=====pp')
+        const { discount, result, drawer } = this.state;
+        console.log(drawer,'===drawer==pp')
         const children = result.map(email => <Option key={email}>{email}</Option>);
 
         // add field method start here //
@@ -249,9 +255,9 @@ class CreateCustomer extends Component {
             <Fragment>
 
                 <Layout>
-                    <AppBar />
+                    <AppBar handleClick = {this.openDrawer} />
                     <Layout className="dashboard-main">
-                        <Sider width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
+                        <Sider className={` ${drawer? 'showHideView' : ''}`} width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
                             {/* <Menu
                              mode="inline"
                              defaultSelectedKeys={['1']}
@@ -271,10 +277,10 @@ class CreateCustomer extends Component {
                                 </SubMenu>
                             </Menu>
                         </Sider>
-                        <Layout style={{ padding: '30px 24px 0', height:'100vh' }}>
+                        <Layout className="remove-padding" style={{ padding: '30px 24px 0', height:'100vh' }}>
                             <div className="create-main-div">
                                 <Row gutter={16}>
-                                    <Col span={8}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }} >
                                         <h3>General</h3>
                                         <Form layout="horizontal">
                                             <FormItem label={`Mobile Number`} >
@@ -307,7 +313,7 @@ class CreateCustomer extends Component {
                                             </FormItem>
                                         </Form>
                                     </Col>
-                                    <Col span={8}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }} >
                                         <h3>Address</h3>
                                         <Form layout="horizontal">
                                             <FormItem label={`Town`} >
@@ -350,7 +356,7 @@ class CreateCustomer extends Component {
                                             </FormItem>
                                         </Form>
                                     </Col>
-                                    <Col span={8}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }} >
                                         <h3>Discount</h3>
                                         <Form layout="horizontal">
                                             {/*<div>
@@ -373,7 +379,7 @@ class CreateCustomer extends Component {
                                             <div>
                                                 {
                                                     discount.map((value, index)=>{
-                                                        console.log(value,'val======per')
+                                                        console.log(value,'val======per');
                                                         return(
                                                             <div>
                                                                 <Icon
@@ -425,7 +431,7 @@ class CreateCustomer extends Component {
                                     </Col>
                                 </Row>
                                 <Row className="top-space" type="flex" justify="center">
-                                    <Col span={4}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 12 }} lg={{ span: 4 }} >
                                         <Button  type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit}>
                                             Create
                                         </Button>
