@@ -16,7 +16,7 @@ import RootContainer from './components/RootContainer';
 import 'antd/dist/antd.css';  // or 'antd/dist/antd.less'
 import './index.css'
 
-const httpLink = new HttpLink({ uri: 'http://192.168.100.19:4000' });
+const httpLink = new HttpLink({ uri: 'http://192.168.100.24:4000' });
 
 const middlewareLink = new ApolloLink((operation, forward) => {
     // get the authentication token from local storage if it exists
@@ -24,8 +24,8 @@ const middlewareLink = new ApolloLink((operation, forward) => {
     // return the headers to the context so httpLink can read them
     operation.setContext({
         headers: {
-            Authorization: tokenValue ? `Bearer ${tokenValue}` : '',
-        },
+            Authorization: tokenValue ? `Bearer ${tokenValue}` : ''
+        }
     });
     return forward(operation)
 });
@@ -34,13 +34,13 @@ const middlewareLink = new ApolloLink((operation, forward) => {
 const httpLinkAuth = middlewareLink.concat(httpLink);
 
 const wsLink = new WebSocketLink({
-    uri: `ws://192.168.100.19:4000`,
+    uri: `ws://192.168.100.24:4000`,
     options: {
         reconnect: true,
         connectionParams: {
-            Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN)}`,
-        },
-    },
+            Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN)}`
+        }
+    }
 });
 
 const link = split(
@@ -57,7 +57,7 @@ const link = split(
 const client = new ApolloClient({
     link: ApolloLink.from([link]),
     cache: new InMemoryCache(),
-    connectToDevTools: true,
+    connectToDevTools: true
 });
 
 const token = localStorage.getItem(AUTH_TOKEN);
@@ -66,7 +66,7 @@ ReactDOM.render(
     <ApolloProvider client={client}>
         <RootContainer token={token} />
     </ApolloProvider>,
-    document.getElementById('root'),
+    document.getElementById('root')
 );
 
 
