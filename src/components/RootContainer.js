@@ -8,6 +8,7 @@ import {
     Redirect,
 } from 'react-router-dom'
 import LoginPage from './LoginPage'
+import ProductPage from './Products'
 import SignupPage from './SignupPage'
 import PageNotFound from './PageNotFound'
 import LogoutPage from './LogoutPage'
@@ -240,6 +241,11 @@ class RootContainer extends Component {
                             <SignupPage refreshTokenFn={this.refreshTokenFn} />
                         )}
                     />
+                    <Route
+                        token={this.state.token}
+                        path="/products"
+                        render={props => <ProductPage refreshTokenFn={this.refreshTokenFn}  token={this.state.token} />}
+                        />
                     <Route path="/logout" component={LogoutPage} />
                     <Route component={PageNotFound} />
                 </Switch>

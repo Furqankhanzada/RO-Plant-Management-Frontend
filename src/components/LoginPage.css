@@ -278,3 +278,83 @@ img {
         transform: rotate(360deg);
     }
 }
+
+.products-table {
+    background: white;
+    box-shadow: 0 0 3px 0 #cecece;
+}
+.products-table .ant-table-pagination.ant-pagination {
+    margin: 16px 16px 16px 0;
+}
+
+.toggleIcon {
+    float: left;
+    display: none;
+    font-size: 22px;
+    margin: 20px 15px 0 0;
+}
+
+/*/// extra small media query start here ///*/
+@media (min-width: 320px) and (max-width: 767px) {
+
+    .remove-padding {
+        padding: 10px 5px 0 !important;
+    }
+    .ant-layout-sider {
+        bottom: 0;
+        top: 65px;
+        z-index: 1;
+        left: -205px;
+        position: absolute;
+    }
+    .create-main-div .ant-form .ant-form-item .ant-form-item-label {
+        padding: 0;
+    }
+    .create-main-div .ant-form .ant-form-item .ant-form-item-label label {
+        font-size: 13px;
+    }
+    .create-main-div .ant-form {
+        margin-bottom: 15px;
+        padding: 15px 10px 5px;
+    }
+    .top-space {
+        margin-top: 10px;
+    }
+    .create-main-div {
+        margin: 0 0 80px;
+    }
+    .ant-layout-header {
+        padding: 0 15px;
+    }
+    .ant-menu-item, .ant-menu-submenu-title {
+        padding: 0 10px;
+    }
+    .toggleIcon {
+        display: inline-block;
+    }
+    .login-signup-logo {
+        width: 120px;
+    }
+    .showHideView {
+        left: 0;
+    }
+
+}
+/*/// extra small media query end here ///*/
+
+/*/// small media query start here ///*/
+@media (min-width: 768px) and (max-width: 991px) {
+
+    .remove-padding {
+        padding: 10px 15px 0 !important;
+    }
+    .create-main-div .ant-form {
+        margin-bottom: 20px;
+    }
+
+}
+/*/// small media query end here ///*/
+
+/*/// medium media query start here ///*/
+@media (min-width: 992px) and (max-width: 1199px) {}
+/*/// medium media query end here ///*/

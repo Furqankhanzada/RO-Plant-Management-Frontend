@@ -1,14 +1,15 @@
 import React, { Fragment } from 'react'
-import { Layout, Menu, Avatar } from 'antd';
+import { Layout, Menu, Avatar, Icon } from 'antd';
 
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
 
-export const AppBar = () => {
+export const AppBar = ({handleClick}) => {
     return (
         <Header className="header header-custom " style={{ backgroundColor: '#ffffff' }}>
             <div className='nav-logo'>
                 <img alt="logo" src={require('../../assests/images/labbaik.png')} className="login-signup-logo" />
+                <Icon onClick={handleClick} className="toggleIcon" type="menu" />
             </div>
             <Menu key="user" mode="horizontal"  className="nav-ul">
                 <SubMenu
