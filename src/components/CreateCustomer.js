@@ -37,7 +37,6 @@ function renderTitle(title) {
 class CreateCustomer extends Component {
     constructor(props) {
         super(props)
-<<<<<<< HEAD
         this.state = {
             discount: [
                 {
@@ -57,26 +56,6 @@ class CreateCustomer extends Component {
             disableBtn: false,
             selectedValue: ''
         }
-=======
-            this.state={
-                discount:[
-                    {
-                        percentage:0,
-                        product:''
-                    }
-                ],
-                name: '',
-                password: '',
-                mobile: '',
-                town: '',
-                area: '',
-                block: '',
-                house: '',
-                products:[],
-                result: [],
-                drawer: false
-            }
->>>>>>> 3523bc87deb216070063d1a2249251e1350d3987
     }
     //componentWillReceiveProps(nextProps){
     //    if(nextProps.data.products && nextProps.data){
@@ -246,13 +225,10 @@ class CreateCustomer extends Component {
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
-<<<<<<< HEAD
         const { discount, result, disableBtn, name, mobile, password, town, area, block, house, selectedValue } = this.state;
 
-=======
         const { discount, result, drawer } = this.state;
         console.log(drawer,'===drawer==pp')
->>>>>>> 3523bc87deb216070063d1a2249251e1350d3987
         const children = result.map(email => <Option key={email}>{email}</Option>);
 
         // add field method start here //
@@ -330,7 +306,6 @@ class CreateCustomer extends Component {
         // add field method end here //
 
         return (
-<<<<<<< HEAD
             <Query query={Products_QUERY}>
                 {({ data, loading }) => {
                     const { products } = data;
@@ -351,27 +326,6 @@ class CreateCustomer extends Component {
                                 <Layout className="dashboard-main">
                                     <Sider width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
                                         {/* <Menu
-=======
-        <Query query={Products_QUERY}>
-            {({ data, loading }) => {
-                const {products} = data;
-                const options = products?products
-                    .map(group => (
-                        <Option key={group.name} value={group.name}>
-                            <span>Volume: {group.name}</span>
-                            <br/>
-                            <span>Price: {group.price}</span>
-                        </Option>
-                    )):[]
-                return (
-            <Fragment>
-
-                <Layout>
-                    <AppBar handleClick = {this.openDrawer} />
-                    <Layout className="dashboard-main">
-                        <Sider className={` ${drawer? 'showHideView' : ''}`} width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
-                            {/* <Menu
->>>>>>> 3523bc87deb216070063d1a2249251e1350d3987
                              mode="inline"
                              defaultSelectedKeys={['1']}
                              defaultOpenKeys={['sub1']}
@@ -379,7 +333,6 @@ class CreateCustomer extends Component {
                              >
                              <Menu.Item key="5"><Icon type="team" />Customers</Menu.Item>
                              </Menu> */}
-<<<<<<< HEAD
                                         <Menu
                                             onClick={this.handleClick}
                                             mode="inline"
@@ -474,102 +427,6 @@ class CreateCustomer extends Component {
                                                     <h3>Discount</h3>
                                                     <Form layout="horizontal">
                                                         {/*<div>
-=======
-                            <Menu
-                                onClick={this.handleClick}
-                                mode="inline"
-                                defaultSelectedKeys={['1']}
-                                defaultOpenKeys={['sub1']}
-                                >
-                                <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
-                                    <Menu.Item key="1" onClick={()=>this.props.history.push('/customers/create')}>Create</Menu.Item>
-                                </SubMenu>
-                            </Menu>
-                        </Sider>
-                        <Layout className="remove-padding" style={{ padding: '30px 24px 0', height:'100vh' }}>
-                            <div className="create-main-div">
-                                <Row gutter={16}>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }} >
-                                        <h3>General</h3>
-                                        <Form layout="horizontal">
-                                            <FormItem label={`Mobile Number`} >
-                                                {getFieldDecorator('number', {
-                                                    rules: [
-                                                        {
-                                                            required: true
-                                                        }
-                                                    ]
-                                                })(<Input name="mobile" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`Password Should be Number with Prefix`} >
-                                                {getFieldDecorator('password', {
-                                                    rules: [
-                                                        {
-                                                            required: true
-                                                        }
-                                                    ]
-                                                })(<Input name="password" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`Name`} >
-                                                {getFieldDecorator('name', {
-                                                    rules: [
-                                                        {
-                                                            required: true,
-                                                            message: `The input is not valid phone!`
-                                                        }
-                                                    ]
-                                                })(<Input name="name" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                        </Form>
-                                    </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }} >
-                                        <h3>Address</h3>
-                                        <Form layout="horizontal">
-                                            <FormItem label={`Town`} >
-                                                {getFieldDecorator('town', {
-                                                    rules: [
-                                                        {
-                                                            required: true
-                                                        }
-                                                    ]
-                                                })(<Input name="town" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`Area`} >
-                                                {getFieldDecorator('area', {
-                                                    rules: [
-                                                        {
-                                                            required: true
-                                                        }
-                                                    ]
-                                                })(<Input onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`Block`} >
-                                                {getFieldDecorator('block', {
-                                                    rules: [
-                                                        {
-                                                            required: true,
-                                                            message: `The input is not valid phone!`
-                                                        }
-                                                    ]
-                                                })(<Input name="block" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                            <FormItem label={`House`} >
-                                                {getFieldDecorator('house', {
-                                                    rules: [
-                                                        {
-                                                            required: true,
-                                                            message: `The input is not valid Address!`
-                                                        }
-                                                    ]
-                                                })(<Input name="house" onChange={this.getCustomerDetails}/>)}
-                                            </FormItem>
-                                        </Form>
-                                    </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }} >
-                                        <h3>Discount</h3>
-                                        <Form layout="horizontal">
-                                            {/*<div>
->>>>>>> 3523bc87deb216070063d1a2249251e1350d3987
                                              <InputNumber
                                              defaultValue={100}
                                              min={0}
@@ -586,7 +443,6 @@ class CreateCustomer extends Component {
 
 
 
-<<<<<<< HEAD
                                                         <div>
                                                             {
                                                                 discount.map((value, index) => {
@@ -646,66 +502,6 @@ class CreateCustomer extends Component {
                                                 <Col span={4}>
                                                     <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}>
                                                         Create
-=======
-                                            <div>
-                                                {
-                                                    discount.map((value, index)=>{
-                                                        console.log(value,'val======per');
-                                                        return(
-                                                            <div>
-                                                                <Icon
-                                                                    className="dynamic-delete-button removeButtonDiscount"
-                                                                    type="minus-circle-o"
-                                                                    onClick={this.removeDiscount}
-                                                                    />
-                                                                <Form.Item>
-
-                                                                    <AutoComplete
-                                                                        className="certain-category-search"
-                                                                        dropdownClassName="certain-category-search-dropdown"
-                                                                        dropdownMatchSelectWidth={false}
-                                                                        dropdownStyle={{ width: 300 }}
-                                                                        size="large"
-                                                                        style={{ width: '100%' }}
-                                                                        dataSource={options}
-                                                                        placeholder="Products"
-                                                                        optionLabelProp="value"
-                                                                        onChange={this.onChangeDiscount.bind(this, 'product', index)}
-                                                                        >
-                                                                        <Input suffix={<Icon type="search" className="certain-category-icon" />}/>
-                                                                    </AutoComplete>
-
-                                                                </Form.Item>
-                                                                <Form.Item>
-                                                                    <InputNumber
-                                                                        defaultValue={value.percentage}
-                                                                        min={0}
-                                                                        max={100}
-                                                                        formatter={value => `${value}%`}
-                                                                        parser={value => value.replace('%', '')}
-                                                                        onChange={this.onChangeDiscount.bind(this, 'percentage', index)}
-                                                                        />
-                                                                </Form.Item>
-                                                            </div>
-                                                        )
-
-                                                    })
-                                                }
-                                                <Form.Item className="fields-adds" {...formItemLayoutWithOutLabel}>
-                                                    <Button type="dashed" onClick={this.add} style={{ width: '100%' }}>
-                                                        <Icon type="plus" /> Add field
-                                                    </Button>
-                                                </Form.Item>
-                                            </div>
-
-                                        </Form>
-                                    </Col>
-                                </Row>
-                                <Row className="top-space" type="flex" justify="center">
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 12 }} lg={{ span: 4 }} >
-                                        <Button  type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit}>
-                                            Create
->>>>>>> 3523bc87deb216070063d1a2249251e1350d3987
                                         </Button>
                                                 </Col>
                                             </Row>
