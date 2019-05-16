@@ -39,7 +39,7 @@ const UnProtectedRoute = ({ component: Component, token, ...rest }) => {
         <Redirect to="/customers" />
     )
 };
-const { SubMenu } = Menu
+const { SubMenu } = Menu;
 
 class RootContainer extends Component {
     constructor(props) {
@@ -47,13 +47,13 @@ class RootContainer extends Component {
         this.refreshTokenFn = this.refreshTokenFn.bind(this);
 
         this.state = {
-            token: props.token,
+            token: props.token
         }
     }
 
     refreshTokenFn(data = {}) {
         const token = data[AUTH_TOKEN];
-        console.log(token,'token===')
+        console.log(token,'token===');
         if (token) {
             localStorage.setItem(AUTH_TOKEN, token)
         } else {
@@ -61,7 +61,7 @@ class RootContainer extends Component {
         }
 
         this.setState({
-            token: data[AUTH_TOKEN],
+            token: data[AUTH_TOKEN]
         })
     }
 
@@ -70,7 +70,7 @@ class RootContainer extends Component {
             const token = localStorage.getItem(AUTH_TOKEN);
             if (token !== null && token !== undefined) {
                 const expired = isTokenExpired(token);
-                console.log(expired,'====')
+                console.log(expired,'====');
                 if (!expired) {
                     this.setState({ token: token })
                 } else {
@@ -266,6 +266,6 @@ const ME_QUERY = gql`
 
 export default graphql(ME_QUERY, {
     options: {
-        errorPolicy: 'all',
-    },
+        errorPolicy: 'all'
+    }
 })(RootContainer)

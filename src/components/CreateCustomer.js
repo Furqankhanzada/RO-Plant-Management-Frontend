@@ -336,6 +336,10 @@ class CreateCustomer extends Component {
                                             <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
                                                 <Menu.Item key="1" onClick={() => this.props.history.push('/customers/create')}>Create</Menu.Item>
                                             </SubMenu>
+                                            <Menu.Item key="mail">
+                                                <Icon type="gift" />
+                                                Products
+                                            </Menu.Item>
                                         </Menu>
                                     </Sider>
                                     <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
@@ -437,12 +441,12 @@ class CreateCustomer extends Component {
 
 
 
-                                                        <div>
+                                                        <div className="discount-details">
                                                             {
                                                                 discount.map((value, index) => {
                                                                     console.log(value, 'val======per')
                                                                     return (
-                                                                        <div>
+                                                                        <div className="discounts">
                                                                             <Icon
                                                                                 className="dynamic-delete-button removeButtonDiscount"
                                                                                 type="minus-circle-o"

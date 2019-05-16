@@ -262,10 +262,7 @@ img {
     width: 90%;
     margin-right: 15px;
 }
-.removeButtonDiscount{
-    display: inline-block;
-    float: right;
-}
+
 
 
 
@@ -292,6 +289,16 @@ img {
     display: none;
     font-size: 22px;
     margin: 20px 15px 0 0;
+}
+
+.discount-details .discounts {
+    position: relative;
+    padding: 0 20px 0 0;
+}
+.discount-details .discounts .removeButtonDiscount {
+    right: 0;
+    top: 45px;
+    position: absolute;
 }
 
 /*/// extra small media query start here ///*/

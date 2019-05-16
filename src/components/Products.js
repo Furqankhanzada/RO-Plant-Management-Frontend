@@ -91,9 +91,9 @@ class Products extends Component {
                     text: 'Select All Data',
                     onSelect: () => {
                         this.setState({
-                            selectedRowKeys: [...Array(46).keys()], // 0...45
+                            selectedRowKeys: [...Array(46).keys()] // 0...45
                         });
-                    },
+                    }
                 },
                 {
                     key: 'odd',
@@ -107,7 +107,7 @@ class Products extends Component {
                             return true;
                         });
                         this.setState({ selectedRowKeys: newSelectedRowKeys });
-                    },
+                    }
                 },
                 {
                     key: 'even',
@@ -121,10 +121,10 @@ class Products extends Component {
                             return false;
                         });
                         this.setState({ selectedRowKeys: newSelectedRowKeys });
-                    },
-                },
+                    }
+                }
             ],
-            onSelection: this.onSelection,
+            onSelection: this.onSelection
         };
         // products table method //
 
@@ -139,7 +139,7 @@ class Products extends Component {
                                 <br/>
                                 <span>Price: {group.price}</span>
                             </Option>
-                        )):[]
+                        )):[];
                     return (
                         <Fragment>
 
@@ -164,6 +164,10 @@ class Products extends Component {
                                             <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
                                                 <Menu.Item key="1" onClick={()=>this.props.history.push('/customers/create')}>Create</Menu.Item>
                                             </SubMenu>
+                                            <Menu.Item key="mail">
+                                                <Icon type="gift" />
+                                                Products
+                                            </Menu.Item>
                                         </Menu>
                                     </Sider>
                                     <Layout className="remove-padding" style={{ padding: '30px 24px 0', height:'100vh' }}>

@@ -20,4 +20,4 @@ export const Sidebar = ({ handleClick, history, defaultSelectedKeys, defaultOpen
             </Menu>
         </Sider>
     )
-}
+};

@@ -25,7 +25,7 @@ class DashboardPage extends Component {
             const { graphQLErrors } = error;
             graphQLErrors.map((value,index) => {
                 if(value.message === 'Not Authorised!') {
-                    localStorage.removeItem('AUTH_TOKEN')
+                    localStorage.removeItem('AUTH_TOKEN');
                     window.location.reload()
                 }
             })
@@ -90,7 +90,7 @@ const FEED_SUBSCRIPTION = gql`
             }
         }
     }
-`
+`;
 const CUSTOMERS = gql`
 query{
 customers{
@@ -111,13 +111,13 @@ customers{
 `;
 
 
-withRouter(DashboardPage)
+withRouter(DashboardPage);
 
 
 export default graphql(CUSTOMERS, {
     name: 'customers', // name of the injected prop: this.props.feedQuery...
     options: {
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'network-only'
     },
     props: props =>
         Object.assign({}, props, {  
@@ -128,15 +128,15 @@ export default graphql(CUSTOMERS, {
                         if (!subscriptionData.data) {
                             return prev
                         }
-                        const newPost = subscriptionData.data.userSubscription.node
+                        const newPost = subscriptionData.data.userSubscription.node;
                         if (prev.feed.find(post => post.id === newPost.id)) {
                             return prev
                         }
                         return Object.assign({}, prev, {
-                            feed: [...prev.feed, newPost],
+                            feed: [...prev.feed, newPost]
                         })
-                    },
+                    }
                 })
-            },
-        }),
+            }
+        })
 })(DashboardPage)
