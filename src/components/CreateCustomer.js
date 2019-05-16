@@ -117,10 +117,8 @@ class CreateCustomer extends Component {
             })
             console.log(selectedProduct,'selectp')
             discountObject.product = {
-                create: {
-                    name: selectedProduct.name,
-                    price: selectedProduct.price
-                }
+                name: selectedProduct.name,
+                price: selectedProduct.price
             };
         }
         discount[index] = discountObject
@@ -158,7 +156,9 @@ class CreateCustomer extends Component {
                                 house: house
                             }
                         },
-                        discounts: discount
+                        discounts: {
+                            create: discount
+                        }
                     }
                 }
 
@@ -168,7 +168,7 @@ class CreateCustomer extends Component {
                         variables: customer
                     })
                     .then(result => {
-                        this.setState({disableBtn: false, name:'', mobile:'', password:'', town:'', area:'', block:'', house:''},() => 
+                        this.setState({disableBtn: false, name:'', mobile:'', password:'', town:'', area:'', block:'', house:''},() =>
                         {
                             message.success('Customer has been created successfully');
                         })
@@ -225,7 +225,7 @@ class CreateCustomer extends Component {
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
-        const { disableBtn, name, mobile, password, town, area, block, house, selectedValue,discount, result, drawer } = this.state;
+        const { disableBtn, name, mobile, password, town, area, block, house, selectedValue, discount, result, drawer } = this.state;
         console.log(drawer,'===drawer==pp')
         const children = result.map(email => <Option key={email}>{email}</Option>);
 
@@ -462,7 +462,7 @@ class CreateCustomer extends Component {
                                                                                     size="large"
                                                                                     style={{ width: '100%' }}
                                                                                     dataSource={options}
-                                                                                    
+
                                                                                     placeholder="Products"
                                                                                     value = {selectedValue}
                                                                                     onChange={this.onChangeDiscount.bind(this, 'product', index)}
