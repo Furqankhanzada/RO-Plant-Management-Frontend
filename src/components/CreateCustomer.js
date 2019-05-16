@@ -222,6 +222,7 @@ class CreateCustomer extends Component {
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
+        const { history } = this.props;
         const { disableBtn, name, mobile, password, town, area, block, house, selectedValue, discount, result, drawer } = this.state;
         console.log(drawer,'===drawer==pp');
         const children = result.map(email => <Option key={email}>{email}</Option>);
@@ -319,30 +320,8 @@ class CreateCustomer extends Component {
                             <Layout>
                                 <AppBar handleClick = {this.openDrawer} />
                                 <Layout className="dashboard-main">
-                                    <Sider className={` ${drawer? 'showHideView' : ''}`} width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
-                                        {/* <Menu
-                                         mode="inline"
-                                         defaultSelectedKeys={['1']}
-                                         defaultOpenKeys={['sub1']}
-                                         style={{ height: '100%', borderRight: 0 }}
-                                         >
-                                         <Menu.Item key="5"><Icon type="team" />Customers</Menu.Item>
-                                         </Menu> */}
-                                        <Menu
-                                            onClick={this.handleClick}
-                                            mode="inline"
-                                            defaultSelectedKeys={['1']}
-                                            defaultOpenKeys={['sub1']}
-                                            >
-                                            <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
-                                                <Menu.Item key="1" onClick={() => this.props.history.push('/customers/create')}>Create</Menu.Item>
-                                            </SubMenu>
-                                            <Menu.Item key="mail">
-                                                <Icon type="gift" />
-                                                Products
-                                            </Menu.Item>
-                                        </Menu>
-                                    </Sider>
+                                    <Sidebar handleClick = {this.handleClick} history = {history}/>
+
                                     <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
                                         <div className="create-main-div">
                                             <Row gutter={16}>
@@ -554,6 +533,8 @@ const Products_QUERY = gql`
         }
     }
 `;
+withRouter(CreateCustomer);
+
 const CREATE_CUSTOMER_MUTATION = gql`
 mutation createCustomer($data: UserCreateInput!) {
     createCustomer(data: $data){

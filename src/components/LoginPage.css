@@ -300,6 +300,47 @@ img {
     top: 45px;
     position: absolute;
 }
+.ant-layout-sider-children {
+    padding-top: 10px;
+}
+.ant-layout-sider-children ul li .ant-menu-submenu-title {
+    height: 35px !important;
+    line-height: 35px !important;
+}
+.ant-layout-sider-children ul li .ant-menu-sub li {
+    height: 30px !important;
+    line-height: 30px !important;
+}
+
+.create-products {
+
+}
+.create-products .ant-form {
+    width: 450px;
+    margin: 0 auto 20px;
+    padding: 30px 30px 15px;
+}
+.create-products .ant-form .ant-form-item {
+    margin: 0;
+    width: 100%;
+}
+.create-products .ant-form .ant-form-item .ant-form-item-control-wrapper {
+    width: 100%;
+}
+.create-products .ant-form-item-control {
+    text-align: center;
+}
+.create-products .ant-form .ant-form-item .ant-form-item-control-wrapper .ant-form-item-control {
+    margin-bottom: 15px;
+}
+.create-products .ant-form .ant-form-item .ant-form-item-control-wrapper .ant-input {
+    height: 40px;
+    line-height: 40px;
+}
+.create-products .ant-form-item-control button {
+    width: 150px;
+    height: 40px;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
