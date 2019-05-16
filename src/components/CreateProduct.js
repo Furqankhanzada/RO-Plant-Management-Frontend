@@ -35,9 +35,23 @@ class CreatesProducts extends Component {
             products:[],
             result: [],
             drawer: false,
-            selectedRowKeys: []
-        }
+            selectedRowKeys: [],
+            product: '',
+            price: ''
+        };
     }
+
+    getValue = (ev) => {
+        this.setState({
+            [ev.target.name] : ev.target.value
+        })
+    };
+
+    createProduct = (e) => {
+        e.preventDefault();
+        console.log('product*************', this.state.product);
+        console.log('price*****************', this.state.price);
+    };
 
     openDrawer = () => {
         this.setState({
@@ -115,12 +129,14 @@ class CreatesProducts extends Component {
                                     <Layout className="remove-padding" style={{ padding: '30px 24px 0', height:'100vh' }}>
                                         <div className="create-main-div">
                                             <div className="create-products">
+
                                                 <Form layout="inline" onSubmit={this.handleSubmit}>
                                                     <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
                                                         {getFieldDecorator('username', {
                                                             rules: [{ required: true, message: 'Please input your name!' }],
                                                         })(
                                                             <Input
+                                                                name="product"
                                                                 placeholder="Enter Your Name"
                                                                 />
                                                         )}
@@ -131,16 +147,17 @@ class CreatesProducts extends Component {
                                                         })(
                                                             <Input
                                                                 type="number"
+                                                                name="price"
                                                                 placeholder="Enter Price"
                                                                 />
                                                         )}
                                                     </Form.Item>
-                                                    <Form.Item>
-                                                        <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
-                                                            Create
-                                                        </Button>
-                                                    </Form.Item>
                                                 </Form>
+                                                <Form.Item>
+                                                    <Button type="primary" onClick={this.createProduct} htmlType="submit" disabled={hasErrors(getFieldsError())}>
+                                                        Create
+                                                    </Button>
+                                                </Form.Item>
                                             </div>
                                         </div>
                                     </Layout>
