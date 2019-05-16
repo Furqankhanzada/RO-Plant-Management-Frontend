@@ -81,7 +81,7 @@ class CreateCustomer extends Component {
     add = () => {
         const { discount } = this.state;
         const discountObj = {
-            percentage: 0,
+            discount: 0,
             product: ''
         };
 
@@ -92,7 +92,6 @@ class CreateCustomer extends Component {
         })
     };
     removeDiscount = (index) => {
-        alert();
         const { discount } = this.state;
         discount.splice(index, 1);
         this.setState({
@@ -108,13 +107,11 @@ class CreateCustomer extends Component {
             discountObject.discount = ev;
         } else {
             const selectedProduct = JSON.parse(ev);
-            this.setState({
-                selectedValue: selectedProduct.name
-            });
-            console.log(selectedProduct,'selectp');
             discountObject.product = {
                 name: selectedProduct.name,
-                price: selectedProduct.price
+                price: selectedProduct.price,
+                id: selectedProduct.id,
+                selected: true
             };
         }
         discount[index] = discountObject;
@@ -138,7 +135,11 @@ class CreateCustomer extends Component {
                     disableBtn: true
                 });
                 const { name, mobile, password, town, area, block, house, discount } = this.state;
-
+               const selectedValRemoved =  discount.map((value,index)=>{
+                     value.product=value.product.id;
+                     return value
+                })
+                console.log(selectedValRemoved,'selectedValRemoved')
                 let customer = {
                     data: {
                         mobile: mobile,
@@ -153,7 +154,7 @@ class CreateCustomer extends Component {
                             }
                         },
                         discounts: {
-                            create: discount
+                            create: selectedValRemoved
                         }
                     }
                 };
@@ -444,7 +445,8 @@ class CreateCustomer extends Component {
                                                         <div className="discount-details">
                                                             {
                                                                 discount.map((value, index) => {
-                                                                    console.log(value, 'val======per')
+
+                                                                    console.log(value,index, 'selectedValue======per')
                                                                     return (
                                                                         <div className="discounts">
                                                                             <Icon
@@ -464,7 +466,7 @@ class CreateCustomer extends Component {
                                                                                     dataSource={options}
 
                                                                                     placeholder="Products"
-                                                                                    value = {selectedValue}
+                                                                                    value = {value.product?value.product.selected?value.product.name:'':''}
                                                                                     onChange={this.onChangeDiscount.bind(this, 'product', index)}
                                                                                     >
                                                                                     <Input suffix={<Icon type="search" className="certain-category-icon" />} />
