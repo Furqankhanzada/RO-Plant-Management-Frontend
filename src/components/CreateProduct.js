@@ -10,19 +10,12 @@ import { Query } from 'react-apollo';
 
 const Option = AutoComplete.Option;
 
-const columns = [
-    {
-        title: 'Name',
-        dataIndex: 'name'
-    },
-    {
-        title: 'Price',
-        dataIndex: 'price'
-    }
-];
+function hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
 
 
-class Products extends Component {
+class CreatesProducts extends Component {
     constructor(props){
         super(props);
         this.state={
@@ -57,7 +50,27 @@ class Products extends Component {
         this.setState({ selectedRowKeys });
     };
 
+    componentDidMount() {
+        // To disabled submit button at the beginning.
+        this.props.form.validateFields();
+    }
+
+    handleSubmit = e => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+            }
+        });
+    };
+
     render() {
+
+        const { getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+
+        // Only show error after a field is touched.
+        const usernameError = isFieldTouched('username') && getFieldError('username');
+        const passwordError = isFieldTouched('password') && getFieldError('password');
 
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const SubMenu = Menu.SubMenu;
@@ -101,8 +114,33 @@ class Products extends Component {
 
                                     <Layout className="remove-padding" style={{ padding: '30px 24px 0', height:'100vh' }}>
                                         <div className="create-main-div">
-                                            <div className="products-table">
-                                                <Table columns={columns} dataSource={products} />
+                                            <div className="create-products">
+                                                <Form layout="inline" onSubmit={this.handleSubmit}>
+                                                    <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
+                                                        {getFieldDecorator('username', {
+                                                            rules: [{ required: true, message: 'Please input your name!' }],
+                                                        })(
+                                                            <Input
+                                                                placeholder="Enter Your Name"
+                                                                />
+                                                        )}
+                                                    </Form.Item>
+                                                    <Form.Item validateStatus={passwordError ? 'error' : ''} help={passwordError || ''}>
+                                                        {getFieldDecorator('password', {
+                                                            rules: [{ required: true, message: 'Please input your Number!' }],
+                                                        })(
+                                                            <Input
+                                                                type="number"
+                                                                placeholder="Enter Price"
+                                                                />
+                                                        )}
+                                                    </Form.Item>
+                                                    <Form.Item>
+                                                        <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
+                                                            Create
+                                                        </Button>
+                                                    </Form.Item>
+                                                </Form>
                                             </div>
                                         </div>
                                     </Layout>
@@ -136,8 +174,8 @@ const PRODUCT = gql`
     }
 `;
 
-withRouter(Products);
+withRouter(CreatesProducts);
 
-const ProductsData = Form.create({ name: 'normal_login' })(Products);
+const ProductsData = Form.create({ name: 'normal_login' })(CreatesProducts);
 
 export default ProductsData

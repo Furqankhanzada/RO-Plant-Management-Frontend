@@ -14,6 +14,7 @@ import PageNotFound from './PageNotFound'
 import LogoutPage from './LogoutPage'
 import DashboardPage from './DashboardPage'
 import CreateCustomer from './CreateCustomer'
+import CreateProduct from './CreateProduct'
 import { AUTH_TOKEN } from '../constant'
 import { isTokenExpired } from '../helper/jwtHelper'
 import { graphql } from 'react-apollo'
@@ -223,7 +224,10 @@ class RootContainer extends Component {
             <div className="fl w-100 pl4 pr4">
                 <Switch>
                     <ProtectedRoute exact path="/customers" token={this.state.token} component={DashboardPage}/>
-                                <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
+                    <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage}/>
+
+                    <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
+                    <ProtectedRoute exact path="/products/create" token={this.state.token} component={CreateProduct} />
 
                     {/* <ProtectedRoute exact token={this.state.token} path="/" component={DashboardPage} /> */}
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
@@ -241,11 +245,7 @@ class RootContainer extends Component {
                             <SignupPage refreshTokenFn={this.refreshTokenFn} />
                         )}
                     />
-                    <Route
-                        token={this.state.token}
-                        path="/products"
-                        render={props => <ProductPage refreshTokenFn={this.refreshTokenFn}  token={this.state.token} />}
-                        />
+
                     <Route path="/logout" component={LogoutPage} />
                     <Route component={PageNotFound} />
                 </Switch>
