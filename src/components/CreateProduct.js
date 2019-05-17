@@ -19,37 +19,39 @@ class CreatesProducts extends Component {
     constructor(props){
         super(props);
         this.state={
-            discount:[
-                {
-                    percentage:0,
-                    product:''
-                }
-            ],
-            name: '',
-            password: '',
-            mobile: '',
-            town: '',
-            area: '',
-            block: '',
-            house: '',
-            products:[],
-            result: [],
             drawer: false,
             selectedRowKeys: [],
-            product: '',
-            price: ''
+            name: '',
+            price: 0
         };
     }
 
     getValue = (ev) => {
         this.setState({
             [ev.target.name] : ev.target.value
-        })
+        });
+        console.log('ev**********', ev);
     };
 
     createProduct = (e) => {
         e.preventDefault();
-        console.log('product*************', this.state.product);
+        const {name, price} = this.state;
+        const { resetFields } = this.props.form;
+
+        const product = {
+            data:{
+                name,
+                price: parseInt(price)
+            }
+        };
+        this.props
+        .createProduct({
+            variables: product
+        }).then (() =>{
+            resetFields();
+            console.log('name', name);
+        });
+        console.log('name*************', this.state.name);
         console.log('price*****************', this.state.price);
     };
 
@@ -90,11 +92,10 @@ class CreatesProducts extends Component {
         const SubMenu = Menu.SubMenu;
         const MenuItemGroup = Menu.ItemGroup;
         const { Header, Content, Sider } = Layout;
-        const { discount, result, drawer } = this.state;
+        const { discount, result, drawer, name, price } = this.state;
         const { history } = this.props;
 
         console.log(drawer,'===drawer==pp');
-        const children = result.map(email => <Option key={email}>{email}</Option>);
 
         // products table method //
         const { selectedRowKeys } = this.state;
@@ -134,9 +135,11 @@ class CreatesProducts extends Component {
                                                     <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
                                                         {getFieldDecorator('username', {
                                                             rules: [{ required: true, message: 'Please input your name!' }],
+                                                            value: name
                                                         })(
                                                             <Input
-                                                                name="product"
+                                                                onChange={this.getValue}
+                                                                name="name"
                                                                 placeholder="Enter Your Name"
                                                                 />
                                                         )}
@@ -144,11 +147,15 @@ class CreatesProducts extends Component {
                                                     <Form.Item validateStatus={passwordError ? 'error' : ''} help={passwordError || ''}>
                                                         {getFieldDecorator('password', {
                                                             rules: [{ required: true, message: 'Please input your Number!' }],
+                                                            value: price
                                                         })(
                                                             <Input
                                                                 type="number"
                                                                 name="price"
                                                                 placeholder="Enter Price"
+                                                                formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                                parser={value => value.replace(/\$\s?|(,*)/g)}
+                                                                onChange={this.getValue}
                                                                 />
                                                         )}
                                                     </Form.Item>
@@ -191,8 +198,18 @@ const PRODUCT = gql`
     }
 `;
 
-withRouter(CreatesProducts);
+
+const CREATE_PRODUCT_MUTATION = gql`
+mutation createProduct($data: ProductCreateInput!) {
+    createProduct(data: $data){
+        name
+    }
+}
+`;
 
 const ProductsData = Form.create({ name: 'normal_login' })(CreatesProducts);
 
-export default ProductsData
+
+export default graphql(CREATE_PRODUCT_MUTATION, { name: 'createProduct' })(
+    withRouter(ProductsData)
+)
