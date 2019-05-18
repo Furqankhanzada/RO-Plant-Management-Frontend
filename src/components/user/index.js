@@ -179,7 +179,7 @@ class User extends PureComponent {
                         </Col>
                     </Row>
                 )}
-                <List {...listProps} />
+                <List  history = {history} {...listProps}/>
                 {modalVisible && <Modal {...modalProps} />}
             </div>
             )

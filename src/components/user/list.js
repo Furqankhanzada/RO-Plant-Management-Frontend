@@ -23,7 +23,8 @@ class List extends PureComponent {
     }
 
     render() {
-        const { onDeleteItem, onEditItem, i18n, ...tableProps } = this.props
+        const { onDeleteItem, onEditItem, i18n, history, ...tableProps } = this.props
+        console.log(history,'========histiry')
         const DropOption = ({
             onMenuClick,
             menuOptions = [],
@@ -91,12 +92,12 @@ class List extends PureComponent {
             },
             {
                 title: <span>Operation</span>,
-                key: 'operation',
+                key: 'id',
                 fixed: 'right',
                 render: (text, record) => {
                     return (
                         <DropOption
-                            onMenuClick={e => this.handleMenuClick(record, e)}
+                            onMenuClick={e => history.push(`/customers/update/${record.id}`)}
                             menuOptions={[
                 { key: '1', name: `Update` },
                 { key: '2', name: `Delete` },
