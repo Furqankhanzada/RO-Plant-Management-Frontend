@@ -26,7 +26,7 @@ class User extends PureComponent {
                 "showQuickJumper":true,
                 "current":1,
                 "total":81,
-                "pageSize":10
+                "pageSize":30
             },
             "currentItem":{
             },

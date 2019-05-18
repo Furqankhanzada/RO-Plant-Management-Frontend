@@ -16,7 +16,7 @@ import RootContainer from './components/RootContainer';
 import 'antd/dist/antd.css';  // or 'antd/dist/antd.less'
 import './index.css'
 
-const httpLink = new HttpLink({ uri: 'http://192.168.100.19:4000' });
+const httpLink = new HttpLink({ uri: 'http://localhost:4000' });
 
 const middlewareLink = new ApolloLink((operation, forward) => {
     // get the authentication token from local storage if it exists
@@ -34,7 +34,7 @@ const middlewareLink = new ApolloLink((operation, forward) => {
 const httpLinkAuth = middlewareLink.concat(httpLink);
 
 const wsLink = new WebSocketLink({
-    uri: `ws://192.168.100.19:4000`,
+    uri: `ws://localhost:4000`,
     options: {
         reconnect: true,
         connectionParams: {

@@ -1,33 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
-import {
-    Layout, Menu, Button, Form, Input, InputNumber, Radio, Cascader, Row, AutoComplete, Icon, Col, message
-} from 'antd';
+import { Layout, Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message } from 'antd';
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
 import { graphql } from 'react-apollo'
 import { Query } from 'react-apollo';
 
 const FormItem = Form.Item;
-let id = 0;
 const Option = AutoComplete.Option;
-const OptGroup = AutoComplete.OptGroup;
 
-function renderTitle(title) {
-    return (
-        <span>
-            {title}
-            <a
-                style={{ float: 'right' }}
-                href="https://www.google.com/search?q=antd"
-                target="_blank"
-                rel="noopener noreferrer"
-                >
-            </a>
-        </span>
-    );
-}
 
 class CreateCustomer extends Component {
     constructor(props) {
@@ -53,26 +35,13 @@ class CreateCustomer extends Component {
             selectedValue: ''
         }
     }
-    //componentWillReceiveProps(nextProps){
-    //    if(nextProps.data.products && nextProps.data){
-    //        console.log(nextProps.data.products,' nextProps.data.products')
-    //        this.setState({
-    //            products: nextProps.data.products
-    //        })
-    //    }
-    //}
 
-    // add field method start here //
     remove = k => {
         const { form } = this.props;
-        // can use data-binding to get
         const keys = form.getFieldValue('keys');
-        // We need at least one passenger
         if (keys.length === 1) {
             return;
         }
-
-        // can use data-binding to set
         form.setFieldsValue({
             keys: keys.filter(key => key !== k)
         });
@@ -99,10 +68,8 @@ class CreateCustomer extends Component {
         })
     };
     onChangeDiscount = (type, index, ev) => {
-        console.log(ev,'===ev');
         const { discount } = this.state;
         const discountObject = discount[index];
-        console.log(ev, 'evvv');
         if (type == "percentage") {
             discountObject.discount = ev;
         } else {
@@ -127,79 +94,78 @@ class CreateCustomer extends Component {
     };
     handledSubmit = e => {
         e.preventDefault();
-
-        console.log(this.state.discount,'discounts======');
+        const { resetFields } = this.props.form;
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.setState({
                     disableBtn: true
                 });
                 const { name, mobile, password, town, area, block, house, discount } = this.state;
-               const selectedValRemoved =  discount.map((value,index)=>{
-                     value.product=value.product.id;
-                     return value
-                })
-                console.log(selectedValRemoved,'selectedValRemoved')
+                const dupDiscount = [];
+                for(var i = 0 ; i<discount.length; i++){
+                    const discountObj = {
+                        discount: discount[i].discount,
+                        product:{
+                            connect:{
+                                id: discount[i].product.id
+                            }
+                        }
+                    }
+
+                    dupDiscount.push(discountObj)
+                }
+
                 let customer = {
                     data: {
-                        mobile: mobile,
-                        name: name,
-                        password: password,
+                        mobile,
+                        name,
+                        password,
                         address: {
                             create: {
-                                town: town,
-                                area: area,
-                                block: block,
-                                house: house
+                                town,
+                                area,
+                                block,
+                                house
                             }
                         },
                         discounts: {
-                            create: selectedValRemoved
+                            create: dupDiscount
                         }
                     }
                 };
 
-                console.log(customer, '===customer');
                 this.props
                     .createCustomer({
                         variables: customer
                     })
                     .then(result => {
-                        this.setState({disableBtn: false, name:'', mobile:'', password:'', town:'', area:'', block:'', house:''},() =>
+                        this.setState({disableBtn: false, name:'', mobile:'', password:'', town:'', area:'', block:'', house:'',
+                        discount: [
+                            {
+                                discount: 0,
+                                product: ''
+                            }
+                        ],
+                    },() =>
                         {
                             message.success('Customer has been created successfully');
                         });
-                        console.log(result, '=====result')
+                        resetFields();
                     })
                     .catch(err => {
                         this.setState({
                             disableBtn: false
                         });
                         const { graphQLErrors } = err;
-                        console.log(err, 'errr');
-                        // graphQLErrors.forEach(element => {
-                        //     message.error(element.message);
-                        // });
-                        // this.setState({
-                        //     loading: false
-                        // });
+                        graphQLErrors.forEach(element => {
+                            message.error(element.message);
+                        });
+                        this.setState({
+                            loading: false
+                        });
                     })
             }
         });
-    };
-    // add field method end here //
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
-        });
-    };
-
-    onChange = (value) => {
-        console.log('changed', value);
     };
     handleSearch = value => {
         let result;
@@ -216,28 +182,11 @@ class CreateCustomer extends Component {
         })
     };
     render() {
-        console.log(this.state.discount,'dis=====');
-
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        const SubMenu = Menu.SubMenu;
-        const MenuItemGroup = Menu.ItemGroup;
-        const { Header, Content, Sider } = Layout;
         const { history } = this.props;
-        const { disableBtn, name, mobile, password, town, area, block, house, selectedValue, discount, result, drawer } = this.state;
-        console.log(drawer,'===drawer==pp');
-        const children = result.map(email => <Option key={email}>{email}</Option>);
+        const { disableBtn, name, mobile, password, town, area, block, house, discount } = this.state;
 
-        // add field method start here //
-        const formItemLayout = {
-            labelCol: {
-                xs: { span: 24 },
-                sm: { span: 24 }
-            },
-            wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 24 }
-            }
-        };
+        
         const formItemLayoutWithOutLabel = {
             wrapperCol: {
                 xs: { span: 24, offset: 0 },
@@ -246,66 +195,13 @@ class CreateCustomer extends Component {
         };
         getFieldDecorator('keys', { initialValue: [] });
         const keys = getFieldValue('keys');
-        const formItems = keys.map((k, index) => (
-            <div>
-                <Form.Item
-                    {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                    label={index === 0 ? '' : ''}
-                    required={false}
-                    key={k}
-                    >
-                    {getFieldDecorator(`names[${k}]`, {
-                        validateTrigger: ['onChange', 'onBlur'],
-                        rules: [
-                            {
-                                required: true,
-                                whitespace: true,
-                                message: "Please input passenger's name or delete this field."
-                            }
-                        ]
-                    })(<Input className="passenger-input" placeholder="passenger name" />)}
-                    {keys.length > 1 ? (
-                        <Icon
-                            className="dynamic-delete-button"
-                            type="minus-circle-o"
-                            onClick={() => this.remove(k)}
-                            />
-                    ) : null}
-                </Form.Item>
-                <Form.Item
-                    {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
-                    label={index === 0 ? '' : ''}
-                    required={false}
-                    key={k}
-                    >
-                    {getFieldDecorator(`names[${k}]`, {
-                        validateTrigger: ['onChange', 'onBlur'],
-                        rules: [
-                            {
-                                required: true,
-                                whitespace: true,
-                                message: "Please input passenger's name or delete this field."
-                            }
-                        ]
-                    })(<Input className="passenger-input" placeholder="passenger name" />)}
-                    {keys.length > 1 ? (
-                        <Icon
-                            className="dynamic-delete-button"
-                            type="minus-circle-o"
-                            onClick={() => this.remove(k)}
-                            />
-                    ) : null}
-                </Form.Item>
-
-            </div>
-        ));
+        
         // add field method end here //
 
         return (
             <Query query={Products_QUERY}>
                 {({ data, loading }) => {
                     const { products } = data;
-                    console.log(products,'options');
                     const options = products ? products
                         .map(group => (
                             <Option key={group} value={JSON.stringify(group)}>
@@ -404,28 +300,10 @@ class CreateCustomer extends Component {
                                                 <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
                                                     <h3>Discount</h3>
                                                     <Form layout="horizontal">
-                                                        {/*<div>
-                                                         <InputNumber
-                                                         defaultValue={100}
-                                                         min={0}
-                                                         max={100}
-                                                         formatter={value => `${value}%`}
-                                                         parser={value => value.replace('%', '')}
-                                                         onChange=""
-                                                         />
-
-                                                         <AutoComplete style={{ width: 200 }} onSearch={this.handleSearch} placeholder="input here">
-                                                         {children}
-                                                         </AutoComplete>
-                                                         </div>*/}
-
-
-
                                                         <div className="discount-details">
                                                             {
                                                                 discount.map((value, index) => {
 
-                                                                    console.log(value,index, 'selectedValue======per')
                                                                     return (
                                                                         <div className="discounts">
                                                                             <Icon
@@ -495,34 +373,7 @@ class CreateCustomer extends Component {
         )
     }
 }
-const FEED_QUERY = gql`
-    query FeedQuery {
-        feed {
-            id
-            text
-            title
-            isPublished
-            author {
-                name
-            }
-        }
-    }
-`;
-const FEED_SUBSCRIPTION = gql`
-    subscription FeedSubscription {
-        feedSubscription {
-            node {
-                id
-                text
-                title
-                isPublished
-                author {
-                    name
-                }
-            }
-        }
-    }
-`;
+
 
 const Products_QUERY = gql`
     query ProductQuery {

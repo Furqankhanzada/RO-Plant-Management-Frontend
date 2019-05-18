@@ -1,18 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import  { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
-import {
-    Layout, Menu, Button, Form, Input, InputNumber, Radio, Cascader, Row, AutoComplete, Icon, Col, Table } from 'antd';
+import { Layout, Button, Form, Input, message } from 'antd';
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
 import { graphql } from 'react-apollo'
-import { Query } from 'react-apollo';
-
-const Option = AutoComplete.Option;
-
-function hasErrors(fieldsError) {
-    return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
 
 
 class CreatesProducts extends Component {
@@ -22,7 +14,8 @@ class CreatesProducts extends Component {
             drawer: false,
             selectedRowKeys: [],
             name: '',
-            price: 0
+            price: 0,
+            disableBtn: false
         };
     }
 
@@ -30,29 +23,43 @@ class CreatesProducts extends Component {
         this.setState({
             [ev.target.name] : ev.target.value
         });
-        console.log('ev**********', ev);
     };
 
     createProduct = (e) => {
         e.preventDefault();
+        
         const {name, price} = this.state;
         const { resetFields } = this.props.form;
-
-        const product = {
-            data:{
-                name,
-                price: parseInt(price)
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                this.setState({
+                    disableBtn: true
+                })
+                const product = {
+                    data:{
+                        name,
+                        price: parseInt(price)
+                    }
+                };
+                this.props
+                .createProduct({
+                    variables: product
+                }).then (() =>{
+                    this.setState({disableBtn: false},()=>{
+                        message.success('Product has been created successfully');
+                        resetFields();
+                    })
+                }).catch(err => {
+                    this.setState({
+                        disableBtn: false
+                    });
+                    const { graphQLErrors } = err;
+                    graphQLErrors.forEach(element => {
+                        message.error(element.message);
+                    });
+                })
             }
-        };
-        this.props
-        .createProduct({
-            variables: product
-        }).then (() =>{
-            resetFields();
-            console.log('name', name);
         });
-        console.log('name*************', this.state.name);
-        console.log('price*****************', this.state.price);
     };
 
     openDrawer = () => {
@@ -62,14 +69,8 @@ class CreatesProducts extends Component {
     };
 
     onSelectChange = selectedRowKeys => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.setState({ selectedRowKeys });
     };
-
-    componentDidMount() {
-        // To disabled submit button at the beginning.
-        this.props.form.validateFields();
-    }
 
     handleSubmit = e => {
         e.preventDefault();
@@ -82,45 +83,12 @@ class CreatesProducts extends Component {
 
     render() {
 
-        const { getFieldsError, getFieldError, isFieldTouched } = this.props.form;
-
-        // Only show error after a field is touched.
-        const usernameError = isFieldTouched('username') && getFieldError('username');
-        const passwordError = isFieldTouched('password') && getFieldError('password');
-
-        const { getFieldDecorator, getFieldValue } = this.props.form;
-        const SubMenu = Menu.SubMenu;
-        const MenuItemGroup = Menu.ItemGroup;
-        const { Header, Content, Sider } = Layout;
-        const { discount, result, drawer, name, price } = this.state;
+        const { getFieldDecorator } = this.props.form;
+        const { disableBtn } = this.state;
         const { history } = this.props;
 
-        console.log(drawer,'===drawer==pp');
-
-        // products table method //
-        const { selectedRowKeys } = this.state;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-            hideDefaultSelections: true,
-        };
-        // products table method //
-
         return (
-            <Query query={PRODUCT}>
-                {({ data, loading }) => {
-                    console.log('data**************', data);
-                    const {products} = data;
-                    const options = products?products
-                        .map(group => (
-                            <Option key={group.name} value={group.name}>
-                                <span>Volume: {group.name}</span>
-                                <br/>
-                                <span>Price: {group.price}</span>
-                            </Option>
-                        )):[];
-                    return (
-                        <Fragment>
+                <Fragment>
 
                             <Layout>
                                 <AppBar handleClick = {this.openDrawer} />
@@ -132,22 +100,20 @@ class CreatesProducts extends Component {
                                             <div className="create-products">
 
                                                 <Form layout="inline" onSubmit={this.handleSubmit}>
-                                                    <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
-                                                        {getFieldDecorator('username', {
-                                                            rules: [{ required: true, message: 'Please input your name!' }],
-                                                            value: name
+                                                    <Form.Item>
+                                                        {getFieldDecorator('name', {
+                                                            rules: [{ required: true, message: 'Please input product name!' }],
                                                         })(
                                                             <Input
                                                                 onChange={this.getValue}
                                                                 name="name"
-                                                                placeholder="Enter Your Name"
+                                                                placeholder="Enter Product Name"
                                                                 />
                                                         )}
                                                     </Form.Item>
-                                                    <Form.Item validateStatus={passwordError ? 'error' : ''} help={passwordError || ''}>
-                                                        {getFieldDecorator('password', {
-                                                            rules: [{ required: true, message: 'Please input your Number!' }],
-                                                            value: price
+                                                    <Form.Item >
+                                                        {getFieldDecorator('number', {
+                                                            rules: [{ required: true, message: 'Please input product price!' }],
                                                         })(
                                                             <Input
                                                                 type="number"
@@ -161,7 +127,7 @@ class CreatesProducts extends Component {
                                                     </Form.Item>
                                                 </Form>
                                                 <Form.Item>
-                                                    <Button type="primary" onClick={this.createProduct} htmlType="submit" disabled={hasErrors(getFieldsError())}>
+                                                    <Button type="primary" onClick={this.createProduct} htmlType="submit" loading={disableBtn}>
                                                         Create
                                                     </Button>
                                                 </Form.Item>
@@ -170,33 +136,11 @@ class CreatesProducts extends Component {
                                     </Layout>
                                 </Layout>
                             </Layout>
-                        </Fragment>
-                    )
-                }}
-            </Query>
+            </Fragment>
         )
     }
 }
 
-const FEED_SUBSCRIPTION = gql`
-    subscription UserSubscription {
-        userSubscription {
-            node {
-                id
-                name
-            }
-        }
-    }
-`;
-const PRODUCT = gql`
-    query ProductQuery {
-        products {
-            id
-            name
-            price
-        }
-    }
-`;
 
 
 const CREATE_PRODUCT_MUTATION = gql`
