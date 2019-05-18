@@ -303,6 +303,9 @@ img {
 .ant-layout-sider-children {
     padding-top: 10px;
 }
+.ant-layout-sider-children ul {
+    border-right: 0;
+}
 .ant-layout-sider-children ul li .ant-menu-submenu-title {
     height: 35px !important;
     line-height: 35px !important;
@@ -385,6 +388,10 @@ img {
     }
     .showHideView {
         left: 0;
+    }
+    .create-products .ant-form {
+        width: 100%;
+        padding: 15px 15px 0 !important;
     }
 
 }
