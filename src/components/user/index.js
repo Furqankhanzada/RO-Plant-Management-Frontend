@@ -1,22 +1,14 @@
 import React, { PureComponent } from 'react'
-import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './list.js'
 import Filter from './filter.js'
-import Modal from './modal.js'
 
 class User extends PureComponent {
     render() {
-        const { dispatch, history } = this.props;
-        const loading = {
-            effects:{
-                "app/query":false,
-                "login/login":false,
-                "user/query":false
-            },global: false, models: {app: false, login: false, user: false}
-        };
+        const { history } = this.props;
+
         const query = {page: "1"};
         const user = {
-            "list":this.props.customers,
+            "list": this.props.customers,
             "pagination":{
                 "showSizeChanger":true,
                 "showQuickJumper":true,
@@ -24,19 +16,12 @@ class User extends PureComponent {
                 "total":81,
                 "pageSize":30
             },
-            "currentItem":{
-            },
-            "modalVisible":false,
-            "modalType":"create",
-            "selectedRowKeys":[]
+            "currentItem": {
+            }
         };
         const {
             list,
             pagination,
-            currentItem,
-            modalVisible,
-            modalType,
-            selectedRowKeys,
             } = user;
 
         const handleRefresh = newQuery => {
@@ -52,31 +37,10 @@ class User extends PureComponent {
             //})
         };
 
-        const modalProps = {
-            item: modalType === 'create' ? {} : currentItem,
-            visible: modalVisible,
-            maskClosable: false,
-            confirmLoading: loading.effects[`user/${modalType}`],
-            title: `modal`,
-            centered: true,
-            onOk(data) {
-                dispatch({
-                    type: `user/${modalType}`,
-                    payload: data
-                }).then(() => {
-                    handleRefresh()
-                })
-            },
-            onCancel() {
-                dispatch({
-                    type: 'user/hideModal'
-                })
-            }
-        };
 
         const listProps = {
             dataSource: list,
-            loading: loading.effects['user/query'],
+            loading: false,
             pagination,
             onChange(page) {
                 handleRefresh({
@@ -85,37 +49,16 @@ class User extends PureComponent {
                 })
             },
             onDeleteItem(id) {
-                dispatch({
-                    type: 'user/delete',
-                    payload: id,
-                }).then(() => {
-                    handleRefresh({
-                        page:
-                            list.length === 1 && pagination.current > 1
-                                ? pagination.current - 1
-                                : pagination.current,
-                    })
+                // then
+                handleRefresh({
+                    page:
+                        list.length === 1 && pagination.current > 1
+                            ? pagination.current - 1
+                            : pagination.current,
                 })
             },
             onEditItem(item) {
-                dispatch({
-                    type: 'user/showModal',
-                    payload: {
-                        modalType: 'update',
-                        currentItem: item,
-                    },
-                })
-            },
-            rowSelection: {
-                selectedRowKeys,
-                onChange: keys => {
-                    dispatch({
-                        type: 'user/updateState',
-                        payload: {
-                            selectedRowKeys: keys,
-                        },
-                    })
-                },
+
             }
         };
 
@@ -128,55 +71,13 @@ class User extends PureComponent {
                     ...value,
                     page: 1,
                 })
-            },
-            onAdd() {
-                dispatch({
-                    type: 'user/showModal',
-                    payload: {
-                        modalType: 'create',
-                    },
-                })
-            },
-        };
-
-        const handleDeleteItems = () => {
-            dispatch({
-                type: 'user/multiDelete',
-                payload: {
-                    ids: selectedRowKeys,
-                },
-            }).then(() => {
-                handleRefresh({
-                    page:
-                        list.length === selectedRowKeys.length && pagination.current > 1
-                            ? pagination.current - 1
-                            : pagination.current,
-                })
-            })
+            }
         };
 
         return (
             <div className="user-main-div">
                 <Filter {...filterProps} history={history}/>
-
-                {selectedRowKeys.length > 0 && (
-                    <Row style={{ marginBottom: 24, textAlign: 'right', fontSize: 13 }}>
-                        <Col>
-                            {`Selected ${selectedRowKeys.length} items `}
-                            <Popconfirm
-                                title="Are you sure delete these items?"
-                                placement="left"
-                                onConfirm={handleDeleteItems}
-                                >
-                                <Button type="primary" style={{ marginLeft: 8 }}>
-                                    Remove
-                                </Button>
-                            </Popconfirm>
-                        </Col>
-                    </Row>
-                )}
                 <List  history = {history} {...listProps}/>
-                {modalVisible && <Modal {...modalProps} />}
             </div>
             )
     }
