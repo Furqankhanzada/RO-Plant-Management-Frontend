@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { graphql } from 'react-apollo'
 import  { gql } from 'apollo-boost'
 import { AUTH_TOKEN } from '../constant'
-import { Button, Row, Form, Icon, Input } from 'antd'
+import { Button, Form, Input } from 'antd'
 const FormItem = Form.Item
 
 class SignupPage extends Component {
@@ -21,11 +21,9 @@ class SignupPage extends Component {
         });
     }
     render() {
-        const { loading, form, i18n } = this.props;
+        const { form } = this.props;
         const { getFieldDecorator } = form;
         return (
-
-
             <Fragment>
                 <div className='form'>
                     <div className='logo'>

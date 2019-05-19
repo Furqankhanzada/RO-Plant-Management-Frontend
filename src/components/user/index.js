@@ -1,16 +1,12 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-//import { router } from 'utils'
 import { Row, Col, Button, Popconfirm } from 'antd'
-import { stringify } from 'qs'
 import List from './list.js'
 import Filter from './filter.js'
 import Modal from './modal.js'
 
 class User extends PureComponent {
     render() {
-        const { location, dispatch, i18n, history } = this.props;
-        console.log(this.props.customers,'customer child props')
+        const { dispatch, history } = this.props;
         const loading = {
             effects:{
                 "app/query":false,

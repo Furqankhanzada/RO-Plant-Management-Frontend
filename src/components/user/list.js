@@ -1,8 +1,5 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import { Table, Modal, Avatar, Dropdown, Menu, Icon, Button } from 'antd'
-
-//import styles from './List.less'
 
 const { confirm } = Modal
 
@@ -23,8 +20,7 @@ class List extends PureComponent {
     }
 
     render() {
-        const { onDeleteItem, onEditItem, i18n, history, ...tableProps } = this.props
-        console.log(history,'========histiry')
+        const { history, ...tableProps } = this.props
         const DropOption = ({
             onMenuClick,
             menuOptions = [],
@@ -115,7 +111,6 @@ class List extends PureComponent {
           ...tableProps.pagination,
           showTotal: total =>`Total ${total} Items`,
         }}
-                //className={styles.table}
                 bordered
                 scroll={{ x: 1200 }}
                 columns={columns}

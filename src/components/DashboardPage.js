@@ -2,9 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import { gql } from 'apollo-boost'
-import {
-    Layout, Menu, Breadcrumb, Icon, Avatar
-} from 'antd';
+import { Layout } from 'antd';
 
 import User from './user/index.js'
 import { Loader } from './common/Loader'
@@ -16,57 +14,42 @@ class DashboardPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            customers : []
+            current: 'mail'
         }
     }
+    componentDidMount() {
+        this.props.subscribeToCustomer();
+    }
     componentWillReceiveProps(nextProps) {
-        const { customers, error } = nextProps.customers;
+        const { error } = nextProps.customersQuery;
         if(error){
             const { graphQLErrors } = error;
-            graphQLErrors.map((value,index) => {
+            graphQLErrors.forEach((value) => {
                 if(value.message === 'Not Authorised!') {
                     localStorage.removeItem('AUTH_TOKEN');
                     window.location.reload()
                 }
             })
         }
-
-        if(customers){
-            this.setState({
-                customers
-            })
-        }
-        if (this.props.location.key !== nextProps.location.key) {
-
-            // this.props.feedQuery.refetch()
-        }
     }
 
-    state = {
-        current: 'mail'
-    };
-
     handleClick = (e) => {
-        console.log('click ', e);
         this.setState({
             current: e.key
         });
     };
 
     render() {
-        const SubMenu = Menu.SubMenu;
-        const { Header } = Layout;
-        const { customers } = this.state;
-        const { loading, error } = this.props.customers;
+        const { customers, loading, error } = this.props.customersQuery;
         const { history } = this.props;
         if (loading || error) {
             return (
                 <Loader spinning />
             )
-        } 
+        }
             return (
                 <Fragment>
-    
+
                     <Layout>
                         <AppBar />
                         <Layout className="dashboard-main">
@@ -81,19 +64,28 @@ class DashboardPage extends Component {
     }
 }
 
-const FEED_SUBSCRIPTION = gql`
+const CUSTOMER_SUBSCRIPTION = gql`
     subscription UserSubscription {
         userSubscription {
-            node {
-                id
-                name
+            name
+            id
+            mobile
+            address{
+                town
+                house
+                block
+            }
+            createdAt
+            bottle{
+                balance
             }
         }
     }
 `;
+
 const CUSTOMERS = gql`
 query{
-customers{
+customers {
     name
     id
     mobile
@@ -115,28 +107,26 @@ withRouter(DashboardPage);
 
 
 export default graphql(CUSTOMERS, {
-    name: 'customers', // name of the injected prop: this.props.feedQuery...
-    options: {
-        fetchPolicy: 'network-only'
-    },
-    props: props =>
-        Object.assign({}, props, {  
+    name: 'customersQuery', // name of the injected prop: this.props.customersQuery...
+    props: props => {
+        return Object.assign({}, props, {
             subscribeToCustomer: params => {
-                return props.customers.subscribeToMore({
-                    document: FEED_SUBSCRIPTION,
+                return props.customersQuery.subscribeToMore({
+                    document: CUSTOMER_SUBSCRIPTION,
                     updateQuery: (prev, { subscriptionData }) => {
                         if (!subscriptionData.data) {
                             return prev
                         }
-                        const newPost = subscriptionData.data.userSubscription.node;
-                        if (prev.feed.find(post => post.id === newPost.id)) {
+                        const newCustomer = subscriptionData.data.userSubscription;
+                        if (prev.customers.find(customer => customer.id === newCustomer.id)) {
                             return prev
                         }
                         return Object.assign({}, prev, {
-                            feed: [...prev.feed, newPost]
+                            customers: [...prev.customers, newCustomer]
                         })
                     }
                 })
             }
         })
+    }
 })(DashboardPage)

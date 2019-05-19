@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message } from 'antd';
 import { gql } from 'apollo-boost';
 import { graphql } from 'react-apollo'
@@ -10,7 +10,7 @@ class UpdateCreateForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            discount: [
+            discounts: [
                 {
                     discount: 0,
                     product: ''
@@ -31,69 +31,71 @@ class UpdateCreateForm extends Component {
         }
     }
     onChangeDiscount = (type, index, ev) => {
-        const { discount } = this.state;
-        const discountObject = discount[index];
-        if (type == "percentage") {
-            discountObject.discount = ev;
+        const { discounts } = this.state;
+        const discountsObject = discounts[index];
+        if (type === "percentage") {
+            discountsObject.discount = ev;
         } else {
             const selectedProduct = JSON.parse(ev);
-            discountObject.product = {
+            discountsObject.product = {
                 name: selectedProduct.name,
                 price: selectedProduct.price,
                 id: selectedProduct.id,
                 selected: true
             };
         }
-        discount[index] = discountObject;
+        discounts[index] = discountsObject;
 
         this.setState({
-            discount
+            discounts
         })
     };
 
     add = () => {
-        const { discount } = this.state;
-        const discountObj = {
+        const { discounts } = this.state;
+        const discountsObj = {
             discount: 0,
             product: ''
         };
 
         // can use data-binding to get
-        discount.push(discountObj);
+        discounts.push(discountsObj);
         this.setState({
-            discount
+            discounts
         })
     };
 
     removeDiscount = (index) => {
-        const { discount } = this.state;
-        discount.splice(index, 1);
+        const { discounts } = this.state;
+        discounts.splice(index, 1);
         this.setState({
-            discount
+            discounts
         })
     };
     handledSubmit = e => {
         e.preventDefault();
-        const { resetFields } = this.props.form;
-        const { id } = this.props;
-        this.props.form.validateFields((err, values) => {
+        const { id, form } = this.props;
+        const { validateFields, resetFields } = form;
+
+        validateFields((err, values) => {
             if (!err) {
                 this.setState({
                     disableBtn: true
                 });
-                const { name, mobile, password, town, area, block, house, discount } = this.state;
+                const { discounts } = this.state;
+                const { name, mobile, password, town, area, block, house } = values;
                 const dupDiscount = [];
-                for (var i = 0; i < discount.length; i++) {
-                    const discountObj = {
-                        discount: discount[i].discount,
+                for (var i = 0; i < discounts.length; i++) {
+                    const discountsObj = {
+                        discount: discounts[i].discount,
                         product: {
                             connect: {
-                                id: discount[i].product.id
+                                id: discounts[i].product.id
                             }
                         }
                     }
 
-                    dupDiscount.push(discountObj)
+                    dupDiscount.push(discountsObj)
                 }
 
                 let customer = {
@@ -123,8 +125,8 @@ class UpdateCreateForm extends Component {
                         })
                         .then(result => {
                             this.setState({
-                                disableBtn: false, name: '', mobile: '', password: '', town: '', area: '', block: '', house: '',
-                                discount: [
+                                disableBtn: false,
+                                discounts: [
                                     {
                                         discount: 0,
                                         product: ''
@@ -153,21 +155,25 @@ class UpdateCreateForm extends Component {
     };
 
     getCustomerDetails = (ev) => {
-        this.setState({
+        const { setFieldsValue } = this.props.form;
+        setFieldsValue({
             [ev.target.name]: ev.target.value
-        })
+        });
     };
     render() {
         const { form, id, options } = this.props;
-        const { getFieldDecorator } = form;
+        const { getFieldDecorator, getFieldsValue } = form;
 
-        const { disableBtn, name, mobile, password, town, area, block, house, discount } = this.state;
+        const { discounts, disableBtn } = this.state;
+        const { name, mobile, password, town, area, block, house } = getFieldsValue();
+
         const formItemLayoutWithOutLabel = {
             wrapperCol: {
                 xs: { span: 24, offset: 0 },
                 sm: { span: 24, offset: 0 }
             }
         };
+
         return (
             <div className="create-main-div">
                 <Row gutter={16}>
@@ -175,32 +181,35 @@ class UpdateCreateForm extends Component {
                         <h3>General</h3>
                         <Form layout="horizontal">
                             <FormItem label={`Mobile Number`} >
-                                {getFieldDecorator('number', {
+                                {getFieldDecorator('mobile', {
+                                    initialValue: mobile,
                                     rules: [
                                         {
                                             required: true
                                         }
                                     ]
-                                })(<Input name="mobile" onChange={this.getCustomerDetails} value={mobile} />)}
+                                })(<Input name="mobile" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                             <FormItem label={`Password Should be Number with Prefix`} >
                                 {getFieldDecorator('password', {
+                                    initialValue: password,
                                     rules: [
                                         {
                                             required: true
                                         }
                                     ]
-                                })(<Input name="password" onChange={this.getCustomerDetails} value={password} />)}
+                                })(<Input name="password" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                             <FormItem label={`Name`} >
                                 {getFieldDecorator('name', {
+                                    initialValue: name,
                                     rules: [
                                         {
                                             required: true,
                                             message: `The input is not valid phone!`
                                         }
                                     ]
-                                })(<Input name="name" onChange={this.getCustomerDetails} value={name} />)}
+                                })(<Input name="name" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                         </Form>
                     </Col>
@@ -209,41 +218,45 @@ class UpdateCreateForm extends Component {
                         <Form layout="horizontal">
                             <FormItem label={`Town`} >
                                 {getFieldDecorator('town', {
+                                    initialValue: town,
                                     rules: [
                                         {
                                             required: true
                                         }
                                     ]
-                                })(<Input name="town" onChange={this.getCustomerDetails} value={town} />)}
+                                })(<Input name="town" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                             <FormItem label={`Area`} >
                                 {getFieldDecorator('area', {
+                                    initialValue: area,
                                     rules: [
                                         {
                                             required: true
                                         }
                                     ]
-                                })(<Input name="area" onChange={this.getCustomerDetails} value={area} />)}
+                                })(<Input name="area" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                             <FormItem label={`Block`} >
                                 {getFieldDecorator('block', {
+                                    initialValue: block,
                                     rules: [
                                         {
                                             required: true,
                                             message: `The input is not valid phone!`
                                         }
                                     ]
-                                })(<Input name="block" onChange={this.getCustomerDetails} value={block} />)}
+                                })(<Input name="block" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                             <FormItem label={`House`} >
                                 {getFieldDecorator('house', {
+                                    initialValue: house,
                                     rules: [
                                         {
                                             required: true,
                                             message: `The input is not valid Address!`
                                         }
                                     ]
-                                })(<Input name="house" onChange={this.getCustomerDetails} value={house} />)}
+                                })(<Input name="house" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                         </Form>
                     </Col>
@@ -252,10 +265,10 @@ class UpdateCreateForm extends Component {
                         <Form layout="horizontal">
                             <div className="discount-details">
                                 {
-                                    discount.map((value, index) => {
+                                    discounts.map((value, index) => {
 
                                         return (
-                                            <div className="discounts">
+                                            <div className="discounts" key={index}>
                                                 <Icon
                                                     className="dynamic-delete-button removeButtonDiscount"
                                                     type="minus-circle-o"
