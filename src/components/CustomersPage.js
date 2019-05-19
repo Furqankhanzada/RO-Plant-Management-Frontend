@@ -1,16 +1,17 @@
 import React, { Component, Fragment } from 'react'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
-import { gql } from 'apollo-boost'
 import { Layout } from 'antd';
 
-import User from './user/index.js'
+import User from './customers/index.js'
 import { Loader } from './common/Loader'
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
 
+import { GET_CUSTOMERS, CUSTOMER_SUBSCRIPTION } from '../graphql/queries/customer'
 
-class DashboardPage extends Component {
+
+class CustomersPage extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -36,8 +37,8 @@ class DashboardPage extends Component {
     handleClick = (e) => {
         this.setState({
             current: e.key
-        });
-    };
+        })
+    }
 
     render() {
         const { customers, loading, error } = this.props.customersQuery;
@@ -49,7 +50,6 @@ class DashboardPage extends Component {
         }
             return (
                 <Fragment>
-
                     <Layout>
                         <AppBar />
                         <Layout className="dashboard-main">
@@ -64,49 +64,9 @@ class DashboardPage extends Component {
     }
 }
 
-const CUSTOMER_SUBSCRIPTION = gql`
-    subscription UserSubscription {
-        userSubscription {
-            name
-            id
-            mobile
-            address{
-                town
-                house
-                block
-            }
-            createdAt
-            bottle{
-                balance
-            }
-        }
-    }
-`;
+withRouter(CustomersPage);
 
-const CUSTOMERS = gql`
-query{
-customers {
-    name
-    id
-    mobile
-    address{
-      town
-      house
-      block
-    }
-    createdAt
-    bottle{
-      balance
-    }
-  }
-}
-`;
-
-
-withRouter(DashboardPage);
-
-
-export default graphql(CUSTOMERS, {
+export default graphql(GET_CUSTOMERS, {
     name: 'customersQuery', // name of the injected prop: this.props.customersQuery...
     props: props => {
         return Object.assign({}, props, {
@@ -118,15 +78,21 @@ export default graphql(CUSTOMERS, {
                             return prev
                         }
                         const newCustomer = subscriptionData.data.userSubscription;
-                        if (prev.customers.find(customer => customer.id === newCustomer.id)) {
-                            return prev
+                        if(newCustomer) {
+                            if (prev.customers.find(customer => customer.id === newCustomer.id)) {
+                                return prev
+                            }
+                            return Object.assign({}, prev, {
+                                customers: [...prev.customers, newCustomer]
+                            })
                         }
+                        // Execute when delete item
                         return Object.assign({}, prev, {
-                            customers: [...prev.customers, newCustomer]
+                            customers: [...prev.customers]
                         })
                     }
                 })
             }
         })
     }
-})(DashboardPage)
+})(CustomersPage)

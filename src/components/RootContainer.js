@@ -10,7 +10,7 @@ import ProductPage from './Products'
 import SignupPage from './SignupPage'
 import PageNotFound from './PageNotFound'
 import LogoutPage from './LogoutPage'
-import DashboardPage from './DashboardPage'
+import CustomersPage from './CustomersPage'
 import CreateCustomer from './CreateCustomer'
 import CreateProduct from './CreateProduct'
 import { AUTH_TOKEN } from '../constant'
@@ -100,14 +100,15 @@ class RootContainer extends Component {
         return (
             <div className="fl w-100 pl4 pr4">
                 <Switch>
-                    <ProtectedRoute exact path="/customers" token={this.state.token} component={DashboardPage}/>
-                    <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage}/>
+                    <ProtectedRoute exact path="/" token={this.state.token} component={CustomersPage}/>
 
+                    <ProtectedRoute exact path="/customers" token={this.state.token} component={CustomersPage}/>
                     <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
                     <ProtectedRoute exact path="/customers/update/:id" token={this.state.token} component={CreateCustomer} />
+
+                    <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage}/>
                     <ProtectedRoute exact path="/products/create" token={this.state.token} component={CreateProduct} />
 
-                    {/* <ProtectedRoute exact token={this.state.token} path="/" component={DashboardPage} /> */}
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
 
 

@@ -32,21 +32,20 @@ class CreateCustomer extends Component {
         });
     };
 
-    
-   
+
     openDrawer = () => {
         this.setState({
             drawer: !this.state.drawer
         })
     };
-    
+
 
     render() {
         const { history, match } = this.props;
         const { params } = match;
         const { id } = params;
             return (
-                <Query query={Products_QUERY}>
+                <Query query={PRODUCTS_QUERY}>
                     {({ data, loading }) => {
                         const { products } = data;
                         const options = products ? products
@@ -74,13 +73,13 @@ class CreateCustomer extends Component {
                         )
                     }}
                 </Query>
-          
+
           )
     }
 }
 
 
-const Products_QUERY = gql`
+const PRODUCTS_QUERY = gql`
     query ProductQuery {
         products {
             id
