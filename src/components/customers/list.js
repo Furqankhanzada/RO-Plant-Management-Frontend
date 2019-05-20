@@ -3,7 +3,7 @@ import { Table, Modal, Avatar, Dropdown, Menu, Icon, Button } from 'antd'
 import _ from 'lodash';
 import {gql} from "apollo-boost/lib/index";
 import {graphql} from "react-apollo/index";
-
+import { Link } from 'react-router-dom'
 import { GET_CUSTOMERS } from '../../graphql/queries/customer'
 
 const { confirm } = Modal;
@@ -84,6 +84,7 @@ class List extends PureComponent {
                 title: <span>Name</span>,
                 dataIndex: 'name',
                 key: 'name',
+                render: (text, record) => <Link to={`/customers/${record.id}`}>{text}</Link>,
             },
             {
                 title: <span>Mobile</span>,
