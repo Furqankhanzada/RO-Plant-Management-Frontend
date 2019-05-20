@@ -24,13 +24,13 @@ class List extends PureComponent {
 
     render() {
         const { onDeleteItem, onEditItem, i18n, history, ...tableProps } = this.props
-        console.log(history,'========histiry')
+        console.log(history, '========histiry')
         const DropOption = ({
             onMenuClick,
             menuOptions = [],
             buttonStyle,
             dropdownProps,
-            }) => {
+        }) => {
             const menu = menuOptions.map(item => (
                 <Menu.Item key={item.key}>{item.name}</Menu.Item>
             ))
@@ -38,7 +38,7 @@ class List extends PureComponent {
                 <Dropdown
                     overlay={<Menu onClick={onMenuClick}>{menu}</Menu>}
                     {...dropdownProps}
-                    >
+                >
                     <Button style={{ border: 'none', ...buttonStyle }}>
                         <Icon style={{ marginRight: 2 }} type="bars" />
                         <Icon type="down" />
@@ -99,10 +99,10 @@ class List extends PureComponent {
                         <DropOption
                             onMenuClick={e => history.push(`/customers/update/${record.id}`)}
                             menuOptions={[
-                { key: '1', name: `Update` },
-                { key: '2', name: `Delete` },
-              ]}
-                            />
+                                { key: '1', name: `Update` },
+                                { key: '2', name: `Delete` },
+                            ]}
+                        />
                     )
                 },
             },
@@ -112,16 +112,16 @@ class List extends PureComponent {
             <Table
                 {...tableProps}
                 pagination={{
-          ...tableProps.pagination,
-          showTotal: total =>`Total ${total} Items`,
-        }}
+                    ...tableProps.pagination,
+                    showTotal: total => `Total ${total} Items`,
+                }}
                 //className={styles.table}
                 bordered
                 scroll={{ x: 1200 }}
                 columns={columns}
                 simple
                 rowKey={record => record.id}
-                />
+            />
         )
     }
 }

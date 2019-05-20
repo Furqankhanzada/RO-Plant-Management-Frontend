@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message } from 'antd';
 import { gql } from 'apollo-boost';
-import { graphql } from 'react-apollo'
+import { graphql, Mutation } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
+import { async } from 'q';
 
 const FormItem = Form.Item;
 class UpdateCreateForm extends Component {
@@ -72,11 +73,11 @@ class UpdateCreateForm extends Component {
             discount
         })
     };
-    handledSubmit = e => {
-        e.preventDefault();
+    handledSubmit = (mutation) => {
         const { resetFields } = this.props.form;
         const { id } = this.props;
-        this.props.form.validateFields((err, values) => {
+        console.log(mutation, '======')
+        this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 this.setState({
                     disableBtn: true
@@ -117,39 +118,42 @@ class UpdateCreateForm extends Component {
                 if (id) {
 
                 } else {
-                    this.props
-                        .createCustomer({
-                            variables: customer
-                        })
-                        .then(result => {
-                            this.setState({
-                                disableBtn: false, name: '', mobile: '', password: '', town: '', area: '', block: '', house: '',
-                                discount: [
-                                    {
-                                        discount: 0,
-                                        product: ''
-                                    }
-                                ],
-                            }, () => {
-                                message.success('Customer has been created successfully');
-                            });
-                            resetFields();
-                        })
-                        .catch(err => {
-                            this.setState({
-                                disableBtn: false
-                            });
-                            const { graphQLErrors } = err;
-                            graphQLErrors.forEach(element => {
-                                message.error(element.message);
-                            });
-                            this.setState({
-                                loading: false
-                            });
-                        })
+                    await mutation({ variables: customer });
+                    // this.props
+                    //     .createCustomer({
+                    //         variables: customer
+                    //     })
+                    //     .then(result => {
+                    //         this.setState({
+                    //             disableBtn: false, name: '', mobile: '', password: '', town: '', area: '', block: '', house: '',
+                    //             discount: [
+                    //                 {
+                    //                     discount: 0,
+                    //                     product: ''
+                    //                 }
+                    //             ],
+                    //         }, () => {
+                    //             message.success('Customer has been created successfully');
+                    //         });
+                    //         resetFields();
+                    //     })
+                    //     .catch(err => {
+                    //         this.setState({
+                    //             disableBtn: false
+                    //         });
+                    //         const { graphQLErrors } = err;
+                    //         graphQLErrors.forEach(element => {
+                    //             message.error(element.message);
+                    //         });
+                    //         this.setState({
+                    //             loading: false
+                    //         });
+                    //     })
                 }
             }
         });
+
+
     };
 
     getCustomerDetails = (ev) => {
@@ -307,7 +311,25 @@ class UpdateCreateForm extends Component {
                 </Row>
                 <Row className="top-space" type="flex" justify="center">
                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}>
-                        <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}>{ id?'Update':'Create'}</Button>
+                        <Mutation
+                            onCompleted={() => {
+                                message.success('Customer has been created successfully');
+                            }}
+                            mutation={CREATE_CUSTOMER_MUTATION}
+                        >
+                            {(createProduct, { loading, error }) => {
+                                if (error) {
+                                    console.log(error,'error.....=====')
+                                    const { graphQLErrors } = error;
+                                    graphQLErrors.forEach(element => {
+                                    return  message.error(element.message);
+                                    });
+                                }
+                                return (
+                                    <Button type="primary" htmlType="submit" className="login-form-button" onClick={() => this.handledSubmit(createProduct)} loading={loading}>{id ? 'Update' : 'Create'}</Button>
+                                )
+                            }}
+                        </Mutation>
                     </Col>
                 </Row>
             </div>
@@ -322,11 +344,11 @@ const CreateUpdateCustomerForm = Form.create({ name: 'normal_login' })(UpdateCre
 
 const CREATE_CUSTOMER_MUTATION = gql`
 mutation createCustomer($data: UserCreateInput!) {
-    createCustomer(data: $data){
-        name
-    }
-}
-`;
+                    createCustomer(data: $data){
+                    name
+                }
+                }
+                `;
 
 export default graphql(CREATE_CUSTOMER_MUTATION, { name: 'createCustomer' })(
     withRouter(CreateUpdateCustomerForm)
