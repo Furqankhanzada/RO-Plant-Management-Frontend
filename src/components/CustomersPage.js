@@ -42,6 +42,8 @@ class CustomersPage extends Component {
 
     render() {
         const { customers, loading, error } = this.props.customersQuery;
+
+        console.log(customers,'customers=======askjdalksdj')
         const { history } = this.props;
         if (loading || error) {
             return (

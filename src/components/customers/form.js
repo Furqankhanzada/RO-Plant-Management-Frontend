@@ -77,28 +77,28 @@ class FormClass extends Component {
         e.preventDefault();
         const { id, form, createCustomer } = this.props;
         const { validateFields, resetFields } = form;
-        console.log(form,'form')
-
-        resetFields()
         validateFields(async (err, values) => {
             if (!err) {
                 this.setState({
                     disableBtn: true
                 });
-                const { discounts } = this.state;
+                let { discounts } = this.state;
+               
                 const { name, mobile, password, town, area, block, house } = values;
                 const dupDiscount = [];
                 for (var i = 0; i < discounts.length; i++) {
-                    const discountsObj = {
-                        discount: discounts[i].discount,
-                        product: {
-                            connect: {
-                                id: discounts[i].product.id
+                    if(discounts[i].discount!=0 && discounts[i].product){
+                        const discountsObj = {
+                            discount: discounts[i].discount,
+                            product: {
+                                connect: {
+                                    id: discounts[i].product.id
+                                }
                             }
                         }
+    
+                        dupDiscount.push(discountsObj)
                     }
-
-                    dupDiscount.push(discountsObj)
                 }
 
                 let customer = {
@@ -119,6 +119,10 @@ class FormClass extends Component {
                         }
                     }
                 };
+                if(dupDiscount.length<1){
+                    delete customer.data.discounts
+                }
+
                 if (id) {
 
                 } else {
@@ -128,11 +132,8 @@ class FormClass extends Component {
                                 // Read the data from our cache for this query.
                                 const data = proxy.readQuery({ query: GET_CUSTOMERS });
                                 // Add our comment from the mutation to the end.
-                                _.add(data.customers, (customer) => {
-                                    return customer.id === createCustomer.id
-                                });
-    
-                                data.customers = [...data.customers];
+                                data.customers.push(createCustomer)
+                                data.customers = [...data.customers]
                                 // Write our data back to the cache.
                                 proxy.writeQuery({ query: GET_CUSTOMERS, data });
                             }
@@ -351,7 +352,18 @@ const CustomerForm = Form.create({ name: 'normal_login' })(FormClass);
 const CREATE_CUSTOMER_MUTATION = gql`
 mutation createCustomer($data: UserCreateInput!) {
                     createCustomer(data: $data){
-                    name
+                        name
+                        id
+                        mobile
+                        address{
+                            town
+                            house
+                            block
+                        }
+                        createdAt
+                        bottle{
+                            balance
+                        }
                 }
                 }
                 `;
