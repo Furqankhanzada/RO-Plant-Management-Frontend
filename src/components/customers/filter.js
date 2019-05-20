@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Form, Button, Row, Col, DatePicker, Input, Cascader } from 'antd'
+import { Button, Row, Col, DatePicker, Input, Cascader } from 'antd'
 //import city from 'utils/city'
 const city = [];
 const { Search } = Input;
@@ -21,7 +20,7 @@ const TwoColProps = {
 };
 
 class Filter extends Component {
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (Object.keys(prevProps.filter).length === 0) {
             this.handleReset()
         }
@@ -74,10 +73,9 @@ class Filter extends Component {
     };
 
     render() {
-        const { onAdd, filter, form, i18n } = this.props;
-        const { name, address } = filter;
+        const { filter } = this.props;
         const FilterItem = ({ label = '', children }) => {
-            const labelArray = label.split('')
+            const labelArray = label.split('');
             return (
                 <div className='filterItem'>
                     {labelArray.length > 0 ? (

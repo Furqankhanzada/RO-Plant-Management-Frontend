@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import  { gql } from 'apollo-boost';
+import { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
 import { Layout, Button, Form, Input, message } from 'antd';
 import { Sidebar } from './common/sidebar'
@@ -8,9 +8,9 @@ import { graphql } from 'react-apollo'
 
 
 class CreatesProducts extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             drawer: false,
             selectedRowKeys: [],
             name: '',
@@ -21,14 +21,14 @@ class CreatesProducts extends Component {
 
     getValue = (ev) => {
         this.setState({
-            [ev.target.name] : ev.target.value
+            [ev.target.name]: ev.target.value
         });
     };
 
     createProduct = (e) => {
         e.preventDefault();
-        
-        const {name, price} = this.state;
+
+        const { name, price } = this.state;
         const { resetFields } = this.props.form;
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -36,28 +36,28 @@ class CreatesProducts extends Component {
                     disableBtn: true
                 })
                 const product = {
-                    data:{
+                    data: {
                         name,
                         price: parseInt(price)
                     }
                 };
                 this.props
-                .createProduct({
-                    variables: product
-                }).then (() =>{
-                    this.setState({disableBtn: false},()=>{
-                        message.success('Product has been created successfully');
-                        resetFields();
+                    .createProduct({
+                        variables: product
+                    }).then(() => {
+                        this.setState({ disableBtn: false }, () => {
+                            message.success('Product has been created successfully');
+                            resetFields();
+                        })
+                    }).catch(err => {
+                        this.setState({
+                            disableBtn: false
+                        });
+                        const { graphQLErrors } = err;
+                        graphQLErrors.forEach(element => {
+                            message.error(element.message);
+                        });
                     })
-                }).catch(err => {
-                    this.setState({
-                        disableBtn: false
-                    });
-                    const { graphQLErrors } = err;
-                    graphQLErrors.forEach(element => {
-                        message.error(element.message);
-                    });
-                })
             }
         });
     };
@@ -88,54 +88,54 @@ class CreatesProducts extends Component {
         const { history } = this.props;
 
         return (
-                <Fragment>
+            <Fragment>
 
-                            <Layout>
-                                <AppBar handleClick = {this.openDrawer} />
-                                <Layout className="dashboard-main">
-                                    <Sidebar handleClick = {this.handleClick} history = {history}/>
+                <Layout>
+                    <AppBar handleClick={this.openDrawer} />
+                    <Layout className="dashboard-main">
+                        <Sidebar handleClick={this.handleClick} history={history} />
 
-                                    <Layout className="remove-padding" style={{ padding: '30px 24px 0', height:'100vh' }}>
-                                        <div className="create-main-div">
-                                            <div className="create-products">
+                        <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
+                            <div className="create-main-div">
+                                <div className="create-products">
 
-                                                <Form layout="inline" onSubmit={this.handleSubmit}>
-                                                    <Form.Item>
-                                                        {getFieldDecorator('name', {
-                                                            rules: [{ required: true, message: 'Please input product name!' }],
-                                                        })(
-                                                            <Input
-                                                                onChange={this.getValue}
-                                                                name="name"
-                                                                placeholder="Enter Product Name"
-                                                                />
-                                                        )}
-                                                    </Form.Item>
-                                                    <Form.Item >
-                                                        {getFieldDecorator('number', {
-                                                            rules: [{ required: true, message: 'Please input product price!' }],
-                                                        })(
-                                                            <Input
-                                                                type="number"
-                                                                name="price"
-                                                                placeholder="Enter Price"
-                                                                formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                                                parser={value => value.replace(/\$\s?|(,*)/g)}
-                                                                onChange={this.getValue}
-                                                                />
-                                                        )}
-                                                    </Form.Item>
-                                                </Form>
-                                                <Form.Item>
-                                                    <Button type="primary" onClick={this.createProduct} htmlType="submit" loading={disableBtn}>
-                                                        Create
+                                    <Form layout="inline" onSubmit={this.handleSubmit}>
+                                        <Form.Item>
+                                            {getFieldDecorator('name', {
+                                                rules: [{ required: true, message: 'Please input product name!' }],
+                                            })(
+                                                <Input
+                                                    onChange={this.getValue}
+                                                    name="name"
+                                                    placeholder="Enter Product Name"
+                                                />
+                                            )}
+                                        </Form.Item>
+                                        <Form.Item >
+                                            {getFieldDecorator('number', {
+                                                rules: [{ required: true, message: 'Please input product price!' }],
+                                            })(
+                                                <Input
+                                                    type="number"
+                                                    name="price"
+                                                    placeholder="Enter Price"
+                                                    formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                    parser={value => value.replace(/\$\s?|(,*)/g)}
+                                                    onChange={this.getValue}
+                                                />
+                                            )}
+                                        </Form.Item>
+                                    </Form>
+                                    <Form.Item>
+                                        <Button type="primary" onClick={this.createProduct} htmlType="submit" loading={disableBtn}>
+                                            Create
                                                     </Button>
-                                                </Form.Item>
-                                            </div>
-                                        </div>
-                                    </Layout>
-                                </Layout>
-                            </Layout>
+                                    </Form.Item>
+                                </div>
+                            </div>
+                        </Layout>
+                    </Layout>
+                </Layout>
             </Fragment>
         )
     }

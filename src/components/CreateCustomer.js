@@ -5,7 +5,7 @@ import { Layout, AutoComplete } from 'antd';
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
 import { Query } from 'react-apollo';
-import CreateUpdateCustomerForm from './common/updateCreateForm'
+import CustomerForm from './customers/form'
 const Option = AutoComplete.Option;
 
 
@@ -32,21 +32,20 @@ class CreateCustomer extends Component {
         });
     };
 
-    
-   
+
     openDrawer = () => {
         this.setState({
             drawer: !this.state.drawer
         })
     };
-    
+
 
     render() {
         const { history, match } = this.props;
         const { params } = match;
         const { id } = params;
             return (
-                <Query query={Products_QUERY}>
+                <Query query={PRODUCTS_QUERY}>
                     {({ data, loading }) => {
                         const { products } = data;
                         const options = products ? products
@@ -66,7 +65,7 @@ class CreateCustomer extends Component {
                                         <Sidebar handleClick={this.handleClick} history={history} />
 
                                         <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                                            <CreateUpdateCustomerForm  options = {options} handledSubmit={this.submitForm} id={id ? id : false}/>
+                                            <CustomerForm  options = {options} handledSubmit={this.submitForm} id={id ? id : false}/>
                                         </Layout>
                                     </Layout>
                                 </Layout>
@@ -74,13 +73,13 @@ class CreateCustomer extends Component {
                         )
                     }}
                 </Query>
-          
+
           )
     }
 }
 
 
-const Products_QUERY = gql`
+const PRODUCTS_QUERY = gql`
     query ProductQuery {
         products {
             id

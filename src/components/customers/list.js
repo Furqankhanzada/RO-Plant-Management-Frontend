@@ -1,30 +1,50 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import { Table, Modal, Avatar, Dropdown, Menu, Icon, Button } from 'antd'
+import {withRouter} from "react-router-dom";
+import _ from 'lodash';
+import {gql} from "apollo-boost/lib/index";
+import {graphql} from "react-apollo/index";
 
-//import styles from './List.less'
+import { GET_CUSTOMERS } from '../../graphql/queries/customer'
 
 const { confirm } = Modal
 
 class List extends PureComponent {
     handleMenuClick = (record, e) => {
-        const { onDeleteItem, onEditItem, i18n } = this.props
+        const { deleteCustomer, onEditItem } = this.props;
 
         if (e.key === '1') {
             onEditItem(record)
         } else if (e.key === '2') {
             confirm({
-                title: i18n.t`Are you sure delete this record?`,
+                title: `Are you sure delete this record?`,
                 onOk() {
-                    onDeleteItem(record.id)
-                },
+                    deleteCustomer({
+                        variables: {
+                            where: {
+                                id: record.id
+                            }
+                        },
+                        update: (proxy, { data: { deleteCustomer } }) => {
+                            // Read the data from our cache for this query.
+                            const data = proxy.readQuery({ query: GET_CUSTOMERS });
+                            // Add our comment from the mutation to the end.
+                            _.remove(data.customers, (customer) => {
+                                return customer.id === deleteCustomer.id
+                            });
+
+                            data.customers = [...data.customers];
+                            // Write our data back to the cache.
+                            proxy.writeQuery({ query: GET_CUSTOMERS, data });
+                        }
+                    })
+                }
             })
         }
-    }
+    };
 
     render() {
-        const { onDeleteItem, onEditItem, i18n, history, ...tableProps } = this.props
-        console.log(history, '========histiry')
+        const { history, ...tableProps } = this.props;
         const DropOption = ({
             onMenuClick,
             menuOptions = [],
@@ -97,7 +117,7 @@ class List extends PureComponent {
                 render: (text, record) => {
                     return (
                         <DropOption
-                            onMenuClick={e => history.push(`/customers/update/${record.id}`)}
+                            onMenuClick={e => this.handleMenuClick(record, e)}
                             menuOptions={[
                                 { key: '1', name: `Update` },
                                 { key: '2', name: `Delete` },
@@ -112,10 +132,9 @@ class List extends PureComponent {
             <Table
                 {...tableProps}
                 pagination={{
-                    ...tableProps.pagination,
-                    showTotal: total => `Total ${total} Items`,
-                }}
-                //className={styles.table}
+          ...tableProps.pagination,
+          showTotal: total =>`Total ${total} Items`,
+        }}
                 bordered
                 scroll={{ x: 1200 }}
                 columns={columns}
@@ -126,5 +145,12 @@ class List extends PureComponent {
     }
 }
 
+const DELETE_CUSTOMER_MUTATION = gql`
+    mutation deleteCustomer($where: UserWhereUniqueInput!) {
+        deleteCustomer(where: $where){
+            id
+        }
+    }
+`;
 
-export default List
+export default graphql(DELETE_CUSTOMER_MUTATION, { name: 'deleteCustomer' })(List)
