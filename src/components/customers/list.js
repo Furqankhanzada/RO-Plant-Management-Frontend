@@ -10,15 +10,21 @@ import { GET_CUSTOMERS } from '../../graphql/queries/customer'
 const { confirm } = Modal
 
 class List extends PureComponent {
-    handleMenuClick = (record, e) => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: false
+        }
+    }
+    handleMenuClick (record, e) {
         const { deleteCustomer, onEditItem } = this.props;
-
         if (e.key === '1') {
             onEditItem(record)
         } else if (e.key === '2') {
             confirm({
                 title: `Are you sure delete this record?`,
-                onOk() {
+                onOk: () => {
+                    this.setState({loading: true});
                     deleteCustomer({
                         variables: {
                             where: {
@@ -36,6 +42,7 @@ class List extends PureComponent {
                             data.customers = [...data.customers];
                             // Write our data back to the cache.
                             proxy.writeQuery({ query: GET_CUSTOMERS, data });
+                            this.setState({loading: false});
                         }
                     })
                 }
@@ -43,29 +50,25 @@ class List extends PureComponent {
         }
     };
 
+    actionColumn(text, record) {
+        const menu = (
+            <Menu onClick={this.handleMenuClick.bind(this, record)}>
+                <Menu.Item key={1}>Update</Menu.Item>
+                <Menu.Item key={2}>Delete</Menu.Item>
+            </Menu>
+        );
+        return (
+            <Dropdown overlay={menu}>
+                <Button style={{ border: 'none' }}>
+                    <Icon style={{ marginRight: 2 }} type="bars" />
+                    <Icon type="down" />
+                </Button>
+            </Dropdown>
+        )
+    }
+
     render() {
         const { history, ...tableProps } = this.props;
-        const DropOption = ({
-            onMenuClick,
-            menuOptions = [],
-            buttonStyle,
-            dropdownProps,
-            }) => {
-            const menu = menuOptions.map(item => (
-                <Menu.Item key={item.key}>{item.name}</Menu.Item>
-            ))
-            return (
-                <Dropdown
-                    overlay={<Menu onClick={onMenuClick}>{menu}</Menu>}
-                    {...dropdownProps}
-                    >
-                    <Button style={{ border: 'none', ...buttonStyle }}>
-                        <Icon style={{ marginRight: 2 }} type="bars" />
-                        <Icon type="down" />
-                    </Button>
-                </Dropdown>
-            )
-        }
         const columns = [
             {
                 title: <span>Avatar</span>,
@@ -114,17 +117,7 @@ class List extends PureComponent {
                 title: <span>Operation</span>,
                 key: 'id',
                 fixed: 'right',
-                render: (text, record) => {
-                    return (
-                        <DropOption
-                            onMenuClick={e => this.handleMenuClick(record, e)}
-                            menuOptions={[
-                { key: '1', name: `Update` },
-                { key: '2', name: `Delete` },
-              ]}
-                            />
-                    )
-                },
+                render: this.actionColumn.bind(this),
             },
         ]
 
@@ -140,6 +133,7 @@ class List extends PureComponent {
                 columns={columns}
                 simple
                 rowKey={record => record.id}
+                loading={this.state.loading}
                 />
         )
     }
