@@ -47,18 +47,6 @@ class User extends PureComponent {
                     page: page.current,
                     pageSize: page.pageSize
                 })
-            },
-            onDeleteItem(id) {
-                // then
-                handleRefresh({
-                    page:
-                        list.length === 1 && pagination.current > 1
-                            ? pagination.current - 1
-                            : pagination.current,
-                })
-            },
-            onEditItem(item) {
-
             }
         };
 
@@ -77,7 +65,7 @@ class User extends PureComponent {
         return (
             <div className="user-main-div">
                 <Filter {...filterProps} history={history}/>
-                <List  history = {history} {...listProps}/>
+                <List  history={history} {...listProps}/>
             </div>
             )
     }

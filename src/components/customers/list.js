@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react'
 import { Table, Modal, Avatar, Dropdown, Menu, Icon, Button } from 'antd'
-import {withRouter} from "react-router-dom";
 import _ from 'lodash';
 import {gql} from "apollo-boost/lib/index";
 import {graphql} from "react-apollo/index";
 
 import { GET_CUSTOMERS } from '../../graphql/queries/customer'
 
-const { confirm } = Modal
+const { confirm } = Modal;
 
 class List extends PureComponent {
     constructor(props) {
@@ -16,10 +15,13 @@ class List extends PureComponent {
             loading: false
         }
     }
+    onEditItem(record) {
+        this.props.history.push(`/customers/update/${record.id}`)
+    }
     handleMenuClick (record, e) {
-        const { deleteCustomer, onEditItem } = this.props;
+        const { deleteCustomer } = this.props;
         if (e.key === '1') {
-            onEditItem(record)
+            this.onEditItem(record);
         } else if (e.key === '2') {
             confirm({
                 title: `Are you sure delete this record?`,
@@ -118,16 +120,13 @@ class List extends PureComponent {
                 key: 'id',
                 fixed: 'right',
                 render: this.actionColumn.bind(this),
-            },
+            }
         ]
 
         return (
             <Table
                 {...tableProps}
-                pagination={{
-          ...tableProps.pagination,
-          showTotal: total =>`Total ${total} Items`,
-        }}
+                pagination={{ ...tableProps.pagination, showTotal: total =>`Total ${total} Items`}}
                 bordered
                 scroll={{ x: 1200 }}
                 columns={columns}
