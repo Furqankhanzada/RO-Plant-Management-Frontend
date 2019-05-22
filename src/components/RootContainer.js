@@ -51,7 +51,6 @@ class RootContainer extends Component {
 
     refreshTokenFn(data = {}) {
         const token = data[AUTH_TOKEN];
-        console.log(token,'token===');
         if (token) {
             localStorage.setItem(AUTH_TOKEN, token)
         } else {

@@ -80,6 +80,7 @@ class CreateCustomer extends Component {
 }
 
 
+
 const PRODUCTS_QUERY = gql`
     query ProductQuery {
         products {

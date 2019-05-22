@@ -45,7 +45,6 @@ class LoginPage extends Component {
                     })
                     .catch(err => {
                         const { graphQLErrors } = err;
-                        console.log(graphQLErrors,'err login====');
                         graphQLErrors.forEach(element => {
                             message.error(element.message);
                         });
@@ -60,7 +59,6 @@ class LoginPage extends Component {
         const { form } = this.props;
         const { loading } = this.state;
         const { getFieldDecorator, getFieldsError } = form;
-        console.log(this.props,'prop====')
         return (
             <Fragment>
                 <div className='form'>

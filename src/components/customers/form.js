@@ -65,22 +65,29 @@ class FormClass extends Component {
             discounts
         })
     };
-    componentDidMount(){
-        const { form, id } = this.props;
-        const { setFieldsValue } = form;
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.data) {
+            const { data, form, id } = nextProps;
+            const { setFieldsValue } = form;
+            if (Object.keys(data).length !== 0) {
+                const { customer } = data;
 
-        if(id){
-            setFieldsValue({
-                name: 'Muhazzib',
-                password: '12345664',
-                mobile: '123456',
-                town: 'GUlshan',
-                area: 'Pib',
-                block: '14',
-                house: 'D-14',
-            })
+                if (id) {
+                    this.setState({
+                        name: customer.name,
+                        password: '12345664',
+                        town: customer.address.town,
+                        area: customer.address.area,
+                        block: customer.address.block,
+                        house: customer.address.house,
+                        mobile: customer.mobile
+                    })
+                }
+            }
         }
     }
+
+
     removeDiscount = (index) => {
         const { discounts } = this.state;
         discounts.splice(index, 1);
@@ -102,7 +109,7 @@ class FormClass extends Component {
                 const { name, mobile, password, town, area, block, house } = values;
                 const dupDiscount = [];
                 for (var i = 0; i < discounts.length; i++) {
-                    if(discounts[i].discount!=0 && discounts[i].product){
+                    if (discounts[i].discount != 0 && discounts[i].product) {
                         const discountsObj = {
                             discount: discounts[i].discount,
                             product: {
@@ -134,25 +141,25 @@ class FormClass extends Component {
                         }
                     }
                 };
-                if(dupDiscount.length<1){
+                if (dupDiscount.length < 1) {
                     delete customer.data.discounts
                 }
 
                 if (id) {
 
                 } else {
-                   createCustomer({
-                            variables: customer,
-                            update: (proxy, { data: { createCustomer} }) => {
-                                // Read the data from our cache for this query.
-                                const data = proxy.readQuery({ query: GET_CUSTOMERS });
-                                // Add our comment from the mutation to the end.
-                                data.customers.push(createCustomer)
-                                data.customers = [...data.customers]
-                                // Write our data back to the cache.
-                                proxy.writeQuery({ query: GET_CUSTOMERS, data });
-                            }
-                        })
+                    createCustomer({
+                        variables: customer,
+                        update: (proxy, { data: { createCustomer } }) => {
+                            // Read the data from our cache for this query.
+                            const data = proxy.readQuery({ query: GET_CUSTOMERS });
+                            // Add our comment from the mutation to the end.
+                            data.customers.push(createCustomer)
+                            data.customers = [...data.customers]
+                            // Write our data back to the cache.
+                            proxy.writeQuery({ query: GET_CUSTOMERS, data });
+                        }
+                    })
                         .then(result => {
                             this.setState({
                                 disableBtn: false,
@@ -197,8 +204,7 @@ class FormClass extends Component {
         const { getFieldDecorator, getFieldsValue } = form;
 
         const { discounts, disableBtn } = this.state;
-        const { name, mobile, password, town, area, block, house } = getFieldsValue();
-
+        const { name, mobile, password, town, area, block, house } = this.state;
         const formItemLayoutWithOutLabel = {
             wrapperCol: {
                 xs: { span: 24, offset: 0 },
@@ -214,12 +220,13 @@ class FormClass extends Component {
                             <h3>General</h3>
                             <FormItem label={`Mobile Number`} >
                                 {getFieldDecorator('mobile', {
+                                    initialValue: mobile,
                                     rules: [
                                         {
                                             required: true
                                         }
                                     ]
-                                })(<Input name="mobile" onChange={this.getCustomerDetails} />)}
+                                })(<Input disabled={id ? true : false} name="mobile" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                             <FormItem label={`Password Should be Number with Prefix`} >
                                 {getFieldDecorator('password', {
@@ -228,10 +235,11 @@ class FormClass extends Component {
                                             required: true
                                         }
                                     ]
-                                })(<Input name="password" onChange={this.getCustomerDetails} />)}
+                                })(<Input disabled={id ? true : false} name="password" onChange={this.getCustomerDetails} />)}
                             </FormItem>
                             <FormItem label={`Name`} >
                                 {getFieldDecorator('name', {
+                                    initialValue: name,
                                     rules: [
                                         {
                                             required: true,
@@ -245,6 +253,8 @@ class FormClass extends Component {
                             <h3>Address</h3>
                             <FormItem label={`Town`} >
                                 {getFieldDecorator('town', {
+                                    initialValue: town,
+
                                     rules: [
                                         {
                                             required: true
@@ -254,6 +264,7 @@ class FormClass extends Component {
                             </FormItem>
                             <FormItem label={`Area`} >
                                 {getFieldDecorator('area', {
+                                    initialValue: area,
                                     rules: [
                                         {
                                             required: true
@@ -263,6 +274,7 @@ class FormClass extends Component {
                             </FormItem>
                             <FormItem label={`Block`} >
                                 {getFieldDecorator('block', {
+                                    initialValue: block,
                                     rules: [
                                         {
                                             required: true,
@@ -273,6 +285,7 @@ class FormClass extends Component {
                             </FormItem>
                             <FormItem label={`House`} >
                                 {getFieldDecorator('house', {
+                                    initialValue: house,
                                     rules: [
                                         {
                                             required: true,
