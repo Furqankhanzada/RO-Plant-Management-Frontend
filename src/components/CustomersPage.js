@@ -15,7 +15,8 @@ class CustomersPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            current: 'mail'
+            current: 'mail',
+            drawer: false
         }
     }
     componentDidMount() {
@@ -38,9 +39,17 @@ class CustomersPage extends Component {
         this.setState({
             current: e.key
         })
-    }
+    };
+
+    openDrawer = () => {
+        this.setState({
+            drawer: !this.state.drawer
+        })
+    };
 
     render() {
+
+        const { drawer } = this.state;
         const { customers, loading, error } = this.props.customersQuery;
 
         console.log(customers,'customers=======askjdalksdj')
@@ -53,9 +62,9 @@ class CustomersPage extends Component {
             return (
                 <Fragment>
                     <Layout>
-                        <AppBar />
+                        <AppBar handleClick={this.openDrawer} />
                         <Layout className="dashboard-main">
-                            <Sidebar handleClick = {this.handleClick} history = {history}/>
+                            <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
                             <Layout style={{ padding: '30px 24px 0', height: '100vh' }}>
                                 <User customers={customers} history={this.props.history}/>
                             </Layout>

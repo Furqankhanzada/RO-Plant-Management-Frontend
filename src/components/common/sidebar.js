@@ -5,9 +5,9 @@ const { Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
 
-export const Sidebar = ({ handleClick, history, defaultSelectedKeys, defaultOpenKeys }) => {
+export const Sidebar = ({ handleClick, history, defaultSelectedKeys, defaultOpenKeys, drawer }) => {
     return (
-        <Sider width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
+        <Sider className={` ${drawer? 'showHideView' : ''}`} width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
             <Menu 
                 onClick={handleClick} 
                 mode="inline"

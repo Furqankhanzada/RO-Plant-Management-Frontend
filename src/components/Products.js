@@ -23,8 +23,18 @@ const columns = [
 class Products extends Component {
     constructor(props){
         super(props);
-        this.state = {}
+        this.state = {
+            loading: false,
+            drawer: false
+        }
+
     }
+
+    handleClick = (e) => {
+        this.setState({
+            current: e.key
+        })
+    };
 
     openDrawer = () => {
         this.setState({
@@ -33,7 +43,10 @@ class Products extends Component {
     };
 
     render() {
+
+        const { drawer } = this.state;
         const { history } = this.props;
+
         return (
             <Query query={PRODUCT}>
                 {({ data: { products = [] }, loading }) => {
@@ -48,9 +61,9 @@ class Products extends Component {
                         <Fragment>
 
                             <Layout>
-                                <AppBar handleClick = {this.openDrawer} />
+                                <AppBar handleClick={this.openDrawer} />
                                 <Layout className="dashboard-main">
-                                    <Sidebar handleClick = {this.handleClick} history = {history}/>
+                                    <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
 
                                     <Layout className="remove-padding" style={{ padding: '30px 24px 0', height:'100vh' }}>
                                         <div className="create-main-div">

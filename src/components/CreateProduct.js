@@ -83,6 +83,7 @@ class CreatesProducts extends Component {
 
     render() {
 
+        const { drawer } = this.state;
         const { getFieldDecorator } = this.props.form;
         const { disableBtn } = this.state;
         const { history } = this.props;
@@ -93,7 +94,7 @@ class CreatesProducts extends Component {
                 <Layout>
                     <AppBar handleClick={this.openDrawer} />
                     <Layout className="dashboard-main">
-                        <Sidebar handleClick={this.handleClick} history={history} />
+                        <Sidebar handleClick={this.handleClick} history={history} drawer={drawer} />
 
                         <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
                             <div className="create-main-div">
