@@ -2,8 +2,9 @@ import React, { Component, Fragment } from 'react'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import { Layout } from 'antd';
+import { parse } from 'qs'
 
-import User from './customers/index.js'
+import Customer from './customers/index.js'
 import { Loader } from './common/Loader'
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
@@ -19,6 +20,22 @@ class CustomersPage extends Component {
             drawer: false
         }
     }
+    componentDidUpdate(prevProps) {
+        if (this.props.location !== prevProps.location) {
+            this.onRouteChanged();
+        }
+    }
+
+    onRouteChanged() {
+        const { customersQuery: { refetch }, location: { search } } = this.props;
+        const query = parse(search);
+        refetch({
+            where: {
+                name_contains: query.name
+            }
+        })
+    }
+
     componentDidMount() {
         this.props.subscribeToCustomer();
     }
@@ -52,11 +69,6 @@ class CustomersPage extends Component {
         const { drawer } = this.state;
         const { customers, loading, error } = this.props.customersQuery;
         const { history } = this.props;
-        if (loading || error) {
-            return (
-                <Loader spinning />
-            )
-        }
             return (
                 <Fragment>
                     <Layout>
@@ -64,7 +76,7 @@ class CustomersPage extends Component {
                         <Layout className="dashboard-main">
                             <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
                             <Layout style={{ padding: '30px 24px 0', height: '100vh' }}>
-                                <User customers={customers} history={this.props.history}/>
+                                <Customer customers={customers} loading={loading} history={this.props.history}/>
                             </Layout>
                         </Layout>
                     </Layout>,
@@ -77,6 +89,16 @@ withRouter(CustomersPage);
 
 export default graphql(GET_CUSTOMERS, {
     name: 'customersQuery', // name of the injected prop: this.props.customersQuery...
+    options: ({ location : { search = {}} }) => {
+        const query = parse(search);
+        return {
+            variables: {
+                where: {
+                    name_contains: query.name
+                }
+            }
+        }
+    },
     props: props => {
         return Object.assign({}, props, {
             subscribeToCustomer: params => {

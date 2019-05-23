@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { Button, Row, Col, DatePicker, Input, Cascader } from 'antd'
+import { Button, Row, Col, DatePicker, Input, Cascader, Form } from 'antd'
 //import city from 'utils/city'
 const city = [];
 const { Search } = Input;
@@ -26,7 +26,7 @@ class Filter extends Component {
         }
     }
     handleFields = fields => {
-        const { createTime } = fields;
+        const { createTime = [] } = fields;
         if (createTime.length) {
             fields.createTime = [
                 moment(createTime[0]).format('YYYY-MM-DD'),
@@ -73,7 +73,8 @@ class Filter extends Component {
     };
 
     render() {
-        const { filter } = this.props;
+        const { filter, form: { getFieldDecorator } } = this.props;
+        const { name } = filter;
         const FilterItem = ({ label = '', children }) => {
             const labelArray = label.split('');
             return (
@@ -104,10 +105,12 @@ class Filter extends Component {
         return (
             <Row gutter={24}>
                 <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
+                    {getFieldDecorator('name', { initialValue: name })(
                         <Search
                             placeholder={`Search Name`}
                             onSearch={this.handleSubmit}
-                            />
+                        />
+                    )}
                 </Col>
                 <Col
                     {...ColProps}
@@ -171,6 +174,8 @@ class Filter extends Component {
         )
     }
 }
+
+Filter = Form.create({ name: 'customer_filter' })(Filter);
 
 
 export default Filter
