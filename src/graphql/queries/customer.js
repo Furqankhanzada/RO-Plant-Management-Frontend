@@ -1,8 +1,8 @@
 import {gql} from "apollo-boost/lib/index";
 
 export const GET_CUSTOMERS = gql`
-    query{
-        customers {
+    query customers($where: UserWhereInput) {
+        customers(where: $where) {
             name
             id
             mobile

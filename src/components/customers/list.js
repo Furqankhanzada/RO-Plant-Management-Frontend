@@ -3,7 +3,7 @@ import { Table, Modal, Avatar, Dropdown, Menu, Icon, Button } from 'antd'
 import _ from 'lodash';
 import {gql} from "apollo-boost/lib/index";
 import {graphql} from "react-apollo/index";
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { GET_CUSTOMERS } from '../../graphql/queries/customer'
 
 const { confirm } = Modal;
@@ -12,7 +12,7 @@ class List extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false
+            loading: props.loading
         }
     }
     onEditItem(record) {
@@ -67,6 +67,14 @@ class List extends PureComponent {
                 </Button>
             </Dropdown>
         )
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.loading !== this.props.loading) {
+            this.setState({
+                loading: nextProps.loading
+            })
+        }
     }
 
     render() {
@@ -138,6 +146,8 @@ class List extends PureComponent {
         )
     }
 }
+
+withRouter(List);
 
 const DELETE_CUSTOMER_MUTATION = gql`
     mutation deleteCustomer($where: UserWhereUniqueInput!) {

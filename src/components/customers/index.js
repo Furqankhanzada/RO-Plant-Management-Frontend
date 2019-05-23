@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react'
 import List from './list.js'
 import Filter from './filter.js'
+import { stringify } from 'qs'
 
 class User extends PureComponent {
     render() {
-        const { history } = this.props;
+        const { history, loading } = this.props;
 
         const query = {page: "1"};
         const user = {
@@ -25,22 +26,22 @@ class User extends PureComponent {
             } = user;
 
         const handleRefresh = newQuery => {
-            //router.push({
-            //    pathname,
-            //    search: stringify(
-            //        {
-            //            ...query,
-            //            ...newQuery,
-            //        },
-            //        { arrayFormat: 'repeat' }
-            //    ),
-            //})
+            this.props.history.push({
+                pathname: '/customers',
+                   search: stringify(
+                       {
+                           ...query,
+                           ...newQuery,
+                       },
+                       { arrayFormat: 'repeat' }
+                   )
+            })
         };
 
 
         const listProps = {
             dataSource: list,
-            loading: false,
+            loading,
             pagination,
             onChange(page) {
                 handleRefresh({
