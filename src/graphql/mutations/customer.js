@@ -18,3 +18,23 @@ mutation createCustomer($data: UserCreateInput!) {
                 }
                 }
                 `;
+
+
+export const UPDATE_CUSTOMER_MUTATION = gql`
+mutation updateCustomer($data: UserUpdateInput!, $id:ID) {
+    updateCustomer(data: $data, id:$id){
+                        name
+                        id
+                        mobile
+                        address{
+                            town
+                            house
+                            block
+                        }
+                        createdAt
+                        bottle{
+                            balance
+                        }
+                }
+                }
+                `;

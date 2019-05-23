@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message } from 'antd';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { GET_CUSTOMERS } from '../../graphql/queries/customer';
-import { CREATE_CUSTOMER_MUTATION } from '../../graphql/mutations/customer';
+import { CREATE_CUSTOMER_MUTATION, UPDATE_CUSTOMER_MUTATION } from '../../graphql/mutations/customer';
+
 
 const FormItem = Form.Item;
-class FormClass extends Component {
+class MainForm extends Component {
 
     constructor(props) {
         super(props)
@@ -70,12 +71,12 @@ class FormClass extends Component {
             const { data, id } = nextProps;
             if (Object.keys(data).length !== 0) {
                 const { customer } = data;
-                const discountArray =  customer.discounts.map((value,index)=>{
+                const discountArray = customer.discounts.map((value, index) => {
                     value.product.selected = true;
                     return value
                 })
-                
-                console.log(customer.discounts,'discounts')
+
+                console.log(customer.discounts, 'discounts')
                 if (id) {
                     this.setState({
                         name: customer.name,
@@ -102,7 +103,7 @@ class FormClass extends Component {
     };
     handledSubmit = (e) => {
         e.preventDefault();
-        const { id, form, createCustomer } = this.props;
+        const { id, form, createCustomer, updateCustomer } = this.props;
         const { validateFields, resetFields } = form;
         validateFields(async (err, values) => {
             if (!err) {
@@ -151,8 +152,41 @@ class FormClass extends Component {
                 }
 
                 if (id) {
+                    delete customer.password
+                    delete customer.mobile
+                    customer.id = id
+                    updateCustomer({
+                        variables: customer
+                    })
+                        .then(result => {
+                            this.setState({
+                                disableBtn: false,
+                                discounts: [
+                                    {
+                                        discount: 0,
+                                        product: ''
+                                    }
+                                ],
+                            }, () => {
+                                resetFields();
+                                message.success('Customer has been updated successfully');
+                            });
+                        })
+                        .catch(err => {
+                            this.setState({
+                                disableBtn: false
+                            });
+                            const { graphQLErrors } = err;
+                            graphQLErrors.forEach(element => {
+                                message.error(element.message);
+                            });
+                            this.setState({
+                                loading: false
+                            });
+                        })
+                }
 
-                } else {
+                else {
                     createCustomer({
                         variables: customer,
                         update: (proxy, { data: { createCustomer } }) => {
@@ -237,7 +271,7 @@ class FormClass extends Component {
                                 {getFieldDecorator('password', {
                                     rules: [
                                         {
-                                            required: true
+                                            required: id ? false : true
                                         }
                                     ]
                                 })(<Input disabled={id ? true : false} name="password" onChange={this.getCustomerDetails} />)}
@@ -370,13 +404,15 @@ class FormClass extends Component {
     }
 
 }
-const CustomerForm = Form.create({ name: 'normal_login' })(FormClass);
+
+const ComposedForm = Form.create({ name: 'normal_login' })(MainForm);
 
 
+const CustomerForm = compose(
+    graphql(CREATE_CUSTOMER_MUTATION, { name: "createCustomer" }),
+    graphql(UPDATE_CUSTOMER_MUTATION, { name: "updateCustomer" })
+)(ComposedForm);
 
+withRouter(CustomerForm)
 
-
-
-export default graphql(CREATE_CUSTOMER_MUTATION, { name: 'createCustomer' })(
-    withRouter(CustomerForm)
-)
+export default CustomerForm;
