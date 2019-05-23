@@ -18,7 +18,7 @@ class FormClass extends Component {
                 }
             ],
             name: '',
-            password: '',
+            password: '$[mobile]-labbaik',
             mobile: '',
             town: '',
             area: '',
@@ -182,7 +182,7 @@ class FormClass extends Component {
         const { getFieldDecorator, getFieldsValue } = form;
 
         const { discounts, disableBtn } = this.state;
-        const { name, mobile, password, town, area, block, house } = getFieldsValue();
+        const { name, mobile, town, area, block, house } = getFieldsValue();
 
         const formItemLayoutWithOutLabel = {
             wrapperCol: {
@@ -207,16 +207,16 @@ class FormClass extends Component {
                                                 ]
                                             })(<Input name="mobile" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
-                                        <FormItem label={`Password Should be Number with Prefix`} >
-                                            {getFieldDecorator('password', {
-                                                initialValue: password,
-                                                rules: [
-                                                    {
-                                                        required: true
-                                                    }
-                                                ]
-                                            })(<Input name="password" onChange={this.getCustomerDetails} />)}
-                                        </FormItem>
+                                        {/*<FormItem label={`Password Should be Number with Prefix`} >*/}
+                                        {/*    {getFieldDecorator('password', {*/}
+                                        {/*        initialValue: password,*/}
+                                        {/*        rules: [*/}
+                                        {/*            {*/}
+                                        {/*                required: true*/}
+                                        {/*            }*/}
+                                        {/*        ]*/}
+                                        {/*    })(<Input name="password" onChange={this.getCustomerDetails} />)}*/}
+                                        {/*</FormItem>*/}
                                         <FormItem label={`Name`} >
                                             {getFieldDecorator('name', {
                                                 initialValue: name,
@@ -287,15 +287,14 @@ class FormClass extends Component {
                                                                 type="minus-circle-o"
                                                                 onClick={this.removeDiscount}
                                                             />
-                                                            <Form.Item>
+                                                            <Form.Item label={`Select Item`}>
 
                                                                 <AutoComplete
                                                                     className="certain-category-search"
                                                                     dropdownClassName="certain-category-search-dropdown"
                                                                     dropdownMatchSelectWidth={false}
                                                                     dropdownStyle={{ width: 300 }}
-                                                                    size="large"
-                                                                    style={{ width: '100%' }}
+                                                                    style={{ width: '100%'}}
                                                                     dataSource={options}
 
                                                                     placeholder="Products"
@@ -306,7 +305,7 @@ class FormClass extends Component {
                                                                 </AutoComplete>
 
                                                             </Form.Item>
-                                                            <Form.Item>
+                                                            <Form.Item label={`Add Discount`}>
                                                                 <InputNumber
                                                                     defaultValue={value.percentage}
                                                                     min={0}

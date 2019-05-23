@@ -245,18 +245,18 @@ img {
 }
 .ant-input-number {
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 1px;
 }
 .create-main-div .ant-form .ant-select-show-search {
     width: 100% !important;
     margin-bottom: 20px;
 }
 .create-main-div .ant-form .ant-select-show-search:last-of-type {
-    margin-bottom: 5px;
+    margin-bottom: -1px;
 }
 .fields-adds .ant-form-item-control-wrapper {
     width: 100%;
-    margin: 20px 0 0 0;
+    margin: 24px 0 0 0;
 }
 .passenger-input {
     width: 90%;
@@ -297,7 +297,7 @@ img {
 }
 .discount-details .discounts .removeButtonDiscount {
     right: 0;
-    top: 45px;
+    top: 70px;
     position: absolute;
 }
 .ant-layout-sider-children {
