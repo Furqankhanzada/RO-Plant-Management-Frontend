@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
 import { Layout, AutoComplete } from 'antd';
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
 import { Query } from 'react-apollo';
-import CustomerForm from './customers/form'
+import CustomerForm from './customers/form';
+import { PRODUCTS_QUERY } from '../graphql/queries/product'
+
 const Option = AutoComplete.Option;
 
 
@@ -80,16 +81,6 @@ class CreateCustomer extends Component {
 }
 
 
-
-const PRODUCTS_QUERY = gql`
-    query ProductQuery {
-        products {
-            id
-            name
-            price
-        }
-    }
-`;
 withRouter(CreateCustomer);
 
 export default CreateCustomer

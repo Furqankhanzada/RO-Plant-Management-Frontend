@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message } from 'antd';
-import { gql } from 'apollo-boost';
-import { graphql } from 'react-apollo'
-import { withRouter } from 'react-router-dom'
-import { GET_CUSTOMERS } from '../../graphql/queries/customer'
-import _ from 'lodash';
+import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
+import { GET_CUSTOMERS } from '../../graphql/queries/customer';
+import { CREATE_CUSTOMER_MUTATION } from '../../graphql/mutations/customer';
+
 const FormItem = Form.Item;
 class FormClass extends Component {
 
@@ -67,11 +67,15 @@ class FormClass extends Component {
     };
     componentWillReceiveProps(nextProps) {
         if (nextProps.data) {
-            const { data, form, id } = nextProps;
-            const { setFieldsValue } = form;
+            const { data, id } = nextProps;
             if (Object.keys(data).length !== 0) {
                 const { customer } = data;
-
+                const discountArray =  customer.discounts.map((value,index)=>{
+                    value.product.selected = true;
+                    return value
+                })
+                
+                console.log(customer.discounts,'discounts')
                 if (id) {
                     this.setState({
                         name: customer.name,
@@ -80,7 +84,8 @@ class FormClass extends Component {
                         area: customer.address.area,
                         block: customer.address.block,
                         house: customer.address.house,
-                        mobile: customer.mobile
+                        mobile: customer.mobile,
+                        discounts: discountArray
                     })
                 }
             }
@@ -109,7 +114,7 @@ class FormClass extends Component {
                 const { name, mobile, password, town, area, block, house } = values;
                 const dupDiscount = [];
                 for (var i = 0; i < discounts.length; i++) {
-                    if (discounts[i].discount != 0 && discounts[i].product) {
+                    if (discounts[i].discount !== 0 && discounts[i].product) {
                         const discountsObj = {
                             discount: discounts[i].discount,
                             product: {
@@ -201,10 +206,10 @@ class FormClass extends Component {
     };
     render() {
         const { form, id, options } = this.props;
-        const { getFieldDecorator, getFieldsValue } = form;
+        const { getFieldDecorator } = form;
 
         const { discounts, disableBtn } = this.state;
-        const { name, mobile, password, town, area, block, house } = this.state;
+        const { name, mobile, town, area, block, house } = this.state;
         const formItemLayoutWithOutLabel = {
             wrapperCol: {
                 xs: { span: 24, offset: 0 },
@@ -329,7 +334,7 @@ class FormClass extends Component {
                                                 </Form.Item>
                                                 <Form.Item>
                                                     <InputNumber
-                                                        defaultValue={value.percentage}
+                                                        value={value.discount}
                                                         min={0}
                                                         max={100}
                                                         formatter={value => `${value}%`}
@@ -370,24 +375,7 @@ const CustomerForm = Form.create({ name: 'normal_login' })(FormClass);
 
 
 
-const CREATE_CUSTOMER_MUTATION = gql`
-mutation createCustomer($data: UserCreateInput!) {
-                    createCustomer(data: $data){
-                        name
-                        id
-                        mobile
-                        address{
-                            town
-                            house
-                            block
-                        }
-                        createdAt
-                        bottle{
-                            balance
-                        }
-                }
-                }
-                `;
+
 
 export default graphql(CREATE_CUSTOMER_MUTATION, { name: 'createCustomer' })(
     withRouter(CustomerForm)

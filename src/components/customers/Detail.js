@@ -1,9 +1,5 @@
 import React, { PureComponent, Fragment } from 'react'
-import { graphql } from 'react-apollo'
-import { withRouter } from 'react-router-dom'
 import { Table, Divider, Tag } from 'antd';
-
-import { Loader } from './../common/Loader'
 import { Sidebar } from './../common/sidebar'
 import { AppBar } from './../common/header'
 
@@ -14,7 +10,7 @@ const columns = [
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        render: text => <a href="javascript:;">{text}</a>,
+        render: text => <a href="#">{text}</a>,
     },
     {
         title: 'Age',
@@ -51,9 +47,9 @@ const columns = [
         key: 'action',
         render: (text, record) => (
             <span>
-        <a href="javascript:;">Invite {record.name}</a>
+        <a href="#">Invite {record.name}</a>
         <Divider type="vertical" />
-        <a href="javascript:;">Delete</a>
+        <a href="#">Delete</a>
       </span>
         ),
     },

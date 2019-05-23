@@ -37,3 +37,26 @@ export const CUSTOMER_SUBSCRIPTION = gql`
         }
     }
 `;
+
+export const CUSTOMER_QUERY = gql`
+query customerDetail($id:ID){
+    customer(where:{id:$id}){
+        name
+        mobile
+        address{
+          town
+          area
+          block
+          house
+        }
+        discounts{
+          product{
+            id
+            price
+            name
+          }
+          discount
+        }
+      }
+}
+`;

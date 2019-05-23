@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
 import { Layout, AutoComplete } from 'antd';
 import { Sidebar } from './common/sidebar'
@@ -7,6 +6,9 @@ import { AppBar } from './common/header'
 import { Query } from 'react-apollo';
 import CustomerForm from './customers/form'
 import { graphql } from 'react-apollo'
+import { CUSTOMER_QUERY } from '../graphql/queries/customer'
+import { PRODUCTS_QUERY } from '../graphql/queries/product'
+
 const Option = AutoComplete.Option;
 
 
@@ -88,37 +90,9 @@ class UpdateCustomer extends Component {
     }
 }
 
-const CUSTOMER_QUERY = gql`
-query customerDetail($id:ID){
-    customer(where:{id:$id}){
-        name
-        mobile
-        address{
-          town
-          area
-          block
-          house
-        }
-        discounts{
-          product{
-            id
-            price
-          }
-          discount
-        }
-      }
-}
-`;
 
-const PRODUCTS_QUERY = gql`
-    query ProductQuery {
-        products {
-            id
-            name
-            price
-        }
-    }
-`;
+
+
 
 export default graphql(CUSTOMER_QUERY, { name: 'customerDetail' })(
     withRouter(UpdateCustomer)

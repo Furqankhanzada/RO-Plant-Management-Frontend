@@ -1,11 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import { gql } from 'apollo-boost';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 import { Layout, Button, Form, Input, message } from 'antd';
-import { Sidebar } from './common/sidebar'
-import { AppBar } from './common/header'
-import { graphql } from 'react-apollo'
-
+import { Sidebar } from './common/sidebar';
+import { AppBar } from './common/header';
+import { graphql } from 'react-apollo';
+import { CREATE_PRODUCT_MUTATION } from '../graphql/mutations/product';
 
 class CreatesProducts extends Component {
     constructor(props) {
@@ -144,13 +143,7 @@ class CreatesProducts extends Component {
 
 
 
-const CREATE_PRODUCT_MUTATION = gql`
-mutation createProduct($data: ProductCreateInput!) {
-    createProduct(data: $data){
-        name
-    }
-}
-`;
+
 
 const ProductsData = Form.create({ name: 'normal_login' })(CreatesProducts);
 
