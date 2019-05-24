@@ -221,43 +221,52 @@ img {
 }
 
 
-.create-main-div{
+.create-main-div {
     padding: 10px;
     position: relative;
     border-radius: 5px;
     margin: 0 0 90px;
 }
+
 .create-main-div .ant-form {
     border-radius: 5px;
     background: white;
     padding: 15px;
     box-shadow: 0 2px 7px 0 #cecece;
 }
+
 .create-main-div .ant-form .ant-form-item {
     margin-bottom: 5px;
 }
+
 .create-main-div .ant-form .ant-form-item .ant-form-item-label {
     margin: 0 0 5px 0;
     line-height: 19.9999px;
 }
+
 .top-space {
     margin-top: 20px;
 }
+
 .ant-input-number {
     width: 100%;
     margin-bottom: 10px;
 }
+
 .create-main-div .ant-form .ant-select-show-search {
     width: 100% !important;
     margin-bottom: 20px;
 }
+
 .create-main-div .ant-form .ant-select-show-search:last-of-type {
     margin-bottom: 5px;
 }
+
 .fields-adds .ant-form-item-control-wrapper {
     width: 100%;
     margin: 20px 0 0 0;
 }
+
 .passenger-input {
     width: 90%;
     margin-right: 15px;
@@ -280,6 +289,7 @@ img {
     background: white;
     box-shadow: 0 0 3px 0 #cecece;
 }
+
 .products-table .ant-table-pagination.ant-pagination {
     margin: 16px 16px 16px 0;
 }
@@ -295,54 +305,76 @@ img {
     position: relative;
     padding: 0 20px 0 0;
 }
+
 .discount-details .discounts .removeButtonDiscount {
     right: 0;
     top: 45px;
     position: absolute;
 }
+
 .ant-layout-sider-children {
     padding-top: 10px;
 }
+
 .ant-layout-sider-children ul {
     border-right: 0;
 }
+
 .ant-layout-sider-children ul li .ant-menu-submenu-title {
     height: 35px !important;
     line-height: 35px !important;
 }
+
 .ant-layout-sider-children ul li .ant-menu-sub li {
     height: 30px !important;
     line-height: 30px !important;
 }
 
-.create-products {
+.create-products {}
 
-}
 .create-products .ant-form {
     width: 450px;
     margin: 0 auto 20px;
     padding: 30px 30px 15px;
 }
+
 .create-products .ant-form .ant-form-item {
     margin: 0;
     width: 100%;
 }
+
 .create-products .ant-form .ant-form-item .ant-form-item-control-wrapper {
     width: 100%;
 }
+
 .create-products .ant-form-item-control {
     text-align: center;
 }
+
 .create-products .ant-form .ant-form-item .ant-form-item-control-wrapper .ant-form-item-control {
     margin-bottom: 15px;
 }
+
 .create-products .ant-form .ant-form-item .ant-form-item-control-wrapper .ant-input {
     height: 40px;
     line-height: 40px;
 }
+
 .create-products .ant-form-item-control button {
     width: 150px;
     height: 40px;
+}
+
+.update_form_loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
 }
 
 /*/// extra small media query start here ///*/
@@ -351,6 +383,7 @@ img {
     .remove-padding {
         padding: 10px 5px 0 !important;
     }
+
     .ant-layout-sider {
         bottom: 0;
         top: 65px;
@@ -358,42 +391,57 @@ img {
         left: -205px;
         position: absolute;
     }
+
     .create-main-div .ant-form .ant-form-item .ant-form-item-label {
         padding: 0;
     }
+
     .create-main-div .ant-form .ant-form-item .ant-form-item-label label {
         font-size: 13px;
     }
+
     .create-main-div .ant-form {
         margin-bottom: 15px;
         padding: 15px 10px 5px;
     }
+
     .top-space {
         margin-top: 10px;
     }
+
     .create-main-div {
         margin: 0 0 80px;
     }
+
     .ant-layout-header {
         padding: 0 15px;
     }
-    .ant-menu-item, .ant-menu-submenu-title {
+
+    .ant-menu-item,
+    .ant-menu-submenu-title {
         padding: 0 10px;
     }
+
     .toggleIcon {
         display: inline-block;
     }
+
     .login-signup-logo {
         width: 120px;
     }
+
     .showHideView {
         left: 0;
     }
+
     .create-products .ant-form {
         width: 100%;
         padding: 15px 15px 0 !important;
     }
 
+}
+.form-create-update{
+    min-height: 400px
 }
 /*/// extra small media query end here ///*/
 
@@ -403,13 +451,16 @@ img {
     .remove-padding {
         padding: 10px 15px 0 !important;
     }
+
     .create-main-div .ant-form {
         margin-bottom: 20px;
     }
 
 }
+
 /*/// small media query end here ///*/
 
 /*/// medium media query start here ///*/
 @media (min-width: 992px) and (max-width: 1199px) {}
+
 /*/// medium media query end here ///*/
