@@ -74,7 +74,7 @@ class Filter extends Component {
 
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        const { name } = filter;
+        const { name, mobile } = filter;
         const FilterItem = ({ label = '', children }) => {
             const labelArray = label.split('');
             return (
@@ -118,38 +118,18 @@ class Filter extends Component {
                     md={{ span: 8 }}
                     id="addressCascader"
                     >
-                        <Cascader
-                            style={{ width: '100%' }}
-                            options={city}
-                            placeholder={`Please pick an address`}
-                            onChange={this.handleChange.bind(this, 'address')}
-                            getPopupContainer={() =>
-                document.getElementById('addressCascader')
-              }
-                            />
+                    {getFieldDecorator('mobile', { initialValue: mobile })(
+                        <Search
+                            placeholder={`Search Mobile Number`}
+                            onSearch={this.handleSubmit}
+                        />
+                    )}
                 </Col>
-                <Col
-                    {...ColProps}
-                    xl={{ span: 7 }}
-                    md={{ span: 8 }}
-                    sm={{ span: 12 }}
-                    id="createTimeRangePicker"
-                    >
-                    <FilterItem label={`CreateTime`} >
 
-                            <RangePicker
-                                style={{ width: '100%' }}
-                                onChange={this.handleChange.bind(this, 'createTime')}
-                                getCalendarContainer={() => {
-                  return document.getElementById('createTimeRangePicker')
-                }}
-                                />
-                    </FilterItem>
-                </Col>
                 <Col
                     {...TwoColProps}
-                    xl={{ span: 8 }}
-                    md={{ span: 24 }}
+                    xl={{ span: 15 }}
+                    md={{ span: 32 }}
                     sm={{ span: 24 }}
                     >
                     <Row type="flex" align="middle" justify="space-between">

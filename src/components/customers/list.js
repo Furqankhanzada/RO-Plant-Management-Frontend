@@ -100,29 +100,15 @@ class List extends PureComponent {
                 key: 'mobile',
             },
             {
-                title: <span>Town</span>,
-                dataIndex: 'address.town',
-                key: 'address.town',
-            },
-            {
-                title: <span>Block</span>,
-                dataIndex: 'address.block',
-                key: 'address.block',
-            },
-            {
                 title: <span>Address</span>,
-                dataIndex: 'address.house',
-                key: 'address.house',
+                dataIndex: 'address',
+                key: 'address',
+                render: (text) => `${text.house} ${text.block} ${text.town}`
             },
             {
-                title: <span>Balance</span>,
+                title: <span>Bottles balance</span>,
                 dataIndex: 'bottle.balance',
                 key: 'bottle.balance',
-            },
-            {
-                title: <span>CreateTime</span>,
-                dataIndex: 'createdAt',
-                key: 'createdAt',
             },
             {
                 title: <span>Operation</span>,
