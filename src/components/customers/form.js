@@ -29,7 +29,8 @@ class MainForm extends Component {
             result: [],
             drawer: false,
             disableBtn: false,
-            selectedValue: ''
+            selectedValue: '',
+            deleteDiscount: []
         }
     }
     onChangeDiscount = (type, index, ev) => {
@@ -55,11 +56,15 @@ class MainForm extends Component {
 
     add = () => {
         const { discounts } = this.state;
+        const { id } = this.props;
+
         const discountsObj = {
             discount: 0,
             product: ''
         };
-
+        if (id) {
+            discountsObj.new = true
+        }
         // can use data-binding to get
         discounts.push(discountsObj);
         this.setState({
@@ -91,8 +96,19 @@ class MainForm extends Component {
         }
     }
 
-    removeDiscount = (index) => {
-        const { discounts } = this.state;
+    removeDiscount = (index, value) => {
+        const { discounts, deleteDiscount } = this.state;
+        const { id } = this.props;
+
+        console.log(index, "====index")
+        console.log(value, "====value")
+        if (id) {
+            const deleteDiscountObj = { id: value.id };
+            deleteDiscount.push(deleteDiscountObj);
+            this.setState({
+                deleteDiscount
+            })
+        }
         discounts.splice(index, 1);
         this.setState({
             discounts
@@ -102,18 +118,28 @@ class MainForm extends Component {
         e.preventDefault();
         const { id, form, createCustomer, updateCustomer } = this.props;
         const { validateFields, resetFields } = form;
+        
+        let { discounts, deleteDiscount } = this.state;
+        const dupDiscount = [];
+        this.setState({
+            discounts: [
+                {
+                    discount: 0,
+                    product: ''
+                }
+            ]
+        });
         validateFields(async (err, values) => {
+            console.log(err)
             if (!err) {
                 this.setState({
                     disableBtn: true
                 });
-                let { discounts } = this.state;
-
                 const { name, mobile, password, town, area, block, house } = values;
-                const dupDiscount = [];
+
                 for (var i = 0; i < discounts.length; i++) {
                     if (discounts[i].discount !== 0 && discounts[i].product) {
-                        const discountsObj = {
+                        let discountsObj = {
                             discount: discounts[i].discount,
                             product: {
                                 connect: {
@@ -121,7 +147,11 @@ class MainForm extends Component {
                                 }
                             }
                         }
-                        dupDiscount.push(discountsObj)
+                        if (id && discounts[i].new === true) {
+                            dupDiscount.push(discountsObj)
+                        } else if (!id) {
+                            dupDiscount.push(discountsObj)
+                        }
                     }
                 }
 
@@ -143,31 +173,36 @@ class MainForm extends Component {
                         }
                     }
                 };
-                if (dupDiscount.length < 1) {
-                    delete customer.data.discounts
-                }
+
 
                 if (id) {
                     delete customer.password
                     delete customer.mobile
                     customer.id = id
+                    if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
+                        delete customer.data.discounts.create
+                        customer.data.discounts.delete = deleteDiscount
+                    }
+                    else if (dupDiscount.length < 1 && deleteDiscount.length < 1) {
+                        delete customer.data.discounts
+                    }
+                    else if (dupDiscount.length > 0 && deleteDiscount.length > 0) {
+                        customer.data.discounts.delete = deleteDiscount
+                    }
                     updateCustomer({
                         variables: customer
-                    })
-                        .then(result => {
-                            this.setState({
-                                disableBtn: false,
-                                discounts: [
-                                    {
-                                        discount: 0,
-                                        product: ''
-                                    }
-                                ],
-                            }, () => {
-                                resetFields();
-                                message.success('Customer has been updated successfully');
-                            });
+                    }).then(result => {
+                        this.setState({
+                            disableBtn: false,
+                            discounts: [
+                                {
+                                    discount: 0,
+                                    product: ''
+                                }
+                            ],
                         })
+                        message.success('Customer has been updated successfully');
+                    })
                         .catch(err => {
                             this.setState({
                                 disableBtn: false
@@ -181,41 +216,44 @@ class MainForm extends Component {
                             });
                         })
                 } else {
+                    if (dupDiscount.length < 1) {
+                        delete customer.data.discounts
+                    }
                     createCustomer({
                         variables: customer,
                         update: (proxy, { data: { createCustomer } }) => {
                             // Read the data from our cache for this query.
-                            const data = proxy.readQuery({ query: GET_CUSTOMERS, variables:{where:{}} });
+                            const data = proxy.readQuery({ query: GET_CUSTOMERS, variables: { where: {} } });
                             // Add our comment from the mutation to the end.
                             data.customers.push(createCustomer)
                             data.customers = [...data.customers]
                             // Write our data back to the cache.
-                            proxy.writeQuery({ query: GET_CUSTOMERS, data, variables:{where:{}} });
+                            proxy.writeQuery({ query: GET_CUSTOMERS, data, variables: { where: {} } });
                         }
                     }).then(result => {
-                            this.setState({
-                                disableBtn: false,
-                                discounts: [
-                                    {
-                                        discount: 0,
-                                        product: ''
-                                    }
-                                ],
-                            }, () => {
-                                resetFields();
-                                message.success('Customer has been created successfully');
-                            });
+                        this.setState({
+                            disableBtn: false,
+                            discounts: [
+                                {
+                                    discount: 0,
+                                    product: ''
+                                }
+                            ],
+                        }, () => {
+                            resetFields();
+                            message.success('Customer has been created successfully');
+                        });
                     }).catch(err => {
-                            this.setState({
-                                disableBtn: false
-                            });
-                            const { graphQLErrors } = err;
-                            graphQLErrors.forEach(element => {
-                                message.error(element.message);
-                            });
-                            this.setState({
-                                loading: false
-                            });
+                        this.setState({
+                            disableBtn: false
+                        });
+                        const { graphQLErrors } = err;
+                        graphQLErrors.forEach(element => {
+                            message.error(element.message);
+                        });
+                        this.setState({
+                            loading: false
+                        });
                     })
                 }
             }
@@ -244,7 +282,7 @@ class MainForm extends Component {
             <div className="create-main-div">
                 <Form layout="horizontal" onSubmit={this.handledSubmit} className="form-create-update">
                     {
-                        loading ? (<Spin className="update_form_loader"/>) : (
+                        loading ? (<Spin className="update_form_loader" />) : (
                             <React.Fragment>
                                 <Row gutter={16}>
                                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
@@ -285,7 +323,7 @@ class MainForm extends Component {
                                         <FormItem label={`Town`} >
                                             {getFieldDecorator('town', {
                                                 initialValue: town,
-            
+
                                                 rules: [
                                                     {
                                                         required: true
@@ -331,16 +369,16 @@ class MainForm extends Component {
                                         <div className="discount-details">
                                             {
                                                 discounts.map((value, index) => {
-            
+
                                                     return (
                                                         <div className="discounts" key={index}>
                                                             <Icon
                                                                 className="dynamic-delete-button removeButtonDiscount"
                                                                 type="minus-circle-o"
-                                                                onClick={this.removeDiscount}
+                                                                onClick={this.removeDiscount.bind(this, index, value)}
                                                             />
                                                             <Form.Item>
-            
+
                                                                 <AutoComplete
                                                                     className="certain-category-search"
                                                                     dropdownClassName="certain-category-search-dropdown"
@@ -349,14 +387,14 @@ class MainForm extends Component {
                                                                     size="large"
                                                                     style={{ width: '100%' }}
                                                                     dataSource={options}
-            
+
                                                                     placeholder="Products"
                                                                     value={value.product ? value.product.selected ? value.product.name : '' : ''}
                                                                     onChange={this.onChangeDiscount.bind(this, 'product', index)}
                                                                 >
                                                                     <Input suffix={<Icon type="search" className="certain-category-icon" />} />
                                                                 </AutoComplete>
-            
+
                                                             </Form.Item>
                                                             <Form.Item>
                                                                 <InputNumber
@@ -370,7 +408,7 @@ class MainForm extends Component {
                                                             </Form.Item>
                                                         </div>
                                                     )
-            
+
                                                 })
                                             }
                                             <Form.Item className="fields-adds" {...formItemLayoutWithOutLabel}>
@@ -379,15 +417,15 @@ class MainForm extends Component {
                                             </Button>
                                             </Form.Item>
                                         </div>
-            
+
                                     </Col>
                                 </Row>
                                 <Row className="top-space" type="flex" justify="center">
                                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}>
-            
-            
+
+
                                         <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}>{id ? 'Update' : 'Create'}</Button>
-            
+
                                     </Col>
                                 </Row>
                             </React.Fragment>

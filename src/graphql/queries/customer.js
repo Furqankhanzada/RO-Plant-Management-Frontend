@@ -50,11 +50,12 @@ query customerDetail($id:ID){
           house
         }
         discounts{
-          product{
+        id
+        product{
             id
             price
             name
-          }
+        }
           discount
         }
       }
