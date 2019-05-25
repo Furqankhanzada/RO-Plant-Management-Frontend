@@ -91,7 +91,6 @@ class MainForm extends Component {
         }
     }
 
-
     removeDiscount = (index) => {
         const { discounts } = this.state;
         discounts.splice(index, 1);
@@ -122,7 +121,6 @@ class MainForm extends Component {
                                 }
                             }
                         }
-
                         dupDiscount.push(discountsObj)
                     }
                 }
@@ -182,9 +180,7 @@ class MainForm extends Component {
                                 loading: false
                             });
                         })
-                }
-
-                else {
+                } else {
                     createCustomer({
                         variables: customer,
                         update: (proxy, { data: { createCustomer } }) => {
@@ -196,8 +192,7 @@ class MainForm extends Component {
                             // Write our data back to the cache.
                             proxy.writeQuery({ query: GET_CUSTOMERS, data, variables:{where:{}} });
                         }
-                    })
-                        .then(result => {
+                    }).then(result => {
                             this.setState({
                                 disableBtn: false,
                                 discounts: [
@@ -210,8 +205,7 @@ class MainForm extends Component {
                                 resetFields();
                                 message.success('Customer has been created successfully');
                             });
-                        })
-                        .catch(err => {
+                    }).catch(err => {
                             this.setState({
                                 disableBtn: false
                             });
@@ -222,12 +216,10 @@ class MainForm extends Component {
                             this.setState({
                                 loading: false
                             });
-                        })
+                    })
                 }
             }
         });
-
-
     };
 
     getCustomerDetails = (ev) => {
@@ -239,7 +231,6 @@ class MainForm extends Component {
     render() {
         const { form, id, options, loading } = this.props;
         const { getFieldDecorator } = form;
-
         const { discounts, disableBtn } = this.state;
         const { name, mobile, town, area, block, house } = this.state;
         const formItemLayoutWithOutLabel = {
@@ -255,7 +246,6 @@ class MainForm extends Component {
                     {
                         loading ? (<Spin className="update_form_loader"/>) : (
                             <React.Fragment>
-
                                 <Row gutter={16}>
                                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
                                         <h3>General</h3>
@@ -400,7 +390,6 @@ class MainForm extends Component {
             
                                     </Col>
                                 </Row>
-                           
                             </React.Fragment>
                         )
                     }
@@ -412,7 +401,6 @@ class MainForm extends Component {
 }
 
 const ComposedForm = Form.create({ name: 'normal_login' })(MainForm);
-
 
 const CustomerForm = compose(
     graphql(CREATE_CUSTOMER_MUTATION, { name: "createCustomer" }),
