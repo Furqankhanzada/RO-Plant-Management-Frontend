@@ -10,19 +10,6 @@ class User extends PureComponent {
         const { location: { search } } = history;
         const query = parse(search.replace('?', ''));
 
-        const user = {
-            pagination: {
-                showSizeChanger: true,
-                showQuickJumper: true,
-                current: 1,
-                total: 81,
-                pageSize: 30
-            },
-            currentItem: {}
-        };
-
-        const { pagination } = user;
-
         const handleRefresh = newQuery => {
             this.props.history.push({
                 pathname: '/customers',
@@ -40,7 +27,6 @@ class User extends PureComponent {
         const listProps = {
             dataSource: customers,
             loading,
-            pagination,
             onChange(page) {
                 handleRefresh({
                     page: page.current,
