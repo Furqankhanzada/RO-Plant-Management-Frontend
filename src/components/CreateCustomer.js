@@ -6,6 +6,7 @@ import { AppBar } from './common/header'
 import { Query } from 'react-apollo';
 import CustomerForm from './customers/form';
 import { PRODUCTS_QUERY } from '../graphql/queries/product'
+import BreadCrumbs from './BreadCrumbs';
 
 const Option = AutoComplete.Option;
 
@@ -66,7 +67,8 @@ class CreateCustomer extends Component {
                                     <Layout className="dashboard-main">
                                         <Sidebar handleClick={this.handleClick} history={history} drawer={drawer} />
 
-                                        <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
+                                        <Layout className="remove-padding" style={{ padding: '20px 24px 0', height: '100vh' }}>
+                                            <BreadCrumbs />
                                             <CustomerForm  options = {options} handledSubmit={this.submitForm} id={id ? id : false}/>
                                         </Layout>
                                     </Layout>

@@ -8,6 +8,7 @@ import Customer from './customers/index.js'
 import { Loader } from './common/Loader'
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
+import BreadCrumbs from './BreadCrumbs';
 
 import { GET_CUSTOMERS, CUSTOMER_SUBSCRIPTION } from '../graphql/queries/customer'
 
@@ -75,7 +76,8 @@ class CustomersPage extends Component {
                         <AppBar handleClick={this.openDrawer} />
                         <Layout className="dashboard-main">
                             <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
-                            <Layout style={{ padding: '30px 24px 0', height: '100vh' }}>
+                            <Layout style={{ padding: '20px 24px 0', height: '100vh' }}>
+                                <BreadCrumbs />
                                 <Customer customers={customers} loading={loading} history={this.props.history}/>
                             </Layout>
                         </Layout>

@@ -5,6 +5,7 @@ import { Layout, AutoComplete, Table } from 'antd';
 import { Sidebar } from './common/sidebar'
 import { AppBar } from './common/header'
 import { Query } from 'react-apollo';
+import BreadCrumbs from './BreadCrumbs';
 
 const Option = AutoComplete.Option;
 
@@ -65,7 +66,8 @@ class Products extends Component {
                                 <Layout className="dashboard-main">
                                     <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
 
-                                    <Layout className="remove-padding" style={{ padding: '30px 24px 0', height:'100vh' }}>
+                                    <Layout className="remove-padding" style={{ padding: '20px 24px 0', height:'100vh' }}>
+                                        <BreadCrumbs />
                                         <div className="create-main-div">
                                             <div className="products-table">
                                                 <Table columns={columns} dataSource={products} rowKey="id" />
