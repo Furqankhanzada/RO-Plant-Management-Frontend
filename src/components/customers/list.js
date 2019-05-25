@@ -35,7 +35,7 @@ class List extends PureComponent {
                         },
                         update: (proxy, { data: { deleteCustomer } }) => {
                             // Read the data from our cache for this query.
-                            const data = proxy.readQuery({ query: GET_CUSTOMERS });
+                            const data = proxy.readQuery({ query: GET_CUSTOMERS, variables:{where:{}} });
                             // Add our comment from the mutation to the end.
                             _.remove(data.customers, (customer) => {
                                 return customer.id === deleteCustomer.id
@@ -43,7 +43,7 @@ class List extends PureComponent {
 
                             data.customers = [...data.customers];
                             // Write our data back to the cache.
-                            proxy.writeQuery({ query: GET_CUSTOMERS, data });
+                            proxy.writeQuery({ query: GET_CUSTOMERS, data, variables:{where:{}}});
                             this.setState({loading: false});
                         }
                     })
