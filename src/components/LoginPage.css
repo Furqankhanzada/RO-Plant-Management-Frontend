@@ -42,14 +42,14 @@
     width: 100%;
 }
 
-p {
-    color: rgb(204, 204, 204);
-    text-align: center;
-    margin-top: 16px;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-}
+/*p {*/
+    /*color: rgb(204, 204, 204);*/
+    /*text-align: center;*/
+    /*margin-top: 16px;*/
+    /*font-size: 12px;*/
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+/*}*/
 
 
 .logo {

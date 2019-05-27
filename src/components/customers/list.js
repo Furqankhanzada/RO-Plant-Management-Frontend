@@ -121,7 +121,7 @@ class List extends PureComponent {
         return (
             <Table
                 {...tableProps}
-                pagination={{ ...tableProps.pagination, showTotal: total =>`Total ${total} Items`}}
+                //pagination={{ ...tableProps.pagination, showTotal: total =>`Total ${total} Items`}}
                 bordered
                 scroll={{ x: 1200 }}
                 columns={columns}
