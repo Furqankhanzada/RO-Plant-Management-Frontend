@@ -259,7 +259,7 @@ img {
 }
 
 .create-main-div .ant-form .ant-select-show-search:last-of-type {
-    margin-bottom: 0px;
+    margin-bottom: -1px;
 }
 
 .fields-adds .ant-form-item-control-wrapper {
