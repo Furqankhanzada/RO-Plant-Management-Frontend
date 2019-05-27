@@ -30,29 +30,10 @@ class MainForm extends Component {
             drawer: false,
             disableBtn: false,
             selectedValue: '',
-            deleteDiscount: []
+            deleteDiscount: [],
+            editDiscount: []
         }
     }
-    onChangeDiscount = (type, index, ev) => {
-        const { discounts } = this.state;
-        const discountsObject = discounts[index];
-        if (type === "percentage") {
-            discountsObject.discount = ev;
-        } else {
-            const selectedProduct = JSON.parse(ev);
-            discountsObject.product = {
-                name: selectedProduct.name,
-                price: selectedProduct.price,
-                id: selectedProduct.id,
-                selected: true
-            };
-        }
-        discounts[index] = discountsObject;
-
-        this.setState({
-            discounts
-        })
-    };
 
     add = () => {
         const { discounts } = this.state;
@@ -96,12 +77,36 @@ class MainForm extends Component {
         }
     }
 
+    onChangeDiscount = (type, index, discountId, ev) => {
+        const { discounts, editDiscount } = this.state;
+        const discountsObject = discounts[index];
+        if (type === "percentage") {
+            discountsObject.discount = ev;
+        } else {
+            const selectedProduct = JSON.parse(ev);
+            discountsObject.product = {
+                name: selectedProduct.name,
+                price: selectedProduct.price,
+                id: selectedProduct.id,
+                selected: true
+            };
+        }
+        if (discountId) {
+            discountsObject.edit = true
+            discountsObject.discountId = discountId
+        }
+
+        discounts[index] = discountsObject;
+        this.setState({
+            discounts,
+            discountsObject,
+            editDiscount
+        })
+    };
     removeDiscount = (index, value) => {
         const { discounts, deleteDiscount } = this.state;
         const { id } = this.props;
 
-        console.log(index, "====index")
-        console.log(value, "====value")
         if (id) {
             const deleteDiscountObj = { id: value.id };
             deleteDiscount.push(deleteDiscountObj);
@@ -118,9 +123,10 @@ class MainForm extends Component {
         e.preventDefault();
         const { id, form, createCustomer, updateCustomer } = this.props;
         const { validateFields, resetFields } = form;
-        
-        let { discounts, deleteDiscount } = this.state;
+
+        let { discounts, deleteDiscount, editDiscount } = this.state;
         const dupDiscount = [];
+        const editDup = [];
         this.setState({
             discounts: [
                 {
@@ -146,6 +152,23 @@ class MainForm extends Component {
                                     id: discounts[i].product.id
                                 }
                             }
+                        }
+                        if (discounts[i].edit) {
+                            const editObj = {
+                                where: {
+                                    id: discounts[i].discountId
+                                },
+                                data: {
+                                    discount: discounts[i].discount,
+                                    product: {
+                                        create: {
+                                           name: discounts[i].product.name,
+                                           price: discounts[i].product.price
+                                        }
+                                    }
+                                }
+                            }
+                            editDup.push(editObj)
                         }
                         if (id && discounts[i].new === true) {
                             dupDiscount.push(discountsObj)
@@ -174,26 +197,31 @@ class MainForm extends Component {
                     }
                 };
 
-
                 if (id) {
                     delete customer.password
                     delete customer.mobile
                     customer.id = id
+
+
                     if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
                         delete customer.data.discounts.create
                         customer.data.discounts.delete = deleteDiscount
                     }
-                    else if (dupDiscount.length < 1 && deleteDiscount.length < 1) {
+                    else if (dupDiscount.length < 1 && deleteDiscount.length < 1 && editDup.length < 1) {
                         delete customer.data.discounts
                     }
                     else if (dupDiscount.length > 0 && deleteDiscount.length > 0) {
                         customer.data.discounts.delete = deleteDiscount
+                    }
+                    if (editDup.length > 0) {
+                        customer.data.discounts.update = editDup;
                     }
                     updateCustomer({
                         variables: customer
                     }).then(result => {
                         this.setState({
                             disableBtn: false,
+                            editDiscount: [],
                             discounts: [
                                 {
                                     discount: 0,
@@ -390,7 +418,7 @@ class MainForm extends Component {
 
                                                                     placeholder="Products"
                                                                     value={value.product ? value.product.selected ? value.product.name : '' : ''}
-                                                                    onChange={this.onChangeDiscount.bind(this, 'product', index)}
+                                                                    onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}
                                                                 >
                                                                     <Input suffix={<Icon type="search" className="certain-category-icon" />} />
                                                                 </AutoComplete>
@@ -403,7 +431,7 @@ class MainForm extends Component {
                                                                     max={100}
                                                                     formatter={value => `${value}%`}
                                                                     parser={value => value.replace('%', '')}
-                                                                    onChange={this.onChangeDiscount.bind(this, 'percentage', index)}
+                                                                    onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
                                                                 />
                                                             </Form.Item>
                                                         </div>
