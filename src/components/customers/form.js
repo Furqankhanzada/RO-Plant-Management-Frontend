@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin } from 'antd';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import { GET_CUSTOMERS } from '../../graphql/queries/customer';
+import { GET_CUSTOMERS, CUSTOMER_QUERY } from '../../graphql/queries/customer';
 import { CREATE_CUSTOMER_MUTATION, UPDATE_CUSTOMER_MUTATION } from '../../graphql/mutations/customer';
 
 
@@ -121,25 +121,19 @@ class MainForm extends Component {
     };
     handledSubmit = (e) => {
         e.preventDefault();
-        const { id, form, createCustomer, updateCustomer } = this.props;
+        const { id, form, createCustomer, updateCustomer, history } = this.props;
         const { validateFields, resetFields } = form;
 
         let { discounts, deleteDiscount, editDiscount } = this.state;
         const dupDiscount = [];
         const editDup = [];
-        this.setState({
-            discounts: [
-                {
-                    discount: 0,
-                    product: ''
-                }
-            ]
-        });
         validateFields(async (err, values) => {
+           
             console.log(err)
             if (!err) {
                 this.setState({
-                    disableBtn: true
+                    disableBtn: true,
+                    loading: true
                 });
                 const { name, mobile, password, town, area, block, house } = values;
 
@@ -217,19 +211,30 @@ class MainForm extends Component {
                         customer.data.discounts.update = editDup;
                     }
                     updateCustomer({
-                        variables: customer
+                        variables: customer,
+                        update: (proxy, { data: { updateCustomer } }) => {
+                            const mobile = {updateCustomer}
+                            // Read the data from our cache for this query.
+                            let data = proxy.readQuery({ query: CUSTOMER_QUERY, variables: { id } });
+
+                            // Add our comment from the mutation to the end.
+                            // const index = data.find(value=>{
+                            //     return value.mobile === mobile
+                            // })
+
+                            data.customer = updateCustomer
+                            // data.customers.push(createCustomer)
+                            // data.customers = [...data.customers]
+                            // // Write our data back to the cache.
+                            proxy.writeQuery({ query: CUSTOMER_QUERY, data, variables: {  where: {id} } });
+                        }
                     }).then(result => {
                         this.setState({
                             disableBtn: false,
                             editDiscount: [],
-                            discounts: [
-                                {
-                                    discount: 0,
-                                    product: ''
-                                }
-                            ],
+                            deleteDiscount: []
                         })
-                        message.success('Customer has been updated successfully');
+                        history.push(`/customers/${id}`)
                     })
                         .catch(err => {
                             this.setState({
@@ -310,7 +315,7 @@ class MainForm extends Component {
             <div className="create-main-div">
                 <Form layout="horizontal" onSubmit={this.handledSubmit} className="form-create-update">
                     {
-                        loading ? (<Spin className="update_form_loader" />) : (
+                        loading || (disableBtn && id) ? (<Spin className="update_form_loader" />) : (
                             <React.Fragment>
                                 <Row gutter={16}>
                                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
