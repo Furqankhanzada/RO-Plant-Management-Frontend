@@ -449,6 +449,11 @@ img {
 .form-create-update{
     min-height: 400px
 }
+
+.ant-breadcrumb-link:hover{
+    cursor: pointer;
+    color: #40a9ff
+}
 /*/// extra small media query end here ///*/
 
 /*/// small media query start here ///*/

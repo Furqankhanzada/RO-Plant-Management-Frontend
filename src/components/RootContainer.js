@@ -97,6 +97,7 @@ class RootContainer extends Component {
     render() {
         const { drawer } = this.state;
         const { history } = this.props;
+        console.log(history)
 
         return (
             <Router>
