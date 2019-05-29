@@ -89,15 +89,15 @@ class CreatesProducts extends Component {
         const { history } = this.props;
 
         return (
-            <Fragment>
+            // <Fragment>
 
-                <Layout>
-                    <AppBar handleClick={this.openDrawer} />
-                    <Layout className="dashboard-main">
-                        <Sidebar handleClick={this.handleClick} history={history} drawer={drawer} />
+            //     <Layout>
+            //         <AppBar handleClick={this.openDrawer} />
+            //         <Layout className="dashboard-main">
+            //             <Sidebar handleClick={this.handleClick} history={history} drawer={drawer} />
 
-                        <Layout className="remove-padding" style={{ padding: '20px 24px 0', height: '100vh' }}>
-                            <BreadCrumbs />
+            //             <Layout className="remove-padding" style={{ padding: '20px 24px 0', height: '100vh' }}>
+            //                 <BreadCrumbs />
                             <div className="create-main-div">
                                 <div className="create-products">
 
@@ -135,10 +135,10 @@ class CreatesProducts extends Component {
                                     </Form.Item>
                                 </div>
                             </div>
-                        </Layout>
-                    </Layout>
-                </Layout>
-            </Fragment>
+            //             </Layout>
+            //         </Layout>
+            //     </Layout>
+            // </Fragment>
         )
     }
 }

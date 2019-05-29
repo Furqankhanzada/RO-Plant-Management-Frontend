@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react'
 import { Table, Divider, Tag } from 'antd';
-import { Sidebar } from './../common/sidebar'
+import  Sidebar  from './../common/sidebar'
 import { AppBar } from './../common/header'
 
 import { Layout } from 'antd';

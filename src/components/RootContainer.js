@@ -4,6 +4,7 @@ import {
     Route,
     Switch,
     Redirect,
+    withRouter
 } from 'react-router-dom'
 import LoginPage from './LoginPage'
 import ProductPage from './Products'
@@ -13,20 +14,23 @@ import LogoutPage from './LogoutPage'
 import CustomersPage from './CustomersPage'
 import CreateCustomer from './CreateCustomer'
 import UpdateCustomer from './UpdateCustomer'
-
+import { Layout } from 'antd';
 import CreateProduct from './CreateProduct'
 import { AUTH_TOKEN } from '../constant'
 import { isTokenExpired } from '../helper/jwtHelper'
 import { graphql } from 'react-apollo'
-import  { gql } from 'apollo-boost'
+import { gql } from 'apollo-boost'
 import CustomersDetail from "./customers/Detail";
+import BreadCrumbs from "./BreadCrumbs";
+import  Sidebar  from './common/sidebar'
+import { AppBar } from './common/header'
 
 const ProtectedRoute = ({ component: Component, token, ...rest }) => {
     return token ? (
         <Route {...rest} render={matchProps => <Component {...matchProps} />} />
-    ) : ( 
-        <Redirect to="/login" />
-    )
+    ) : (
+            <Redirect to="/login" />
+        )
 };
 
 
@@ -35,8 +39,8 @@ const UnProtectedRoute = ({ component: Component, token, ...rest }) => {
     return !token ? (
         <Route {...rest} render={matchProps => <Component {...matchProps} />} />
     ) : (
-        <Redirect to="/customers" />
-    )
+            <Redirect to="/customers" />
+        )
 };
 
 class RootContainer extends Component {
@@ -45,7 +49,8 @@ class RootContainer extends Component {
         this.refreshTokenFn = this.refreshTokenFn.bind(this);
 
         this.state = {
-            token: props.token
+            token: props.token,
+            drawer: false
         }
     }
 
@@ -84,15 +89,28 @@ class RootContainer extends Component {
     componentDidMount() {
         this.bootStrapData()
     }
-
+    openDrawer = () => {
+        this.setState({
+            drawer: !this.state.drawer
+        })
+    };
     render() {
+        const { drawer } = this.state;
+        const { history } = this.props;
+
         return (
             <Router>
                 <Fragment>
-                    {
-                        // this.renderNavBar()
-                    }
-                    {this.renderRoute()}
+                    <Layout>
+                        <AppBar handleClick={this.openDrawer} />
+                        <Layout className="dashboard-main">
+                            <Sidebar handleClick={this.handleClick} drawer={drawer} />
+                            <Layout style={{ padding: '20px 24px 0', height: '100vh' }}>
+                                <BreadCrumbs />
+                                {this.renderRoute()}
+                            </Layout>
+                        </Layout>
+                    </Layout>,
                 </Fragment>
             </Router>
         )
@@ -102,34 +120,20 @@ class RootContainer extends Component {
         return (
             <div className="fl w-100 pl4 pr4">
                 <Switch>
-                    <ProtectedRoute exact path="/" token={this.state.token} component={CustomersPage}/>
+                    <ProtectedRoute exact path="/" token={this.state.token} component={CustomersPage} />
 
-                    <ProtectedRoute exact path="/customers" token={this.state.token} component={CustomersPage}/>
+                    <ProtectedRoute exact path="/customers" token={this.state.token} component={CustomersPage} />
                     <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
-                    <ProtectedRoute exact path="/customers/:id" token={this.state.token} component={CustomersDetail}/>
+                    <ProtectedRoute exact path="/customers/:id" token={this.state.token} component={CustomersDetail} />
                     <ProtectedRoute exact path="/customers/update/:id" token={this.state.token} component={UpdateCustomer} />
 
-                    <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage}/>
+                    <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage} />
                     <ProtectedRoute exact path="/products/create" token={this.state.token} component={CreateProduct} />
 
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
 
 
-                    <Route
-                        token={this.state.token}
-                        path="/login"
-                        render={props => <LoginPage refreshTokenFn={this.refreshTokenFn}  token={this.state.token} />}
-                        />
-                    <Route
-                        token={this.state.token}
-                        path="/signup"
-                        render={props => (
-                            <SignupPage refreshTokenFn={this.refreshTokenFn} />
-                        )}
-                    />
 
-                    <Route path="/logout" component={LogoutPage} />
-                    <Route component={PageNotFound} />
                 </Switch>
             </div>
         )
@@ -145,6 +149,7 @@ const ME_QUERY = gql`
         }
     }
 `;
+withRouter(RootContainer);
 
 export default graphql(ME_QUERY, {
     options: {

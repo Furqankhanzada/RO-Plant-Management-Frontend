@@ -59,24 +59,24 @@ class Products extends Component {
                             </Option>
                         ));
                     return (
-                        <Fragment>
+                        // <Fragment>
 
-                            <Layout>
-                                <AppBar handleClick={this.openDrawer} />
-                                <Layout className="dashboard-main">
-                                    <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
+                        //     <Layout>
+                        //         <AppBar handleClick={this.openDrawer} />
+                        //         <Layout className="dashboard-main">
+                        //             <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
 
-                                    <Layout className="remove-padding" style={{ padding: '20px 24px 0', height:'100vh' }}>
-                                        <BreadCrumbs />
+                        //             <Layout className="remove-padding" style={{ padding: '20px 24px 0', height:'100vh' }}>
+                        //                 <BreadCrumbs />
                                         <div className="create-main-div">
                                             <div className="products-table">
                                                 <Table columns={columns} dataSource={products} rowKey="id" />
                                             </div>
                                         </div>
-                                    </Layout>
-                                </Layout>
-                            </Layout>
-                        </Fragment>
+                        //             </Layout>
+                        //         </Layout>
+                        //     </Layout>
+                        // </Fragment>
                     )
                 }}
             </Query>

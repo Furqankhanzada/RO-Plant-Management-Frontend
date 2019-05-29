@@ -71,18 +71,18 @@ class CustomersPage extends Component {
         const { customers, loading, error } = this.props.customersQuery;
         const { history } = this.props;
             return (
-                <Fragment>
-                    <Layout>
-                        <AppBar handleClick={this.openDrawer} />
-                        <Layout className="dashboard-main">
-                            <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
-                            <Layout style={{ padding: '20px 24px 0', height: '100vh' }}>
-                                <BreadCrumbs />
+                // <Fragment>
+                //     <Layout>
+                //         <AppBar handleClick={this.openDrawer} />
+                //         <Layout className="dashboard-main">
+                //             <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
+                //             <Layout style={{ padding: '20px 24px 0', height: '100vh' }}>
+                //                 <BreadCrumbs />
                                 <Customer customers={customers} loading={loading} history={this.props.history}/>
-                            </Layout>
-                        </Layout>
-                    </Layout>,
-                </Fragment>
+                //             </Layout>
+                //         </Layout>
+                //     </Layout>,
+                // </Fragment>
             )
     }
 }

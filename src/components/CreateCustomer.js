@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom'
 import { Layout, AutoComplete } from 'antd';
-import { Sidebar } from './common/sidebar'
+import Sidebar from './common/sidebar'
 import { AppBar } from './common/header'
 import { Query } from 'react-apollo';
 import CustomerForm from './customers/form';
@@ -47,38 +47,25 @@ class CreateCustomer extends Component {
         const { history, match } = this.props;
         const { params } = match;
         const { id } = params;
-            return (
-                <Query query={PRODUCTS_QUERY}>
-                    {({ data, loading }) => {
-                        const { products } = data;
-                        const options = products ? products
-                            .map(group => (
-                                <Option key={group} value={JSON.stringify(group)}>
-                                    <span>Volume: {group.name}</span>
-                                    <br />
-                                    <span>Price: {group.price}</span>
-                                </Option>
-                            )) : [];
-                        return (
-                            <Fragment>
+        return (
+            <Query query={PRODUCTS_QUERY}>
+                {({ data, loading }) => {
+                    const { products } = data;
+                    const options = products ? products
+                        .map(group => (
+                            <Option key={group} value={JSON.stringify(group)}>
+                                <span>Volume: {group.name}</span>
+                                <br />
+                                <span>Price: {group.price}</span>
+                            </Option>
+                        )) : [];
+                    return (
+                        <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} />
+                    )
+                }}
+            </Query>
 
-                                <Layout>
-                                    <AppBar handleClick={this.openDrawer} />
-                                    <Layout className="dashboard-main">
-                                        <Sidebar handleClick={this.handleClick} history={history} drawer={drawer} />
-
-                                        <Layout className="remove-padding" style={{ padding: '20px 24px 0', height: '100vh' }}>
-                                            <BreadCrumbs />
-                                            <CustomerForm  options = {options} handledSubmit={this.submitForm} id={id ? id : false}/>
-                                        </Layout>
-                                    </Layout>
-                                </Layout>
-                            </Fragment>
-                        )
-                    }}
-                </Query>
-
-          )
+        )
     }
 }
 
