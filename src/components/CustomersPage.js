@@ -14,58 +14,62 @@ import { GET_CUSTOMERS, CUSTOMER_SUBSCRIPTION } from '../graphql/queries/custome
 
 
 class CustomersPage extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            current: 'mail',
-            drawer: false
+  constructor(props){
+    super(props);
+    this.state = {
+      current: 'mail',
+      drawer: false
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      this.onRouteChanged();
+    }
+  }
+
+  onRouteChanged() {
+    const { customersQuery: { refetch }, location: { search } } = this.props;
+    const query = parse(search);
+    let where = {};
+    if(query.name) {
+        where.name_contains = query.name
+    }
+    if(query.mobile) {
+      where.mobile_contains = query.mobile
+    }
+    refetch({
+      where
+    })
+  }
+  componentDidMount() {
+    this.props.subscribeToCustomer();
+  }
+  componentWillReceiveProps(nextProps) {
+    const { error } = nextProps.customersQuery;
+    if(error){
+      const { graphQLErrors } = error;
+      graphQLErrors.forEach((value) => {
+        if(value.message === 'Not Authorised!') {
+          localStorage.removeItem('AUTH_TOKEN');
+          window.location.reload()
         }
+      })
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.location !== prevProps.location) {
-            this.onRouteChanged();
-        }
-    }
+  }
 
-    onRouteChanged() {
-        const { customersQuery: { refetch }, location: { search } } = this.props;
-        const query = parse(search);
-        refetch({
-            where: {
-                name_contains: query.name
-            }
-        })
-    }
+  handleClick = (e) => {
+    this.setState({
+      current: e.key
+    })
+  };
 
-    componentDidMount() {
-        this.props.subscribeToCustomer();
-    }
-    componentWillReceiveProps(nextProps) {
-        const { error } = nextProps.customersQuery;
-        if(error){
-            const { graphQLErrors } = error;
-            graphQLErrors.forEach((value) => {
-                if(value.message === 'Not Authorised!') {
-                    localStorage.removeItem('AUTH_TOKEN');
-                    window.location.reload()
-                }
-            })
-        }
-    }
+  openDrawer = () => {
+    this.setState({
+      drawer: !this.state.drawer
+    })
+  };
 
-    handleClick = (e) => {
-        this.setState({
-            current: e.key
-        })
-    };
-
-    openDrawer = () => {
-        this.setState({
-            drawer: !this.state.drawer
-        })
-    };
-
-    render() {
+  render() {
 
         const { drawer } = this.state;
         const { customers, loading, error } = this.props.customersQuery;
@@ -90,42 +94,47 @@ class CustomersPage extends Component {
 withRouter(CustomersPage);
 
 export default graphql(GET_CUSTOMERS, {
-    name: 'customersQuery', // name of the injected prop: this.props.customersQuery...
-    options: ({ location : { search = {}} }) => {
-        const query = parse(search);
-        return {
-            variables: {
-                where: {
-                    name_contains: query.name
-                }
-            }
-        }
-    },
-    props: props => {
-        return Object.assign({}, props, {
-            subscribeToCustomer: params => {
-                return props.customersQuery.subscribeToMore({
-                    document: CUSTOMER_SUBSCRIPTION,
-                    updateQuery: (prev, { subscriptionData }) => {
-                        if (!subscriptionData.data) {
-                            return prev
-                        }
-                        const newCustomer = subscriptionData.data.userSubscription;
-                        if(newCustomer) {
-                            if (prev.customers.find(customer => customer.id === newCustomer.id)) {
-                                return prev
-                            }
-                            return Object.assign({}, prev, {
-                                customers: [...prev.customers, newCustomer]
-                            })
-                        }
-                        // Execute when delete item
-                        return Object.assign({}, prev, {
-                            customers: [...prev.customers]
-                        })
-                    }
-                })
-            }
-        })
+  name: 'customersQuery', // name of the injected prop: this.props.customersQuery...
+  options: ({ location : { search = {}} }) => {
+    const query = parse(search);
+    let where = {};
+    if(query.name) {
+      where.name_contains = query.name
     }
+    if(query.mobile) {
+      where.mobile_contains = query.mobile
+    }
+    return {
+      variables: {
+        where
+      }
+    }
+  },
+  props: props => {
+    return Object.assign({}, props, {
+      subscribeToCustomer: params => {
+        return props.customersQuery.subscribeToMore({
+          document: CUSTOMER_SUBSCRIPTION,
+          updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data) {
+              return prev
+            }
+            const newCustomer = subscriptionData.data.userSubscription;
+            if(newCustomer) {
+              if (prev.customers.find(customer => customer.id === newCustomer.id)) {
+                return prev
+              }
+              return Object.assign({}, prev, {
+                customers: [...prev.customers, newCustomer]
+              })
+            }
+            // Execute when delete item
+            return Object.assign({}, prev, {
+              customers: [...prev.customers]
+            })
+          }
+        })
+      }
+    })
+  }
 })(CustomersPage)

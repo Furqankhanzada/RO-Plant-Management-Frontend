@@ -1,29 +1,14 @@
 import React, { PureComponent } from 'react'
 import List from './list.js'
 import Filter from './filter.js'
-import { stringify } from 'qs'
+import { stringify, parse } from 'qs'
 
 class User extends PureComponent {
     render() {
-        const { history, loading } = this.props;
-
-        const query = {page: "1"};
-        const user = {
-            "list": this.props.customers,
-            "pagination":{
-                "showSizeChanger":true,
-                "showQuickJumper":true,
-                "current":1,
-                "total":81,
-                "pageSize":30
-            },
-            "currentItem": {
-            }
-        };
-        const {
-            list,
-            pagination,
-            } = user;
+        const { loading, history, customers } = this.props;
+        // Fill filters input by url query params
+        const { location: { search } } = history;
+        const query = parse(search.replace('?', ''));
 
         const handleRefresh = newQuery => {
             this.props.history.push({
@@ -40,9 +25,8 @@ class User extends PureComponent {
 
 
         const listProps = {
-            dataSource: list,
+            dataSource: customers,
             loading,
-            pagination,
             onChange(page) {
                 handleRefresh({
                     page: page.current,

@@ -72,7 +72,7 @@ class UpdateCustomer extends Component {
                                         <Query query={CUSTOMER_QUERY} variables={{ id }}>
                                             {({ data, loading }) => {
                                                 return (
-                                                    <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={ loading }/>
+                                                    <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={ loading } history={history}/>
                                                 )
                                             }}
 
