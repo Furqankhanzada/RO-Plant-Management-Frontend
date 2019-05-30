@@ -10,7 +10,7 @@ import { GET_CUSTOMERS, CUSTOMER_SUBSCRIPTION } from '../graphql/queries/custome
 
 
 class CustomersPage extends Component {
-  constructor(props) {
+  constructor(props){
     super(props);
     this.state = {
       current: 'mail',
