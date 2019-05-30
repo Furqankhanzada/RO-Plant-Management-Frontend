@@ -19,7 +19,7 @@ class MainForm extends Component {
                 }
             ],
             name: '',
-            password: '',
+            password: '$[mobile]-labaik',
             mobile: '',
             town: '',
             area: '',
@@ -330,15 +330,15 @@ class MainForm extends Component {
                                                 ]
                                             })(<Input disabled={id ? true : false} name="mobile" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
-                                        <FormItem label={`Password Should be Number with Prefix`} >
-                                            {getFieldDecorator('password', {
-                                                rules: [
-                                                    {
-                                                        required: id ? false : true
-                                                    }
-                                                ]
-                                            })(<Input disabled={id ? true : false} name="password" onChange={this.getCustomerDetails} />)}
-                                        </FormItem>
+                                        {/*<FormItem label={`Password Should be Number with Prefix`} >*/}
+                                        {/*    {getFieldDecorator('password', {*/}
+                                        {/*        rules: [*/}
+                                        {/*            {*/}
+                                        {/*                required: id ? false : true*/}
+                                        {/*            }*/}
+                                        {/*        ]*/}
+                                        {/*    })(<Input disabled={id ? true : false} name="password" onChange={this.getCustomerDetails} />)}*/}
+                                        {/*</FormItem>*/}
                                         <FormItem label={`Name`} >
                                             {getFieldDecorator('name', {
                                                 initialValue: name,
@@ -356,7 +356,6 @@ class MainForm extends Component {
                                         <FormItem label={`Town`} >
                                             {getFieldDecorator('town', {
                                                 initialValue: town,
-
                                                 rules: [
                                                     {
                                                         required: true
@@ -411,13 +410,11 @@ class MainForm extends Component {
                                                                 onClick={this.removeDiscount.bind(this, index, value)}
                                                             />
                                                             <Form.Item>
-
                                                                 <AutoComplete
                                                                     className="certain-category-search"
                                                                     dropdownClassName="certain-category-search-dropdown"
                                                                     dropdownMatchSelectWidth={false}
                                                                     dropdownStyle={{ width: 300 }}
-                                                                    size="large"
                                                                     style={{ width: '100%' }}
                                                                     dataSource={options}
 
@@ -429,11 +426,11 @@ class MainForm extends Component {
                                                                 </AutoComplete>
 
                                                             </Form.Item>
-                                                            <Form.Item>
+                                                            <Form.Item label={'Add Discount'}>
                                                                 <InputNumber
                                                                     value={value.discount}
                                                                     min={0}
-                                                                    max={100}
+                                                                    max={90}
                                                                     formatter={value => `${value}%`}
                                                                     parser={value => value.replace('%', '')}
                                                                     onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
@@ -455,10 +452,7 @@ class MainForm extends Component {
                                 </Row>
                                 <Row className="top-space" type="flex" justify="center">
                                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}>
-
-
                                         <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}>{id ? 'Update' : 'Create'}</Button>
-
                                     </Col>
                                 </Row>
                             </React.Fragment>

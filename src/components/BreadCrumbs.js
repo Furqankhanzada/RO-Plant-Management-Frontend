@@ -1,16 +1,6 @@
 import React, { Component, Fragment } from 'react'
-import { graphql } from 'react-apollo'
 import { withRouter, Link } from 'react-router-dom'
-import { Layout, Breadcrumb, Icon } from 'antd';
-import { parse } from 'qs'
-
-import Customer from './customers/index.js'
-import { Loader } from './common/Loader'
-import { Sidebar } from './common/sidebar'
-import { AppBar } from './common/header'
-
-import { GET_CUSTOMERS, CUSTOMER_SUBSCRIPTION } from '../graphql/queries/customer'
-
+import { Breadcrumb, Icon } from 'antd';
 
 class BreadCrumbs extends Component {
     constructor(props) {
@@ -26,56 +16,36 @@ class BreadCrumbs extends Component {
         const { location } = history;
         const { pathname } = location;
         const pathSnippets = pathname.split('/').filter(i => i);
-        const breadcrumbNameMap = {
-            '/customers': {name:'Customers',iconType:'team'},
-            '/customers/create': {name:'Create',iconType:'user-add'},
-            '/products': {name:'Products',iconType:'team'},
-            '/products/create': {name:'Create',iconType:'user-add'},
-          };
+        let breadcrumbNameMap = {
+            '/customers': { name: 'Customers', iconType: 'team' },
+            '/customers/create': { name: 'Create', iconType: 'user-add' },
+            '/customers/update': { name: 'Update', iconType: 'edit' },
+            '/products': { name: 'Products', iconType: 'team' },
+            '/products/create': { name: 'Create', iconType: 'user-add' },
+        };
+        if (!breadcrumbNameMap[pathname]) {
+            if (!pathname.split('/')[3]) {
+                console.log(pathname.split('/')[2], "breadcrumbNameMap[pathname]")
+                breadcrumbNameMap[pathname] = { name: pathname.split('/')[2], iconType: pathname.split('/')[2] === 'update' ? 'edit' : '' };
+            } else {
+                breadcrumbNameMap[pathname] = { name: pathname.split('/')[3] };
+            }
+        }
+        console.log(pathname.split('/')[3], "breadasods")
         const extraBreadcrumbItems = pathSnippets.map((_, index) => {
-            const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+            let url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+            console.log(pathname.split('/')[3], "url========")
+
             return (
-              <Breadcrumb.Item key={url}>
-                <Link to={url}><Icon type={breadcrumbNameMap[url].iconType} />{breadcrumbNameMap[url].name}</Link>
-              </Breadcrumb.Item>
+                <Breadcrumb.Item key={url}>
+                    <Link to={url == '/customers/update' ? `/customers/${pathname.split('/')[3]}` : url}><Icon type={breadcrumbNameMap[url].iconType} />{breadcrumbNameMap[url].name}</Link>
+                </Breadcrumb.Item>
             );
-          });
-          const breadcrumbItems = [
-            <Breadcrumb.Item key="home">
-              <Link to="/">Home</Link>
-            </Breadcrumb.Item>,
-          ].concat(extraBreadcrumbItems);
-       
-          console.log(pathname, '====match')
+        });
         return (
             <Fragment>
                 <div className="bread-crumbs">
-                <Breadcrumb>{extraBreadcrumbItems}</Breadcrumb>
-                                    {/* {
-                        pathname === '/customers/create' || pathname === '/customers' ? (
-                            <Breadcrumb>
-                                <Breadcrumb.Item onClick={() =>pathname!== '/customers' ? history.push('/customers') : null}>
-                                    <Icon type="home" />
-                                    <span>Customers</span>
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item onClick={() => pathname!== '/customers/create' ? history.push('/customers/create') : null}>
-                                    <Icon type="user" />
-                                    <span>Create</span>
-                                </Breadcrumb.Item>
-                            </Breadcrumb>
-                        ) : (
-                                <Breadcrumb>
-                                    <Breadcrumb.Item onClick={() =>pathname!== '/products' ? history.push('/products') : null}>
-                                        <Icon type="home" />
-                                        <span>Products</span>
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Item onClick={() =>pathname!== '/products/create' ? history.push('/products/create') : null}>
-                                        <Icon type="user" />
-                                        <span>Create</span>
-                                    </Breadcrumb.Item>
-                                </Breadcrumb>
-                            )
-                    } */}
+                    <Breadcrumb>{extraBreadcrumbItems}</Breadcrumb>
                 </div>
             </Fragment>
         )

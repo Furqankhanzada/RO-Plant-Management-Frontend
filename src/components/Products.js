@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import  { gql } from 'apollo-boost';
+import { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
 import { Layout, AutoComplete, Table } from 'antd';
 import { Sidebar } from './common/sidebar'
@@ -22,7 +22,7 @@ const columns = [
 
 
 class Products extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             loading: false,
@@ -51,32 +51,19 @@ class Products extends Component {
         return (
             <Query query={PRODUCT}>
                 {({ data: { products = [] }, loading }) => {
-                     products.map(group => (
-                            <Option key={group.name} value={group.name}>
-                                <span>Volume: {group.name}</span>
-                                <br/>
-                                <span>Price: {group.price}</span>
-                            </Option>
-                        ));
+                    products.map(group => (
+                        <Option key={group.name} value={group.name}>
+                            <span>Volume: {group.name}</span>
+                            <br />
+                            <span>Price: {group.price}</span>
+                        </Option>
+                    ));
                     return (
-                        // <Fragment>
-
-                        //     <Layout>
-                        //         <AppBar handleClick={this.openDrawer} />
-                        //         <Layout className="dashboard-main">
-                        //             <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
-
-                        //             <Layout className="remove-padding" style={{ padding: '20px 24px 0', height:'100vh' }}>
-                        //                 <BreadCrumbs />
-                                        <div className="create-main-div">
-                                            <div className="products-table">
-                                                <Table columns={columns} dataSource={products} rowKey="id" />
-                                            </div>
-                                        </div>
-                        //             </Layout>
-                        //         </Layout>
-                        //     </Layout>
-                        // </Fragment>
+                        <div className="create-main-div">
+                            <div className="products-table">
+                                <Table columns={columns} dataSource={products} rowKey="id" />
+                            </div>
+                        </div>
                     )
                 }}
             </Query>

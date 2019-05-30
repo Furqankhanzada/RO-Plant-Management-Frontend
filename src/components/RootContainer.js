@@ -8,9 +8,6 @@ import {
 } from 'react-router-dom'
 import LoginPage from './LoginPage'
 import ProductPage from './Products'
-import SignupPage from './SignupPage'
-import PageNotFound from './PageNotFound'
-import LogoutPage from './LogoutPage'
 import CustomersPage from './CustomersPage'
 import CreateCustomer from './CreateCustomer'
 import UpdateCustomer from './UpdateCustomer'
@@ -22,12 +19,23 @@ import { graphql } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import CustomersDetail from "./customers/Detail";
 import BreadCrumbs from "./BreadCrumbs";
-import  Sidebar  from './common/sidebar'
+import Sidebar from './common/sidebar'
 import { AppBar } from './common/header'
 
-const ProtectedRoute = ({ component: Component, token, ...rest }) => {
+const ProtectedRoute = ({ component: Component, token, drawer, openDrawer, ...rest }) => {
     return token ? (
-        <Route {...rest} render={matchProps => <Component {...matchProps} />} />
+        <Fragment>
+            <Layout>
+                <AppBar handleClick={openDrawer} />
+                <Layout className="dashboard-main">
+                    <Sidebar drawer={drawer} />
+                    <Layout style={{ padding: '20px 24px 0', height: '100vh' }}>
+                        <BreadCrumbs />
+                        <Route {...rest} render={matchProps => <Component {...matchProps} />} />
+                    </Layout>
+                </Layout>
+            </Layout>,
+        </Fragment>
     ) : (
             <Redirect to="/login" />
         )
@@ -37,7 +45,9 @@ const ProtectedRoute = ({ component: Component, token, ...rest }) => {
 
 const UnProtectedRoute = ({ component: Component, token, ...rest }) => {
     return !token ? (
+
         <Route {...rest} render={matchProps => <Component {...matchProps} />} />
+
     ) : (
             <Redirect to="/customers" />
         )
@@ -101,40 +111,25 @@ class RootContainer extends Component {
 
         return (
             <Router>
-                <Fragment>
-                    <Layout>
-                        <AppBar handleClick={this.openDrawer} />
-                        <Layout className="dashboard-main">
-                            <Sidebar handleClick={this.handleClick} drawer={drawer} />
-                            <Layout style={{ padding: '20px 24px 0', height: '100vh' }}>
-                                <BreadCrumbs />
-                                {this.renderRoute()}
-                            </Layout>
-                        </Layout>
-                    </Layout>,
-                </Fragment>
+
+                {this.renderRoute(drawer, this.openDrawer)}
+
             </Router>
         )
     }
 
-    renderRoute() {
+    renderRoute(drawer, openDrawer) {
         return (
             <div className="fl w-100 pl4 pr4">
                 <Switch>
-                    <ProtectedRoute exact path="/" token={this.state.token} component={CustomersPage} />
-
-                    <ProtectedRoute exact path="/customers" token={this.state.token} component={CustomersPage} />
-                    <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
-                    <ProtectedRoute exact path="/customers/:id" token={this.state.token} component={CustomersDetail} />
-                    <ProtectedRoute exact path="/customers/update/:id" token={this.state.token} component={UpdateCustomer} />
-
-                    <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage} />
-                    <ProtectedRoute exact path="/products/create" token={this.state.token} component={CreateProduct} />
-
+                    <ProtectedRoute exact path="/" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CustomersPage} />
+                    <ProtectedRoute exact path="/customers" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CustomersPage} />
+                    <ProtectedRoute exact path="/customers/create" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CreateCustomer} />
+                    <ProtectedRoute exact path="/customers/:id" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CustomersDetail} />
+                    <ProtectedRoute exact path="/customers/update/:id" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={UpdateCustomer} />
+                    <ProtectedRoute exact path="/products" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={ProductPage} />
+                    <ProtectedRoute exact path="/products/create" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CreateProduct} />
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
-
-
-
                 </Switch>
             </div>
         )
