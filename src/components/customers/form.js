@@ -409,7 +409,8 @@ class MainForm extends Component {
                                                                 type="minus-circle-o"
                                                                 onClick={this.removeDiscount.bind(this, index, value)}
                                                             />
-                                                            <Form.Item>
+                                                            <Form.Item label={'Select Product'}>
+
                                                                 <AutoComplete
                                                                     className="certain-category-search"
                                                                     dropdownClassName="certain-category-search-dropdown"
