@@ -250,7 +250,7 @@ img {
 
 .ant-input-number {
     width: 100%;
-    margin-bottom: 1px;
+    margin-bottom: 10px;
 }
 
 .create-main-div .ant-form .ant-select-show-search {
@@ -259,12 +259,12 @@ img {
 }
 
 .create-main-div .ant-form .ant-select-show-search:last-of-type {
-    margin-bottom: -1px;
+    margin-bottom: 5px;
 }
 
 .fields-adds .ant-form-item-control-wrapper {
     width: 100%;
-    margin: 24px 0 0 0;
+    margin: 20px 0 0 0;
 }
 
 .passenger-input {
@@ -303,12 +303,12 @@ img {
 
 .discount-details .discounts {
     position: relative;
-    padding: 0px 20px 0 0;
+    padding: 0 20px 0 0;
 }
 
 .discount-details .discounts .removeButtonDiscount {
     right: 0;
-    top: 70px;
+    top: 45px;
     position: absolute;
 }
 
