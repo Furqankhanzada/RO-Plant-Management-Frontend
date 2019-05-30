@@ -388,6 +388,7 @@ img {
 }
 .new-account .ant-drawer-body .create-main-div {
     margin: 0;
+    background: white;
 }
 .new-account .ant-drawer-body .create-main-div h3 {
     font-size: 18px;
@@ -399,6 +400,19 @@ img {
 .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
     top: 35px;
     right: -5px;
+}
+.new-account .ant-drawer-body .remove-padding {
+    padding: 0 !important;
+    height: auto !important;
+}
+.new-account .ant-drawer-body .fields-adds {
+    width: 100% !important;
+}
+.new-account .ant-drawer-body .fields-adds .ant-form-item-control-wrapper {
+    margin: 20px 0 0 0;
+}
+.new-account .ant-drawer-body .dashboard-main {
+    min-height: inherit;
 }
 
 /*/// extra small media query start here ///*/

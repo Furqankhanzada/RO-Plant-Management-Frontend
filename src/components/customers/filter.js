@@ -1,7 +1,14 @@
-import React, { Component } from 'react'
-import CustomerForm from '../customers/form';
+import React, { Component, Fragment } from 'react'
+import CreateCustomer from '../customers/form';
 import moment from 'moment'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Drawer, Select } from 'antd';
+import { PRODUCTS_QUERY } from '../../graphql/queries/product'
+import { Query } from 'react-apollo';
+import { Layout } from 'antd';
+//import { Sidebar } from './common/sidebar'
+//import { AppBar } from './common/header'
+import CustomerForm from '../customers/form';
+
 //import city from 'utils/city'
 const city = [];
 const { Search } = Input;
@@ -132,7 +139,7 @@ class Filter extends Component {
                         <Search
                             placeholder={`Search Name`}
                             onSearch={this.handleSubmit}
-                        />
+                            />
                     )}
                 </Col>
                 <Col
@@ -145,7 +152,7 @@ class Filter extends Component {
                         <Search
                             placeholder={`Search Mobile Number`}
                             onSearch={this.handleSubmit}
-                        />
+                            />
                     )}
                 </Col>
 
@@ -183,7 +190,33 @@ class Filter extends Component {
                     onClose={this.onClose}
                     visible={this.state.visible}
                     >
-                    <CustomerForm />
+                    <Query query={PRODUCTS_QUERY}>
+                        {({ data, loading }) => {
+                            const { products } = data;
+                            console.log(data,"data===products")
+                            const options = products ? products
+                                .map(group => (
+                                    <Option key={group} value={JSON.stringify(group)}>
+                                        <span>Volume: {group.name}</span>
+                                        <br />
+                                        <span>Price: {group.price}</span>
+                                    </Option>
+                                )) : [];
+                            return (
+                                <Fragment>
+
+                                    <Layout>
+                                        <Layout className="dashboard-main">
+
+                                            <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
+                                                <CustomerForm  options = {options} handledSubmit={this.submitForm} id={ false}/>
+                                            </Layout>
+                                        </Layout>
+                                    </Layout>
+                                </Fragment>
+                            )
+                        }}
+                    </Query>
                 </Drawer>
 
 

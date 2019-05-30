@@ -456,7 +456,7 @@ class MainForm extends Component {
                                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}>
 
 
-                                        <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}>{id ? 'Update' : 'Create'}</Button>
+                                        <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}><Icon type="plus" /> {id ? 'Update' : 'Create'}</Button>
 
                                     </Col>
                                 </Row>

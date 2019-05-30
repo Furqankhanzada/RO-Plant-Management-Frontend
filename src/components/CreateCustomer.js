@@ -43,7 +43,7 @@ class CreateCustomer extends Component {
 
     render() {
         const { drawer } = this.state;
-        const { history, match } = this.props;
+        const { history, match, data } = this.props;
         const { params } = match;
         const { id } = params;
             return (
