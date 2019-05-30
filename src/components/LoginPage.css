@@ -232,7 +232,6 @@ img {
     border-radius: 5px;
     background: white;
     padding: 15px;
-    box-shadow: 0 2px 7px 0 #cecece;
 }
 
 .create-main-div .ant-form .ant-form-item {
@@ -375,6 +374,31 @@ img {
     right: 0;
     bottom: 0;
     top: 0;
+}
+
+.new-account .ant-drawer-body {
+    padding: 0;
+}
+.new-account .ant-drawer-body .ant-form .ant-form-item {
+    width: 48%;
+    float: left;
+}
+.new-account .ant-drawer-body .ant-form .ant-form-item:nth-child(odd){
+    float: right;
+}
+.new-account .ant-drawer-body .create-main-div {
+    margin: 0;
+}
+.new-account .ant-drawer-body .create-main-div h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+.new-account .ant-drawer-body .top-space {
+    margin-top: 15px;
+}
+.new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
+    top: 35px;
+    right: -5px;
 }
 
 /*/// extra small media query start here ///*/

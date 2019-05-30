@@ -318,7 +318,7 @@ class MainForm extends Component {
                         loading || (disableBtn && id) ? (<Spin className="update_form_loader" />) : (
                             <React.Fragment>
                                 <Row gutter={16}>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                                         <h3>General</h3>
                                         <FormItem label={`Mobile Number`} >
                                             {getFieldDecorator('mobile', {
@@ -351,7 +351,7 @@ class MainForm extends Component {
                                             })(<Input name="name" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
                                     </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                                         <h3>Address</h3>
                                         <FormItem label={`Town`} >
                                             {getFieldDecorator('town', {
@@ -397,7 +397,7 @@ class MainForm extends Component {
                                             })(<Input name="house" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
                                     </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                                         <h3>Discount</h3>
                                         <div className="discount-details">
                                             {

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import CustomerForm from '../customers/form';
 import moment from 'moment'
-import { Button, Row, Col, DatePicker, Input, Cascader, Form } from 'antd'
+import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Drawer, Select } from 'antd';
 //import city from 'utils/city'
 const city = [];
 const { Search } = Input;
-const { RangePicker } = DatePicker;
+const FormItem = Form.Item;
 
 const ColProps = {
     xs: 24,
@@ -19,7 +20,29 @@ const TwoColProps = {
     xl: 96
 };
 
+const { Option } = Select;
+
 class Filter extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: false
+        }
+    }
+
+    showDrawer = () => {
+        this.setState({
+            visible: true,
+        });
+    };
+
+    onClose = () => {
+        this.setState({
+            visible: false,
+        });
+    };
+
     componentDidUpdate(prevProps) {
         if (Object.keys(prevProps.filter).length === 0) {
             this.handleReset()
@@ -145,11 +168,25 @@ class Filter extends Component {
                                 <span>Reset</span>
                             </Button>
                         </div>
-                        <Button type="ghost" onClick={()=>this.props.history.push('/customers/create')}>
+                        <Button type="ghost" onClick={this.showDrawer}>
                             <span>Create</span>
                         </Button>
                     </Row>
                 </Col>
+
+
+
+                <Drawer
+                    className="new-account"
+                    title="Create a new account"
+                    width={720}
+                    onClose={this.onClose}
+                    visible={this.state.visible}
+                    >
+                    <CustomerForm />
+                </Drawer>
+
+
             </Row>
         )
     }
