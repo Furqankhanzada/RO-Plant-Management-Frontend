@@ -107,7 +107,7 @@ class RootContainer extends Component {
                     <ProtectedRoute exact path="/customers" token={this.state.token} component={CustomersPage}/>
                     <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
                     <ProtectedRoute exact path="/customers/:id" token={this.state.token} component={CustomersDetail}/>
-                    <ProtectedRoute exact path="/customers/update/:id" token={this.state.token} component={UpdateCustomer} />
+                    <ProtectedRoute exact path="/customers/update/:id" token={this.state.token} component={CustomersPage} />
 
                     <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage}/>
                     <ProtectedRoute exact path="/products/create" token={this.state.token} component={CreateProduct} />

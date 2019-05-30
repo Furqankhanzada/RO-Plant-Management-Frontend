@@ -3,6 +3,9 @@ import CreateCustomer from '../customers/form';
 import moment from 'moment'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Drawer, Select } from 'antd';
 import { PRODUCTS_QUERY } from '../../graphql/queries/product'
+import { CUSTOMER_QUERY } from '../../graphql/queries/customer.js'
+
+
 import { Query } from 'react-apollo';
 import { Layout } from 'antd';
 //import { Sidebar } from './common/sidebar'
@@ -45,11 +48,19 @@ class Filter extends Component {
     };
 
     onClose = () => {
-        this.setState({
-            visible: false,
-        });
-    };
+        const {id} = this.props;
+        if(id){
+            this.props.hideUpdateForm()
+        } else {
+            this.setState({
+                visible: false,
+            });
+        }
 
+    };
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps,'nextpppppppppppppppppppp')
+    }
     componentDidUpdate(prevProps) {
         if (Object.keys(prevProps.filter).length === 0) {
             this.handleReset()
@@ -103,8 +114,9 @@ class Filter extends Component {
     };
 
     render() {
-        const { filter, form: { getFieldDecorator } } = this.props;
+        const { filter, form: { getFieldDecorator }, history, id, tempId } = this.props;
         const { name, mobile } = filter;
+        console.log(id,'history===historyhistoryhistoryhistoryhistoryhistory')
         const FilterItem = ({ label = '', children }) => {
             const labelArray = label.split('');
             return (
@@ -188,7 +200,7 @@ class Filter extends Component {
                     title="Create a new account"
                     width={720}
                     onClose={this.onClose}
-                    visible={this.state.visible}
+                    visible={ this.state.visible || id }
                     >
                     <Query query={PRODUCTS_QUERY}>
                         {({ data, loading }) => {
@@ -203,13 +215,30 @@ class Filter extends Component {
                                     </Option>
                                 )) : [];
                             return (
+
                                 <Fragment>
 
                                     <Layout>
                                         <Layout className="dashboard-main">
 
                                             <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                                                <CustomerForm  options = {options} handledSubmit={this.submitForm} id={ false}/>
+                                                {
+                                                    tempId && id ? (
+                                                        <Query query={CUSTOMER_QUERY} variables={{ id }}>
+                                                            {({ data, loading }) => {
+                                                                console.log(data,"====dta", id)
+                                                                return (
+                                                                    <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={ loading } history={history}/>
+                                                                )
+                                                            }}
+
+                                                        </Query>
+                                                    ) : (
+                                                        <CustomerForm  options = {options} handledSubmit={this.submitForm} id={ false}/>
+
+                                                    )
+                                                }
+
                                             </Layout>
                                         </Layout>
                                     </Layout>

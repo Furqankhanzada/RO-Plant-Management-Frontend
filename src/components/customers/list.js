@@ -16,7 +16,7 @@ class List extends PureComponent {
         }
     }
     onEditItem(record) {
-        this.props.history.push(`/customers/update/${record.id}`)
+        this.props.openUpdateForm(record.id)
     }
     handleMenuClick (record, e) {
         const { deleteCustomer } = this.props;

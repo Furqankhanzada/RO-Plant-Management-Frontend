@@ -4,8 +4,30 @@ import Filter from './filter.js'
 import { stringify, parse } from 'qs'
 
 class User extends PureComponent {
+    constructor(props){
+        super(props);
+        this.state = {
+            id: '',
+            tempId: false
+        }
+    }
+    hideUpdateForm = () =>{
+        this.setState({
+            id : '',
+            tempId: false
+        })
+    }
+
+    openUpdateForm = (id) => {
+        this.setState({
+            id,
+            tempId: true
+        })
+    }
     render() {
         const { loading, history, customers } = this.props;
+        const { id, tempId } = this.state;
+
         // Fill filters input by url query params
         const { location: { search } } = history;
         const query = parse(search.replace('?', ''));
@@ -49,8 +71,8 @@ class User extends PureComponent {
 
         return (
             <div className="user-main-div">
-                <Filter {...filterProps} history={history}/>
-                <List  history={history} {...listProps}/>
+                <Filter {...filterProps} history={history} id = {id} tempId={tempId} hideUpdateForm = {this.hideUpdateForm}/>
+                <List  history={history} {...listProps} openUpdateForm = {this.openUpdateForm} />
             </div>
             )
     }

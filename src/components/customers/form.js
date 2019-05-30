@@ -53,10 +53,12 @@ class MainForm extends Component {
         })
     };
     componentWillReceiveProps(nextProps) {
+
         if (nextProps.data) {
             const { data, id } = nextProps;
             if (Object.keys(data).length !== 0) {
                 const { customer } = data;
+                console.log(customer, "akjdlkajsdlkasjd", id)
                 const discountArray = customer.discounts.map((value, index) => {
                     value.product.selected = true;
                     return value

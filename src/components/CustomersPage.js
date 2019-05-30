@@ -17,10 +17,19 @@ class CustomersPage extends Component {
     super(props);
     this.state = {
       current: 'mail',
-      drawer: false
+      drawer: false,
+      id: ''
     }
   }
   componentDidUpdate(prevProps) {
+    const { match } = this.props;
+    const {params} = match;
+    if(params.id){
+      this.props.history.push(`/customers/update/${params.id}`)
+    }
+    //const { match } = this.props;
+
+    console.log(prevProps,"prev====", this.props)
     if (this.props.location !== prevProps.location) {
       this.onRouteChanged();
     }
@@ -70,7 +79,7 @@ class CustomersPage extends Component {
 
   render() {
 
-    const { drawer } = this.state;
+    const { drawer, id } = this.state;
     const { customers, loading, error } = this.props.customersQuery;
     const { history } = this.props;
     return (
@@ -80,7 +89,7 @@ class CustomersPage extends Component {
           <Layout className="dashboard-main">
             <Sidebar handleClick = {this.handleClick} history = {history} drawer={drawer} />
             <Layout style={{ padding: '30px 24px 0', height: '100vh' }}>
-              <Customer customers={customers} loading={loading} history={this.props.history}/>
+              <Customer customers={customers} loading={loading} history={this.props.history} id = {id}/>
             </Layout>
           </Layout>
         </Layout>,
