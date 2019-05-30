@@ -356,7 +356,6 @@ class MainForm extends Component {
                                         <FormItem label={`Town`} >
                                             {getFieldDecorator('town', {
                                                 initialValue: town,
-
                                                 rules: [
                                                     {
                                                         required: true
@@ -454,10 +453,7 @@ class MainForm extends Component {
                                 </Row>
                                 <Row className="top-space" type="flex" justify="center">
                                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}>
-
-
                                         <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}>{id ? 'Update' : 'Create'}</Button>
-
                                     </Col>
                                 </Row>
                             </React.Fragment>
