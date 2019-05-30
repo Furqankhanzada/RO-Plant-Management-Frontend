@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { Button, Row, Col, DatePicker, Input, Cascader, Form } from 'antd'
+import { Button, Row, Col, DatePicker, Input, Cascader, Form, Icon } from 'antd'
 //import city from 'utils/city'
 const city = [];
 const { Search } = Input;
@@ -145,7 +145,8 @@ class Filter extends Component {
                                 <span>Reset</span>
                             </Button>
                         </div>
-                        <Button type="ghost" onClick={()=>this.props.history.push('/customers/create')}>
+                        <Button type="primary" onClick={()=>this.props.history.push('/customers/create')}>
+                            <Icon type="plus" />
                             <span>Create</span>
                         </Button>
                     </Row>
