@@ -1,28 +1,56 @@
 import React, { Component, Fragment } from 'react'
 import {
-    NavLink,
-    Link,
     BrowserRouter as Router,
     Route,
     Switch,
     Redirect,
+    withRouter
 } from 'react-router-dom'
 import LoginPage from './LoginPage'
-import SignupPage from './SignupPage'
-import PageNotFound from './PageNotFound'
-import LogoutPage from './LogoutPage'
-import DashboardPage from './DashboardPage'
+import ProductPage from './Products'
+import CustomersPage from './CustomersPage'
+import CreateCustomer from './CreateCustomer'
+import UpdateCustomer from './UpdateCustomer'
+import { Layout } from 'antd';
+import CreateProduct from './CreateProduct'
 import { AUTH_TOKEN } from '../constant'
 import { isTokenExpired } from '../helper/jwtHelper'
 import { graphql } from 'react-apollo'
-import  { gql } from 'apollo-boost'
+import { gql } from 'apollo-boost'
+import CustomersDetail from "./customers/Detail";
+import BreadCrumbs from "./BreadCrumbs";
+import Sidebar from './common/sidebar'
+import { AppBar } from './common/header'
 
-const ProtectedRoute = ({ component: Component, token, ...rest }) => {
+const ProtectedRoute = ({ component: Component, token, drawer, openDrawer, ...rest }) => {
     return token ? (
-        <Route {...rest} render={matchProps => <Component {...matchProps} />} />
+        <Fragment>
+            <Layout>
+                <AppBar handleClick={openDrawer} />
+                <Layout className="dashboard-main">
+                    <Sidebar drawer={drawer} />
+                    <Layout style={{ padding: '20px 24px 0', height: '100vh' }}>
+                        <BreadCrumbs />
+                        <Route {...rest} render={matchProps => <Component {...matchProps} />} />
+                    </Layout>
+                </Layout>
+            </Layout>,
+        </Fragment>
     ) : (
-        <Redirect to="/login" />
-    )
+            <Redirect to="/login" />
+        )
+};
+
+
+
+const UnProtectedRoute = ({ component: Component, token, ...rest }) => {
+    return !token ? (
+
+        <Route {...rest} render={matchProps => <Component {...matchProps} />} />
+
+    ) : (
+            <Redirect to="/customers" />
+        )
 };
 
 class RootContainer extends Component {
@@ -32,12 +60,12 @@ class RootContainer extends Component {
 
         this.state = {
             token: props.token,
+            drawer: false
         }
     }
 
     refreshTokenFn(data = {}) {
         const token = data[AUTH_TOKEN];
-
         if (token) {
             localStorage.setItem(AUTH_TOKEN, token)
         } else {
@@ -45,7 +73,7 @@ class RootContainer extends Component {
         }
 
         this.setState({
-            token: data[AUTH_TOKEN],
+            token: data[AUTH_TOKEN]
         })
     }
 
@@ -62,7 +90,8 @@ class RootContainer extends Component {
                 }
             }
         } catch (e) {
-            console.log('')
+            localStorage.removeItem(AUTH_TOKEN);
+            this.setState({ token: null })
         }
     }
 
@@ -70,109 +99,37 @@ class RootContainer extends Component {
     componentDidMount() {
         this.bootStrapData()
     }
-
+    openDrawer = () => {
+        this.setState({
+            drawer: !this.state.drawer
+        })
+    };
     render() {
+        const { drawer } = this.state;
+        const { history } = this.props;
+        console.log(history)
+
         return (
             <Router>
-                <Fragment>
-                    {this.renderNavBar()}
-                    {this.renderRoute()}
-                </Fragment>
+
+                {this.renderRoute(drawer, this.openDrawer)}
+
             </Router>
         )
     }
 
-    renderNavBar() {
-        return (
-            <nav className="pa3 pa4-ns">
-                <Link className="link dim black b f6 f5-ns dib mr3" to="/" title="Feed">
-                    Blog
-                </Link>
-                <NavLink
-                    className="link dim f6 f5-ns dib mr3 black"
-                    activeClassName="gray"
-                    exact={true}
-                    to="/"
-                    title="Feed"
-                >
-                    Feed
-                </NavLink>
-                {this.props.data &&
-                this.props.data.me &&
-                this.props.data.me.mobile &&
-                this.state.token && (
-                    <NavLink
-                        className="link dim f6 f5-ns dib mr3 black"
-                        activeClassName="gray"
-                        exact={true}
-                        to="/drafts"
-                        title="Drafts"
-                    >
-                        Drafts
-                    </NavLink>
-                )}
-                {this.state.token ? (
-                    <div
-                        onClick={() => {
-                            this.refreshTokenFn &&
-                            this.refreshTokenFn({
-                                [AUTH_TOKEN]: null,
-                            });
-                            window.location.href = '/'
-                        }}
-                        className="f6 link dim br1 ba ph3 pv2 fr mb2 dib black"
-                    >
-                        Logout
-                    </div>
-                ) : (
-                    <Link
-                        to="/login"
-                        className="f6 link dim br1 ba ph3 pv2 fr mb2 dib black"
-                    >
-                        Login
-                    </Link>
-                )}
-                {this.props.data &&
-                this.props.data.me &&
-                this.props.data.me.mobile &&
-                this.state.token && (
-                    <Link
-                        to="/create"
-                        className="f6 link dim br1 ba ph3 pv2 fr mb2 dib black"
-                    >
-                        + Create Draft
-                    </Link>
-                )}
-            </nav>
-        )
-    }
-
-    renderRoute() {
+    renderRoute(drawer, openDrawer) {
         return (
             <div className="fl w-100 pl4 pr4">
                 <Switch>
-                    <ProtectedRoute exact path="/" token={this.state.token} component={DashboardPage} />
-
-                    {/*<ProtectedRoute*/}
-                        {/*token={this.state.token}*/}
-                        {/*path="/"*/}
-                        {/*component={DashboardPage}*/}
-                    {/*/>*/}
-
-                    <Route
-                        token={this.state.token}
-                        path="/login"
-                        render={props => <LoginPage refreshTokenFn={this.refreshTokenFn} />}
-                    />
-                    <Route
-                        token={this.state.token}
-                        path="/signup"
-                        render={props => (
-                            <SignupPage refreshTokenFn={this.refreshTokenFn} />
-                        )}
-                    />
-                    <Route path="/logout" component={LogoutPage} />
-                    <Route component={PageNotFound} />
+                    <ProtectedRoute exact path="/" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CustomersPage} />
+                    <ProtectedRoute exact path="/customers" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CustomersPage} />
+                    <ProtectedRoute exact path="/customers/create" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CreateCustomer} />
+                    <ProtectedRoute exact path="/customers/:id" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CustomersDetail} />
+                    <ProtectedRoute exact path="/customers/update/:id" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={UpdateCustomer} />
+                    <ProtectedRoute exact path="/products" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={ProductPage} />
+                    <ProtectedRoute exact path="/products/create" token={this.state.token} drawer={drawer} openDrawer={openDrawer} component={CreateProduct} />
+                    <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
                 </Switch>
             </div>
         )
@@ -188,9 +145,10 @@ const ME_QUERY = gql`
         }
     }
 `;
+withRouter(RootContainer);
 
 export default graphql(ME_QUERY, {
     options: {
-        errorPolicy: 'all',
-    },
+        errorPolicy: 'all'
+    }
 })(RootContainer)

@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 
@@ -24,8 +23,8 @@ const middlewareLink = new ApolloLink((operation, forward) => {
     // return the headers to the context so httpLink can read them
     operation.setContext({
         headers: {
-            Authorization: tokenValue ? `Bearer ${tokenValue}` : '',
-        },
+            Authorization: tokenValue ? `Bearer ${tokenValue}` : ''
+        }
     });
     return forward(operation)
 });
@@ -38,9 +37,9 @@ const wsLink = new WebSocketLink({
     options: {
         reconnect: true,
         connectionParams: {
-            Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN)}`,
-        },
-    },
+            Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN)}`
+        }
+    }
 });
 
 const link = split(
@@ -50,14 +49,14 @@ const link = split(
         return kind === 'OperationDefinition' && operation === 'subscription'
     },
     wsLink,
-    httpLinkAuth,
+    httpLinkAuth
 );
 
 // apollo client setup
 const client = new ApolloClient({
     link: ApolloLink.from([link]),
     cache: new InMemoryCache(),
-    connectToDevTools: true,
+    connectToDevTools: true
 });
 
 const token = localStorage.getItem(AUTH_TOKEN);
@@ -66,7 +65,7 @@ ReactDOM.render(
     <ApolloProvider client={client}>
         <RootContainer token={token} />
     </ApolloProvider>,
-    document.getElementById('root'),
+    document.getElementById('root')
 );
 
 

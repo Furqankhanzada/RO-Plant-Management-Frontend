@@ -1,4 +1,5 @@
 /*@import '~themes/vars';*/
+@import '~antd/dist/antd.css';
 
 .form {
     position: absolute;
@@ -6,23 +7,49 @@
     left: 50%;
     margin: -160px 0 0 -160px;
     width: 320px;
-    height: 320px;
+    height: auto;
     padding: 36px;
     box-shadow: 0 0 100px rgba(0, 0, 0, 0.08);
 }
 
-button {
+.ant-form-item-control {
+    line-height: inherit;
+    zoom: 1;
+    margin-bottom: 10px;
+}
+
+.login-signup-logo {
+    width: 138px;
+}
+
+.signup-link {
+    float: right
+}
+
+.login-signup-switcher {
+    margin-top: 5px;
+}
+
+.login-form-button {
+    width: 100%;
+    height: 40px;
+}
+
+/*button {*/
+/*width: login-form-button;*/
+/*}*/
+.ant-form-item-children {
     width: 100%;
 }
 
-p {
-    color: rgb(204, 204, 204);
-    text-align: center;
-    margin-top: 16px;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-}
+/*p {*/
+    /*color: rgb(204, 204, 204);*/
+    /*text-align: center;*/
+    /*margin-top: 16px;*/
+    /*font-size: 12px;*/
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+/*}*/
 
 
 .logo {
@@ -33,20 +60,13 @@ p {
     justify-content: center;
     align-items: center;
 }
+
 img {
     width: 40px;
     margin-right: 8px;
 }
 
-span {
-    vertical-align: text-bottom;
-    font-size: 16px;
-    text-transform: uppercase;
-    display: inline-block;
-    font-weight: 700;
-    /*color: @primary-color;*/
-/*.text-gradient();*/
-}
+
 
 
 .ant-spin-container,
@@ -59,3 +79,399 @@ span {
     width: 100%;
     bottom: 0;
 }
+
+#components-layout-demo-top-side-2 .logo {
+    width: 120px;
+    height: 31px;
+    background: rgba(255, 255, 255, .2);
+    margin: 16px 28px 16px 0;
+    float: left;
+}
+
+.dashboard-main {
+    min-height: calc(100vh - 93px);
+}
+
+.header-custom {
+    box-shadow: 0 0 5px 0 #cecece;
+    background: #001529;
+    position: relative;
+    z-index: 1;
+}
+
+.nav-logo {
+    cursor: pointer;
+    margin-bottom: 0;
+    display: inline-block;
+}
+
+.nav-ul {
+    border-bottom: 0;
+    box-shadow: none;
+    float: right;
+    margin-top: 10px;
+}
+
+.table {
+    white-space: nowrap;
+
+}
+
+.ant-table td {
+    white-space: nowrap;
+}
+
+.filterItem {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filterItem .labelWrap {
+    width: 80px;
+    line-height: 28px;
+    margin-right: 12px;
+    justify-content: space-between;
+    display: flex;
+    overflow: hidden;
+}
+
+.filterItem .item {
+    flex: 1;
+}
+
+.search-btn {
+    margin-right: 18px;
+}
+
+
+.ant-table-body::-webkit-scrollbar {
+    width: 1em;
+    height: 8px;
+    background-color: white;
+}
+
+.ant-table-body::-webkit-scrollbar-track {
+    -webkit-box-shadow: 0 0 0 0;
+}
+
+.ant-table-body::-webkit-scrollbar-thumb {
+    background-color: #e6e6e6;
+}
+
+.user-main-div {
+    background: #fff;
+    padding: 24px;
+    min-height: 'calc(100vh - 230px)';
+    position: relative;
+    margin-bottom: 80px;
+}
+
+
+
+.loader {
+    background-color: #fff;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    text-align: center;
+}
+
+.warpper {
+    width: 100px;
+    height: 100px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.inner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    text-indent: -12345px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-left: 1px solid rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    z-index: 100001;
+    animation: spinner 600ms infinite linear;
+}
+
+.text {
+    width: 100px;
+    height: 20px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: #000;
+}
+
+.hidden {
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 1s ease 0.5s, z-index 0.1s ease 1.5s;
+}
+
+
+.create-main-div {
+    margin: 0 0 90px;
+    border-radius: 5px;
+    position: relative;
+    padding: 0 10px 10px;
+}
+
+.create-main-div .ant-form {
+    border-radius: 5px;
+    background: white;
+    padding: 15px;
+    box-shadow: 0 2px 7px 0 #cecece;
+}
+
+.create-main-div .ant-form .ant-form-item {
+    margin-bottom: 5px;
+}
+
+.create-main-div .ant-form .ant-form-item .ant-form-item-label {
+    margin: 0 0 5px 0;
+    line-height: 19.9999px;
+}
+
+.top-space {
+    margin-top: 20px;
+}
+
+.ant-input-number {
+    width: 100%;
+    margin-bottom: 1px;
+}
+
+.create-main-div .ant-form .ant-select-show-search {
+    width: 100% !important;
+    margin-bottom: 20px;
+}
+
+.create-main-div .ant-form .ant-select-show-search:last-of-type {
+    margin-bottom: -1px;
+}
+
+.fields-adds .ant-form-item-control-wrapper {
+    width: 100%;
+    margin: 24px 0 0 0;
+}
+
+.passenger-input {
+    width: 90%;
+    margin-right: 15px;
+}
+
+
+
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.products-table {
+    background: white;
+    box-shadow: 0 0 3px 0 #cecece;
+}
+
+.products-table .ant-table-pagination.ant-pagination {
+    margin: 16px 16px 16px 0;
+}
+
+.toggleIcon {
+    float: left;
+    display: none;
+    font-size: 22px;
+    margin: 20px 15px 0 0;
+}
+
+.discount-details .discounts {
+    position: relative;
+    padding: 0px 20px 0 0;
+}
+
+.discount-details .discounts .removeButtonDiscount {
+    right: 0;
+    top: 70px;
+    position: absolute;
+}
+
+.ant-layout-sider-children {
+    padding-top: 10px;
+}
+
+.ant-layout-sider-children ul {
+    border-right: 0;
+}
+
+.ant-layout-sider-children ul li .ant-menu-submenu-title {
+    height: 35px !important;
+    line-height: 35px !important;
+}
+
+.ant-layout-sider-children ul li .ant-menu-sub li {
+    height: 30px !important;
+    line-height: 30px !important;
+}
+
+.create-products {}
+
+.create-products .ant-form {
+    width: 450px;
+    margin: 0 auto 20px;
+    padding: 30px 30px 15px;
+}
+
+.create-products .ant-form .ant-form-item {
+    margin: 0;
+    width: 100%;
+}
+
+.create-products .ant-form .ant-form-item .ant-form-item-control-wrapper {
+    width: 100%;
+}
+
+.create-products .ant-form-item-control {
+    text-align: center;
+}
+
+.create-products .ant-form .ant-form-item .ant-form-item-control-wrapper .ant-form-item-control {
+    margin-bottom: 15px;
+}
+
+.create-products .ant-form .ant-form-item .ant-form-item-control-wrapper .ant-input {
+    height: 40px;
+    line-height: 40px;
+}
+
+.create-products .ant-form-item-control button {
+    width: 150px;
+    height: 40px;
+}
+
+.update_form_loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+}
+
+.bread-crumbs {
+    flex: none;
+    padding: 5px 0;
+    margin-bottom: 20px;
+}
+
+/*/// extra small media query start here ///*/
+@media (min-width: 320px) and (max-width: 767px) {
+
+    .remove-padding {
+        padding: 10px 5px 0 !important;
+    }
+
+    .ant-layout-sider {
+        bottom: 0;
+        top: 65px;
+        z-index: 1;
+        left: -205px;
+        position: absolute;
+    }
+
+    .create-main-div .ant-form .ant-form-item .ant-form-item-label {
+        padding: 0;
+    }
+
+    .create-main-div .ant-form .ant-form-item .ant-form-item-label label {
+        font-size: 13px;
+    }
+
+    .create-main-div .ant-form {
+        margin-bottom: 15px;
+        padding: 15px 10px 5px;
+    }
+
+    .top-space {
+        margin-top: 10px;
+    }
+
+    .create-main-div {
+        margin: 0 0 80px;
+    }
+
+    .ant-layout-header {
+        padding: 0 15px;
+    }
+
+    .ant-menu-item,
+    .ant-menu-submenu-title {
+        padding: 0 10px;
+    }
+
+    .toggleIcon {
+        display: inline-block;
+    }
+
+    .login-signup-logo {
+        width: 120px;
+    }
+
+    .showHideView {
+        left: 0;
+    }
+
+    .create-products .ant-form {
+        width: 100%;
+        padding: 15px 15px 0 !important;
+    }
+
+}
+.form-create-update{
+    min-height: 400px
+}
+
+.ant-breadcrumb-link:hover{
+    cursor: pointer;
+    color: #40a9ff
+}
+/*/// extra small media query end here ///*/
+
+/*/// small media query start here ///*/
+@media (min-width: 768px) and (max-width: 991px) {
+
+    .remove-padding {
+        padding: 10px 15px 0 !important;
+    }
+
+    .create-main-div .ant-form {
+        margin-bottom: 20px;
+    }
+
+}
+
+/*/// small media query end here ///*/
+
+/*/// medium media query start here ///*/
+@media (min-width: 992px) and (max-width: 1199px) {}
+
+/*/// medium media query end here ///*/
