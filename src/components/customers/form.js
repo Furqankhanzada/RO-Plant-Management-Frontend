@@ -19,7 +19,7 @@ class MainForm extends Component {
                 }
             ],
             name: '',
-            password: '$[mobile]-labaik',
+            password: '',
             mobile: '',
             town: '',
             area: '',
@@ -135,7 +135,7 @@ class MainForm extends Component {
                     disableBtn: true,
                     loading: true
                 });
-                const { name, mobile, password, town, area, block, house } = values;
+                const { name, mobile, town, area, block, house } = values;
 
                 for (var i = 0; i < discounts.length; i++) {
                     if (discounts[i].discount !== 0 && discounts[i].product) {
@@ -176,7 +176,7 @@ class MainForm extends Component {
                     data: {
                         mobile,
                         name,
-                        password,
+                        password: `${mobile}-labbaik`,
                         address: {
                             create: {
                                 town,
@@ -330,15 +330,6 @@ class MainForm extends Component {
                                                 ]
                                             })(<Input disabled={id ? true : false} name="mobile" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
-                                        {/*<FormItem label={`Password Should be Number with Prefix`} >*/}
-                                        {/*    {getFieldDecorator('password', {*/}
-                                        {/*        rules: [*/}
-                                        {/*            {*/}
-                                        {/*                required: id ? false : true*/}
-                                        {/*            }*/}
-                                        {/*        ]*/}
-                                        {/*    })(<Input disabled={id ? true : false} name="password" onChange={this.getCustomerDetails} />)}*/}
-                                        {/*</FormItem>*/}
                                         <FormItem label={`Name`} >
                                             {getFieldDecorator('name', {
                                                 initialValue: name,
