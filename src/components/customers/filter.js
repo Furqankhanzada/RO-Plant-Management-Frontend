@@ -48,8 +48,8 @@ class Filter extends Component {
     };
 
     onClose = () => {
-        const {id} = this.props;
-        if(id){
+        const { id } = this.props;
+        if (id) {
             this.props.hideUpdateForm()
         } else {
             this.setState({
@@ -59,7 +59,7 @@ class Filter extends Component {
 
     };
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps,'nextpppppppppppppppppppp')
+        console.log(nextProps, 'nextpppppppppppppppppppp')
     }
     componentDidUpdate(prevProps) {
         if (Object.keys(prevProps.filter).length === 0) {
@@ -116,7 +116,7 @@ class Filter extends Component {
     render() {
         const { filter, form: { getFieldDecorator }, history, id, tempId } = this.props;
         const { name, mobile } = filter;
-        console.log(id,'history===historyhistoryhistoryhistoryhistoryhistory')
+        console.log(id, 'history===historyhistoryhistoryhistoryhistoryhistory')
         const FilterItem = ({ label = '', children }) => {
             const labelArray = label.split('');
             return (
@@ -125,13 +125,13 @@ class Filter extends Component {
                         <div className='labelWrap '>
                             {labelArray.map((item, index) => (
                                 <span className="labelText" key={index}>
-              {item}
-            </span>
+                                    {item}
+                                </span>
                             ))}
                         </div>
                     ) : (
-                        ''
-                    )}
+                            ''
+                        )}
                     <div className='item'>{children}</div>
                 </div>
             )
@@ -151,7 +151,7 @@ class Filter extends Component {
                         <Search
                             placeholder={`Search Name`}
                             onSearch={this.handleSubmit}
-                            />
+                        />
                     )}
                 </Col>
                 <Col
@@ -159,12 +159,12 @@ class Filter extends Component {
                     xl={{ span: 5 }}
                     md={{ span: 8 }}
                     id="addressCascader"
-                    >
+                >
                     {getFieldDecorator('mobile', { initialValue: mobile })(
                         <Search
                             placeholder={`Search Mobile Number`}
                             onSearch={this.handleSubmit}
-                            />
+                        />
                     )}
                 </Col>
 
@@ -173,14 +173,14 @@ class Filter extends Component {
                     xl={{ span: 15 }}
                     md={{ span: 32 }}
                     sm={{ span: 24 }}
-                    >
+                >
                     <Row type="flex" align="middle" justify="space-between">
                         <div>
                             <Button
                                 type="primary"
                                 className="margin-right search-btn"
                                 onClick={this.handleSubmit}
-                                >
+                            >
                                 <span>Search</span>
                             </Button>
                             <Button onClick={this.handleReset}>
@@ -196,16 +196,16 @@ class Filter extends Component {
 
 
                 <Drawer
-                    className="new-account"
+                    className="new-account drawer-custom-style"
                     title="Create a new account"
                     width={720}
                     onClose={this.onClose}
-                    visible={ this.state.visible || id }
-                    >
+                    visible={this.state.visible || id}
+                >
                     <Query query={PRODUCTS_QUERY}>
                         {({ data, loading }) => {
                             const { products } = data;
-                            console.log(data,"data===products")
+                            console.log(data, "data===products")
                             const options = products ? products
                                 .map(group => (
                                     <Option key={group} value={JSON.stringify(group)}>
@@ -222,22 +222,44 @@ class Filter extends Component {
                                         <Layout className="dashboard-main">
 
                                             <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                                                {
-                                                    tempId && id ? (
-                                                        <Query query={CUSTOMER_QUERY} variables={{ id }}>
-                                                            {({ data, loading }) => {
-                                                                console.log(data,"====dta", id)
-                                                                return (
-                                                                    <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={ loading } history={history}/>
-                                                                )
-                                                            }}
+                                                {/* {
+                                                    tempId && id ? ( */}
+                                                <Query query={CUSTOMER_QUERY} variables={{ id }}
+                                                    fetchPolicy="cache-and-network"
+                                                    shouldInvalidatePreviousData={(nextVariables, previousVariables) =>
+                                                        nextVariables.subreddit !== previousVariables.subreddit
+                                                    }
+                                                >
+                                                    {({ data, loading }) => {
+                                                        console.log(data, "====dta", id)
+                                                        if (id && data) {
+                                                            console.log(data, 'update-----console==============')
+                                                            return (
 
-                                                        </Query>
-                                                    ) : (
+                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={loading} history={history} closeUpdateDrawer={this.onClose} />
+                                                            )
+                                                        } else {
+                                                            console.log('new-----console==============')
+
+                                                            return (
+                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={false} />
+
+                                                            )
+                                                        }
+                                                        // id && data ? (
+                                                        // ):(
+                                                        //     <CustomerForm  options = {options} handledSubmit={this.submitForm} id={ false}/>
+
+                                                        // )
+
+                                                    }}
+
+                                                </Query>
+                                                {/* ) : (
                                                         <CustomerForm  options = {options} handledSubmit={this.submitForm} id={ false}/>
 
                                                     )
-                                                }
+                                                } */}
 
                                             </Layout>
                                         </Layout>
@@ -246,7 +268,9 @@ class Filter extends Component {
                             )
                         }}
                     </Query>
+                
                 </Drawer>
+
 
 
             </Row>

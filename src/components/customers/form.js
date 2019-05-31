@@ -53,29 +53,40 @@ class MainForm extends Component {
         })
     };
     componentWillReceiveProps(nextProps) {
-
-        if (nextProps.data) {
+        if (nextProps.data && nextProps.id) {
             const { data, id } = nextProps;
             if (Object.keys(data).length !== 0) {
                 const { customer } = data;
-                console.log(customer, "akjdlkajsdlkasjd", id)
-                const discountArray = customer.discounts.map((value, index) => {
-                    value.product.selected = true;
-                    return value
-                })
-                if (id) {
-                    this.setState({
-                        name: customer.name,
-                        password: '12345664',
-                        town: customer.address.town,
-                        area: customer.address.area,
-                        block: customer.address.block,
-                        house: customer.address.house,
-                        mobile: customer.mobile,
-                        discounts: discountArray
+                if (customer) {
+                    const discountArray = customer.discounts.map((value, index) => {
+                        value.product.selected = true;
+                        return value
                     })
+                    if (id) {
+                        this.setState({
+                            name: customer.name,
+                            password: '12345664',
+                            town: customer.address.town,
+                            area: customer.address.area,
+                            block: customer.address.block,
+                            house: customer.address.house,
+                            mobile: customer.mobile,
+                            discounts: discountArray
+                        })
+                    }
                 }
             }
+        } else {
+            this.setState({
+                name: '',
+                password: '',
+                town: '',
+                area: '',
+                block: '',
+                house: '',
+                mobile: '',
+                discounts: []
+            })
         }
     }
 
@@ -130,7 +141,7 @@ class MainForm extends Component {
         const dupDiscount = [];
         const editDup = [];
         validateFields(async (err, values) => {
-           
+
             console.log(err)
             if (!err) {
                 this.setState({
@@ -158,8 +169,8 @@ class MainForm extends Component {
                                     discount: discounts[i].discount,
                                     product: {
                                         create: {
-                                           name: discounts[i].product.name,
-                                           price: discounts[i].product.price
+                                            name: discounts[i].product.name,
+                                            price: discounts[i].product.price
                                         }
                                     }
                                 }
@@ -215,7 +226,7 @@ class MainForm extends Component {
                     updateCustomer({
                         variables: customer,
                         update: (proxy, { data: { updateCustomer } }) => {
-                            const mobile = {updateCustomer}
+                            const mobile = { updateCustomer }
                             // Read the data from our cache for this query.
                             let data = proxy.readQuery({ query: CUSTOMER_QUERY, variables: { id } });
 
@@ -228,7 +239,7 @@ class MainForm extends Component {
                             // data.customers.push(createCustomer)
                             // data.customers = [...data.customers]
                             // // Write our data back to the cache.
-                            proxy.writeQuery({ query: CUSTOMER_QUERY, data, variables: {  where: {id} } });
+                            proxy.writeQuery({ query: CUSTOMER_QUERY, data, variables: { where: { id } } });
                         }
                     }).then(result => {
                         this.setState({
@@ -236,7 +247,8 @@ class MainForm extends Component {
                             editDiscount: [],
                             deleteDiscount: []
                         })
-                        history.push(`/customers/${id}`)
+                        this.props.closeUpdateDrawer()
+                        // history.push(`/customers/${id}`)
                     })
                         .catch(err => {
                             this.setState({
@@ -454,14 +466,18 @@ class MainForm extends Component {
 
                                     </Col>
                                 </Row>
-                                <Row className="top-space" type="flex" justify="center">
-                                    <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}>
+                                {/* <Row className="top-space" type="flex" justify="center">
+                                    <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}> */}
+
+                                        <div className = "create-button-div">
+                                            <Button type="primary" htmlType="submit"  onClick={this.handledSubmit} loading={disableBtn}><Icon type="plus" /> {id ? 'Update' : 'Create'}</Button>
+
+                                        </div>
+
+                                    {/* </Col>
+                                </Row> */}
 
 
-                                        <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}><Icon type="plus" /> {id ? 'Update' : 'Create'}</Button>
-
-                                    </Col>
-                                </Row>
                             </React.Fragment>
                         )
                     }
