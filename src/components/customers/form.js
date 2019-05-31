@@ -19,7 +19,7 @@ class MainForm extends Component {
                 }
             ],
             name: '',
-            password: '$[mobile]-labaik',
+            password: '',
             mobile: '',
             town: '',
             area: '',
@@ -189,7 +189,7 @@ class MainForm extends Component {
                     data: {
                         mobile,
                         name,
-                        password,
+                        password: `${mobile}-labbaik`,
                         address: {
                             create: {
                                 town,
@@ -344,15 +344,6 @@ class MainForm extends Component {
                                                 ]
                                             })(<Input disabled={id ? true : false} name="mobile" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
-                                        {/*<FormItem label={`Password Should be Number with Prefix`} >*/}
-                                        {/*    {getFieldDecorator('password', {*/}
-                                        {/*        rules: [*/}
-                                        {/*            {*/}
-                                        {/*                required: id ? false : true*/}
-                                        {/*            }*/}
-                                        {/*        ]*/}
-                                        {/*    })(<Input disabled={id ? true : false} name="password" onChange={this.getCustomerDetails} />)}*/}
-                                        {/*</FormItem>*/}
                                         <FormItem label={`Name`} >
                                             {getFieldDecorator('name', {
                                                 initialValue: name,
@@ -370,7 +361,6 @@ class MainForm extends Component {
                                         <FormItem label={`Town`} >
                                             {getFieldDecorator('town', {
                                                 initialValue: town,
-
                                                 rules: [
                                                     {
                                                         required: true

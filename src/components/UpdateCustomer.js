@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom'
-import { Layout, AutoComplete } from 'antd';
-import { Sidebar } from './common/sidebar'
-import { AppBar } from './common/header'
+import { AutoComplete } from 'antd';
 import { Query } from 'react-apollo';
 import CustomerForm from './customers/form'
 import { graphql } from 'react-apollo'
@@ -35,14 +33,11 @@ class UpdateCustomer extends Component {
         });
     };
 
-
-
     openDrawer = () => {
         this.setState({
             drawer: !this.state.drawer
         })
     };
-
 
     render() {
         const { history, match } = this.props;
@@ -61,27 +56,13 @@ class UpdateCustomer extends Component {
                             </Option>
                         )) : [];
                     return (
-                        <Fragment>
-
-                            <Layout>
-                                <AppBar handleClick={this.openDrawer} />
-                                <Layout className="dashboard-main">
-                                    <Sidebar handleClick={this.handleClick} history={history} />
-
-                                    <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                                        <Query query={CUSTOMER_QUERY} variables={{ id }}>
-                                            {({ data, loading }) => {
-                                                return (
-                                                    <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={ loading } history={history}/>
-                                                )
-                                            }}
-
-                                        </Query>
-
-                                    </Layout>
-                                </Layout>
-                            </Layout>
-                        </Fragment>
+                        <Query query={CUSTOMER_QUERY} variables={{ id }}>
+                            {({ data, loading }) => {
+                                return (
+                                    <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={loading} history={history} />
+                                )
+                            }}
+                        </Query>
                     )
                 }}
             </Query>

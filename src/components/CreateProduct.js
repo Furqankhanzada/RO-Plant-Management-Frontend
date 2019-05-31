@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Layout, Button, Form, Input, message } from 'antd';
-import { Sidebar } from './common/sidebar';
-import { AppBar } from './common/header';
+import { Button, Form, Input, message } from 'antd';
 import { graphql } from 'react-apollo';
 import { CREATE_PRODUCT_MUTATION } from '../graphql/mutations/product';
 
@@ -88,14 +86,7 @@ class CreatesProducts extends Component {
         const { history } = this.props;
 
         return (
-            <Fragment>
-
-                <Layout>
-                    <AppBar handleClick={this.openDrawer} />
-                    <Layout className="dashboard-main">
-                        <Sidebar handleClick={this.handleClick} history={history} drawer={drawer} />
-
-                        <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
+            
                             <div className="create-main-div">
                                 <div className="create-products">
 
@@ -133,10 +124,7 @@ class CreatesProducts extends Component {
                                     </Form.Item>
                                 </div>
                             </div>
-                        </Layout>
-                    </Layout>
-                </Layout>
-            </Fragment>
+            
         )
     }
 }

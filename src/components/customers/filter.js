@@ -187,8 +187,9 @@ class Filter extends Component {
                                 <span>Reset</span>
                             </Button>
                         </div>
-                        <Button type="ghost" onClick={this.showDrawer}>
-                            <span>Create</span>
+                        <Button type="primary" onClick={this.showDrawer}>
+                          <Icon type="plus" />
+                          <span>Create</span>
                         </Button>
                     </Row>
                 </Col>
@@ -268,7 +269,7 @@ class Filter extends Component {
                             )
                         }}
                     </Query>
-                
+
                 </Drawer>
 
 

@@ -89,7 +89,7 @@ img {
 }
 
 .dashboard-main {
-    min-height: 100vh;
+    min-height: calc(100vh - 93px);
 }
 
 .header-custom {
@@ -222,8 +222,7 @@ img {
 
 
 .create-main-div {
-    padding: 10px;
-    position: relative;
+    margin: 0 0 90px;
     border-radius: 5px;
     margin: 0 0 90px;
     height: 100%
@@ -377,6 +376,12 @@ img {
     top: 0;
 }
 
+.bread-crumbs {
+    flex: none;
+    padding: 5px 0;
+    margin-bottom: 20px;
+}
+
 .new-account .ant-drawer-body {
     padding: 0;
 }
@@ -516,6 +521,11 @@ img {
     height: 100%;
 }
 
+
+.ant-breadcrumb-link:hover{
+    cursor: pointer;
+    color: #40a9ff
+}
 /*/// extra small media query end here ///*/
 
 /*/// small media query start here ///*/

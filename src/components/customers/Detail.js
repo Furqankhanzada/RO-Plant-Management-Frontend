@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react'
 import { Table, Divider, Tag } from 'antd';
-import { Sidebar } from './../common/sidebar'
+import  Sidebar  from './../common/sidebar'
 import { AppBar } from './../common/header'
 
 import { Layout } from 'antd';
@@ -83,20 +83,9 @@ class Detail extends PureComponent {
     render() {
         const { history } = this.props;
         return (
-            <Fragment>
-                <Layout>
-                    <AppBar />
-                    <Layout className="dashboard-main">
-                        <Sidebar handleClick = {this.handleClick} history = {history}/>
-                        <Layout className="ant-layout" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                            <Layout className="user-main-div">
-                                <Table columns={columns} dataSource={data} />
-                            </Layout>
-                        </Layout>
-
-                    </Layout>
-                </Layout>,
-            </Fragment>
+                <Layout className="user-main-div">
+                    <Table columns={columns} dataSource={data} />
+                </Layout>
             )
     }
 }
