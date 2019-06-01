@@ -377,7 +377,7 @@ img {
 }
 
 .new-account .ant-drawer-body .ant-form .ant-form-item {
-    width: 47%;
+    width: 49%;
     float: left;
 }
 
@@ -400,6 +400,7 @@ img {
 }
 
 .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
+    color: red;
     float: right;
     position: static;
     margin: 34px 0 0 10px;
