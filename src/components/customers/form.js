@@ -432,6 +432,9 @@ class MainForm extends Component {
                                                                 </AutoComplete>
 
                                                             </Form.Item>
+                                                            <FormItem label={`Price`} >
+                                                               <Input name="town" disabled={true} value={value.product.price}/>
+                                                            </FormItem>
                                                             <Form.Item label={'Add Discount'}>
                                                                 <InputNumber
                                                                     value={value.discount}
@@ -465,9 +468,9 @@ class MainForm extends Component {
                                             </Button>
                                             <Button type="primary" htmlType="submit"  onClick={this.handledSubmit} loading={disableBtn}> {id ? 'Update' : 'Submit'}</Button>
 
-                                        </div>
+                                </div>
 
-                                    {/* </Col>
+                                {/* </Col>
                                 </Row> */}
 
 
