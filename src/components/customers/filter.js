@@ -41,11 +41,7 @@ class Filter extends Component {
         }
     }
 
-    showDrawer = () => {
-        this.setState({
-            visible: true,
-        });
-    };
+   
 
     onClose = () => {
         const { id } = this.props;
@@ -187,7 +183,7 @@ class Filter extends Component {
                                 <span>Reset</span>
                             </Button>
                         </div>
-                        <Button type="primary" onClick={this.showDrawer}>
+                        <Button type="primary" onClick={() => this.props.showDrawerProp()}>
                           <Icon type="plus" />
                           <span>Create</span>
                         </Button>
@@ -196,83 +192,7 @@ class Filter extends Component {
 
 
 
-                <Drawer
-                    className="new-account drawer-custom-style"
-                    title="Create a new account"
-                    width={720}
-                    onClose={this.onClose}
-                    visible={this.state.visible || id}
-                >
-                    <Query query={PRODUCTS_QUERY}>
-                        {({ data, loading }) => {
-                            const { products } = data;
-                            console.log(data, "data===products")
-                            const options = products ? products
-                                .map(group => (
-                                    <Option key={group} value={JSON.stringify(group)}>
-                                        <span>Volume: {group.name}</span>
-                                        <br />
-                                        <span>Price: {group.price}</span>
-                                    </Option>
-                                )) : [];
-                            return (
-
-                                <Fragment>
-
-                                    <Layout>
-                                        <Layout className="dashboard-main">
-
-                                            <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                                                {/* {
-                                                    tempId && id ? ( */}
-                                                <Query query={CUSTOMER_QUERY} variables={{ id }}
-                                                    fetchPolicy="cache-and-network"
-                                                    shouldInvalidatePreviousData={(nextVariables, previousVariables) =>
-                                                        nextVariables.subreddit !== previousVariables.subreddit
-                                                    }
-                                                >
-                                                    {({ data, loading }) => {
-                                                        console.log(data, "====dta", id)
-                                                        if (id && data) {
-                                                            console.log(data, 'update-----console==============')
-                                                            return (
-
-                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={loading} history={history} closeUpdateDrawer={this.onClose} />
-                                                            )
-                                                        } else {
-                                                            console.log('new-----console==============')
-
-                                                            return (
-                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={false} closeUpdateDrawer={this.onClose}/>
-
-                                                            )
-                                                        }
-                                                        // id && data ? (
-                                                        // ):(
-                                                        //     <CustomerForm  options = {options} handledSubmit={this.submitForm} id={ false}/>
-
-                                                        // )
-
-                                                    }}
-
-                                                </Query>
-                                                {/* ) : (
-                                                        <CustomerForm  options = {options} handledSubmit={this.submitForm} id={ false}/>
-
-                                                    )
-                                                } */}
-
-                                            </Layout>
-                                        </Layout>
-                                    </Layout>
-                                </Fragment>
-                            )
-                        }}
-                    </Query>
-
-                </Drawer>
-
-
+               
 
             </Row>
         )
