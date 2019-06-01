@@ -509,6 +509,37 @@ img {
         width: 100%;
         padding: 15px 15px 0 !important;
     }
+    .ant-drawer-content-wrapper {
+        width: 100% !important;
+    }
+
+}
+
+@media (min-width: 320px) and (max-width: 430px) {
+
+    .new-account .ant-drawer-body .ant-form .ant-form-item {
+        width: 100%;
+    }
+    .new-account .ant-drawer-body .discount-details .discounts {
+        padding: 0 10px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        box-shadow: 0 0 5px 0 #cecece;
+    }
+    .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
+        color: red;
+        margin: 9px 0 0 10px;
+    }
+
+}
+@media (min-width: 431px) and (max-width: 767px) {
+
+    .discount-details .ant-form-item {
+        width: 47% !important;
+    }
+    .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
+        margin: 35px 0 0 5px;
+    }
 
 }
 
