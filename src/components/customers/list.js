@@ -86,7 +86,7 @@ class List extends PureComponent {
                 key: 'avatar',
                 width: 72,
                 fixed: 'left',
-                render: text => <Avatar style={{ marginLeft: 8 }} src={text} />,
+                render: text => <Avatar style={{ marginLeft: 8 }} src={require('../../assests/images/user.png')} />,
             },
             {
                 title: <span>Name</span>,
