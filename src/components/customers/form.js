@@ -229,15 +229,7 @@ class MainForm extends Component {
                             const mobile = { updateCustomer }
                             // Read the data from our cache for this query.
                             let data = proxy.readQuery({ query: CUSTOMER_QUERY, variables: { id } });
-
-                            // Add our comment from the mutation to the end.
-                            // const index = data.find(value=>{
-                            //     return value.mobile === mobile
-                            // })
-
                             data.customer = updateCustomer
-                            // data.customers.push(createCustomer)
-                            // data.customers = [...data.customers]
                             // // Write our data back to the cache.
                             proxy.writeQuery({ query: CUSTOMER_QUERY, data, variables: { where: { id } } });
                         }
@@ -248,7 +240,6 @@ class MainForm extends Component {
                             deleteDiscount: []
                         })
                         this.props.closeUpdateDrawer()
-                        // history.push(`/customers/${id}`)
                     })
                         .catch(err => {
                             this.setState({
@@ -289,6 +280,7 @@ class MainForm extends Component {
                         }, () => {
                             resetFields();
                             message.success('Customer has been created successfully');
+                            this.props.closeUpdateDrawer()
                         });
                     }).catch(err => {
                         this.setState({
@@ -432,12 +424,7 @@ class MainForm extends Component {
                                                                 </AutoComplete>
 
                                                             </Form.Item>
-                                                            <FormItem label={`Price`} >
-                                                                <InputNumber disabled={true}
-                                                                    value={price}
-                                                                    formatter={value => `PKR ${value}`}
-                                                                    parser={value => value.replace('PKR', '')} />
-                                                            </FormItem>
+
                                                             <Form.Item label={'Add Discount'}>
                                                                 <InputNumber
                                                                     value={value.discount}
@@ -448,6 +435,13 @@ class MainForm extends Component {
                                                                     onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
                                                                 />
                                                             </Form.Item>
+
+                                                            <FormItem label={`Price`} >
+                                                                <InputNumber disabled={true}
+                                                                    value={price}
+                                                                    formatter={value => `PKR ${value}`}
+                                                                    parser={value => value.replace('PKR', '')} />
+                                                            </FormItem>
                                                         </div>
                                                     )
 
@@ -466,7 +460,7 @@ class MainForm extends Component {
                                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}> */}
 
                                 <div className="create-button-div">
-                                    <Button onClick={() =>  this.props.closeUpdateDrawer()} style={{ marginRight: 8 }}>
+                                    <Button onClick={() => this.props.closeUpdateDrawer()} style={{ marginRight: 8 }}>
                                         Cancel
                                             </Button>
                                     <Button type="primary" htmlType="submit" onClick={this.handledSubmit} loading={disableBtn}> {id ? 'Update' : 'Submit'}</Button>

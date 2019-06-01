@@ -2,31 +2,41 @@ import React, { PureComponent } from 'react'
 import List from './list.js'
 import Filter from './filter.js'
 import { stringify, parse } from 'qs'
+import CustomerDrawer from './CustomerDrawer'
 
 class User extends PureComponent {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             id: '',
-            tempId: false
+            tempId: false,
+            visible: false
         }
     }
-    hideUpdateForm = () =>{
+    hideUpdateForm = () => {
         this.setState({
-            id : '',
-            tempId: false
+            id: '',
+            tempId: false,
+            visible: false
         })
     }
 
     openUpdateForm = (id) => {
         this.setState({
             id,
-            tempId: true
+            tempId: true,
+            visible: true
+        })
+    }
+
+    showDrawerProp = () => {
+        this.setState({
+            visible: true
         })
     }
     render() {
         const { loading, history, customers } = this.props;
-        const { id, tempId } = this.state;
+        const { id, tempId, visible } = this.state;
 
         // Fill filters input by url query params
         const { location: { search } } = history;
@@ -35,13 +45,13 @@ class User extends PureComponent {
         const handleRefresh = newQuery => {
             this.props.history.push({
                 pathname: '/customers',
-                   search: stringify(
-                       {
-                           ...query,
-                           ...newQuery,
-                       },
-                       { arrayFormat: 'repeat' }
-                   )
+                search: stringify(
+                    {
+                        ...query,
+                        ...newQuery,
+                    },
+                    { arrayFormat: 'repeat' }
+                )
             })
         };
 
@@ -70,11 +80,12 @@ class User extends PureComponent {
         };
 
         return (
-            <div className="user-main-div">
-                <Filter {...filterProps} history={history} id = {id} tempId={tempId} hideUpdateForm = {this.hideUpdateForm}/>
-                <List  history={history} {...listProps} openUpdateForm = {this.openUpdateForm} />
+            <div className="contents">
+                <Filter {...filterProps} history={history} id={id} tempId={tempId} hideUpdateForm={this.hideUpdateForm} showDrawerProp={this.showDrawerProp} />
+                <List history={history} {...listProps} openUpdateForm={this.openUpdateForm} />
+                <CustomerDrawer visible={visible} showDrawerProp={this.showDrawerProp} id={id} hideUpdateForm={this.hideUpdateForm}/>
             </div>
-            )
+        )
     }
 }
 
