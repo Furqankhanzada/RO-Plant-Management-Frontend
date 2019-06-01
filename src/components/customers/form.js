@@ -463,7 +463,7 @@ class MainForm extends Component {
                                             <Button onClick={this.onClose} style={{ marginRight: 8 }}>
                                                 Cancel
                                             </Button>
-                                            <Button type="primary" htmlType="submit"  onClick={this.handledSubmit} loading={disableBtn}><Icon type="plus" /> {id ? 'Update' : 'Create'}</Button>
+                                            <Button type="primary" htmlType="submit"  onClick={this.handledSubmit} loading={disableBtn}> {id ? 'Update' : 'Submit'}</Button>
 
                                         </div>
 
