@@ -209,7 +209,6 @@ class MainForm extends Component {
                     delete customer.mobile
                     customer.id = id
 
-
                     if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
                         delete customer.data.discounts.create
                         customer.data.discounts.delete = deleteDiscount
@@ -398,7 +397,8 @@ class MainForm extends Component {
                                         <div className="discount-details">
                                             {
                                                 discounts.map((value, index) => {
-                                                    const price = value.product.price && value.discount ? ((value.discount / 100) * value.product.price).toFixed(2) : 0;
+                                                    const productPrice = value.product.price;
+                                                    const price = productPrice && value.discount ? ((value.discount / 100) * productPrice).toFixed(2) : 0;
                                                     return (
                                                         <div className="discounts" key={index}>
                                                             <Icon
@@ -437,7 +437,7 @@ class MainForm extends Component {
 
                                                             <FormItem label={`Discounted Price`} >
                                                                 <InputNumber disabled={true}
-                                                                    value={value.product.price - price}
+                                                                    value={productPrice ? productPrice - price : 0}
                                                                     formatter={value => `PKR ${value}`}
                                                                     parser={value => value.replace('PKR', '')} />
                                                             </FormItem>
