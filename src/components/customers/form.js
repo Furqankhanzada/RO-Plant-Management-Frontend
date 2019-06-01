@@ -432,6 +432,9 @@ class MainForm extends Component {
                                                                 </AutoComplete>
 
                                                             </Form.Item>
+                                                            <FormItem label={`Price`} >
+                                                               <Input name="town" disabled={true} value={value.product.price}/>
+                                                            </FormItem>
                                                             <Form.Item label={'Add Discount'}>
                                                                 <InputNumber
                                                                     value={value.discount}
@@ -459,12 +462,12 @@ class MainForm extends Component {
                                 {/* <Row className="top-space" type="flex" justify="center">
                                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}> */}
 
-                                        <div className = "create-button-div">
-                                            <Button type="primary" htmlType="submit"  onClick={this.handledSubmit} loading={disableBtn}><Icon type="plus" /> {id ? 'Update' : 'Create'}</Button>
+                                <div className="create-button-div">
+                                    <Button type="primary" htmlType="submit" onClick={this.handledSubmit} loading={disableBtn}><Icon type="plus" /> {id ? 'Update' : 'Create'}</Button>
 
-                                        </div>
+                                </div>
 
-                                    {/* </Col>
+                                {/* </Col>
                                 </Row> */}
 
 
