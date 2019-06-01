@@ -437,7 +437,7 @@ class MainForm extends Component {
 
                                                             <FormItem label={`Discounted Price`} >
                                                                 <InputNumber disabled={true}
-                                                                    value={price}
+                                                                    value={value.product.price - price}
                                                                     formatter={value => `PKR ${value}`}
                                                                     parser={value => value.replace('PKR', '')} />
                                                             </FormItem>
