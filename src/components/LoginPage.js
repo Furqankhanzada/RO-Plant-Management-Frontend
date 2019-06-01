@@ -4,8 +4,7 @@ import { Button, Row, Form, Input, message } from 'antd'
 import { graphql } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import { AUTH_TOKEN } from '../constant'
-
-import './LoginPage.css'
+import '../main.css'
 
 const FormItem = Form.Item;
 
