@@ -415,7 +415,6 @@ class MainForm extends Component {
                                                                     dropdownStyle={{ width: 300 }}
                                                                     style={{ width: '100%' }}
                                                                     dataSource={options}
-
                                                                     placeholder="Products"
                                                                     value={value.product ? value.product.selected ? value.product.name : '' : ''}
                                                                     onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}
@@ -436,7 +435,7 @@ class MainForm extends Component {
                                                                 />
                                                             </Form.Item>
 
-                                                            <FormItem label={`Price`} >
+                                                            <FormItem label={`Discounted Price`} >
                                                                 <InputNumber disabled={true}
                                                                     value={price}
                                                                     formatter={value => `PKR ${value}`}
@@ -456,8 +455,6 @@ class MainForm extends Component {
 
                                     </Col>
                                 </Row>
-                                {/* <Row className="top-space" type="flex" justify="center">
-                                    <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}> */}
 
                                 <div className="create-button-div">
                                     <Button onClick={() => this.props.closeUpdateDrawer()} style={{ marginRight: 8 }}>
@@ -466,11 +463,6 @@ class MainForm extends Component {
                                     <Button type="primary" htmlType="submit" onClick={this.handledSubmit} loading={disableBtn}> {id ? 'Update' : 'Submit'}</Button>
 
                                 </div>
-
-                                {/* </Col>
-                                </Row> */}
-
-
                             </React.Fragment>
                         )
                     }

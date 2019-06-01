@@ -1,21 +1,8 @@
 import React, { Component, Fragment } from 'react'
-import CreateCustomer from '../customers/form';
 import moment from 'moment'
-import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Drawer, Select } from 'antd';
-import { PRODUCTS_QUERY } from '../../graphql/queries/product'
-import { CUSTOMER_QUERY } from '../../graphql/queries/customer.js'
+import { Button, Form, Input, Row, Icon, Col, Select } from 'antd';
 
-
-import { Query } from 'react-apollo';
-import { Layout } from 'antd';
-//import { Sidebar } from './common/sidebar'
-//import { AppBar } from './common/header'
-import CustomerForm from '../customers/form';
-
-//import city from 'utils/city'
-const city = [];
 const { Search } = Input;
-const FormItem = Form.Item;
 
 const ColProps = {
     xs: 24,
@@ -30,33 +17,12 @@ const TwoColProps = {
     xl: 96
 };
 
-const { Option } = Select;
-
 class Filter extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            visible: false
-        }
     }
 
-   
-
-    onClose = () => {
-        const { id } = this.props;
-        if (id) {
-            this.props.hideUpdateForm()
-        } else {
-            this.setState({
-                visible: false,
-            });
-        }
-
-    };
-    componentWillReceiveProps(nextProps) {
-        console.log(nextProps, 'nextpppppppppppppppppppp')
-    }
     componentDidUpdate(prevProps) {
         if (Object.keys(prevProps.filter).length === 0) {
             this.handleReset()
@@ -110,28 +76,8 @@ class Filter extends Component {
     };
 
     render() {
-        const { filter, form: { getFieldDecorator }, history, id, tempId } = this.props;
+        const { filter, form: { getFieldDecorator }, id } = this.props;
         const { name, mobile } = filter;
-        console.log(id, 'history===historyhistoryhistoryhistoryhistoryhistory')
-        const FilterItem = ({ label = '', children }) => {
-            const labelArray = label.split('');
-            return (
-                <div className='filterItem'>
-                    {labelArray.length > 0 ? (
-                        <div className='labelWrap '>
-                            {labelArray.map((item, index) => (
-                                <span className="labelText" key={index}>
-                                    {item}
-                                </span>
-                            ))}
-                        </div>
-                    ) : (
-                            ''
-                        )}
-                    <div className='item'>{children}</div>
-                </div>
-            )
-        }
         let initialCreateTime = [];
         if (filter.createTime && filter.createTime[0]) {
             initialCreateTime[0] = moment(filter.createTime[0])
@@ -189,10 +135,6 @@ class Filter extends Component {
                         </Button>
                     </Row>
                 </Col>
-
-
-
-               
 
             </Row>
         )

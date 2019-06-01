@@ -25,10 +25,9 @@ class CustomerDrawer extends Component {
         const { history, id, visible } = this.props;
         return (
             <Row gutter={24}>
-
                 <Drawer
                     className="new-account drawer-custom-style"
-                    title="Create a new account"
+                    title={id ? 'Update Customer' : 'Create Customer'}
                     width={720}
                     onClose={this.onClose}
                     visible={visible || id}
@@ -36,7 +35,6 @@ class CustomerDrawer extends Component {
                     <Query query={PRODUCTS_QUERY}>
                         {({ data }) => {
                             const { products } = data;
-                            console.log(data, "data===products")
                             const options = products ? products
                                 .map(group => (
                                     <Option key={group} value={JSON.stringify(group)}>
@@ -48,12 +46,9 @@ class CustomerDrawer extends Component {
                             return (
 
                                 <Fragment>
-
                                     <Layout>
                                         <Layout className="dashboard-main">
-
                                             <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                                               
                                                 <Query query={CUSTOMER_QUERY} variables={{ id }}
                                                     fetchPolicy="cache-and-network"
                                                     shouldInvalidatePreviousData={(nextVariables, previousVariables) =>
@@ -61,25 +56,17 @@ class CustomerDrawer extends Component {
                                                     }
                                                 >
                                                     {({ data, loading }) => {
-                                                        console.log(data, "====dta", id)
                                                         if (id && data) {
-                                                            console.log(data, 'update-----console==============')
                                                             return (
                                                                 <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={loading} history={history} closeUpdateDrawer={this.onClose} />
                                                             )
                                                         } else {
-                                                            console.log('new-----console==============')
-
                                                             return (
                                                                 <CustomerForm options={options} handledSubmit={this.submitForm} id={false} closeUpdateDrawer={this.onClose} />
-
                                                             )
                                                         }
-
                                                     }}
-
                                                 </Query>
-
                                             </Layout>
                                         </Layout>
                                     </Layout>
@@ -87,11 +74,7 @@ class CustomerDrawer extends Component {
                             )
                         }}
                     </Query>
-
                 </Drawer>
-
-
-
             </Row>
         )
     }
