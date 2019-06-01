@@ -243,7 +243,7 @@ class Filter extends Component {
                                                             console.log('new-----console==============')
 
                                                             return (
-                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={false} />
+                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={false} closeUpdateDrawer={this.onClose}/>
 
                                                             )
                                                         }

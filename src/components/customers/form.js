@@ -406,7 +406,7 @@ class MainForm extends Component {
                                         <div className="discount-details">
                                             {
                                                 discounts.map((value, index) => {
-
+                                                    const price = value.product.price && value.discount ? ((value.discount / 100) * value.product.price).toFixed(2) : 0;
                                                     return (
                                                         <div className="discounts" key={index}>
                                                             <Icon
@@ -433,7 +433,10 @@ class MainForm extends Component {
 
                                                             </Form.Item>
                                                             <FormItem label={`Price`} >
-                                                               <Input name="town" disabled={true} value={value.product.price}/>
+                                                                <InputNumber disabled={true}
+                                                                    value={price}
+                                                                    formatter={value => `PKR ${value}`}
+                                                                    parser={value => value.replace('PKR', '')} />
                                                             </FormItem>
                                                             <Form.Item label={'Add Discount'}>
                                                                 <InputNumber
@@ -462,11 +465,11 @@ class MainForm extends Component {
                                 {/* <Row className="top-space" type="flex" justify="center">
                                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}> */}
 
-                                        <div className = "create-button-div">
-                                            <Button onClick={this.onClose} style={{ marginRight: 8 }}>
-                                                Cancel
+                                <div className="create-button-div">
+                                    <Button onClick={() =>  this.props.closeUpdateDrawer()} style={{ marginRight: 8 }}>
+                                        Cancel
                                             </Button>
-                                            <Button type="primary" htmlType="submit"  onClick={this.handledSubmit} loading={disableBtn}> {id ? 'Update' : 'Submit'}</Button>
+                                    <Button type="primary" htmlType="submit" onClick={this.handledSubmit} loading={disableBtn}> {id ? 'Update' : 'Submit'}</Button>
 
                                 </div>
 
