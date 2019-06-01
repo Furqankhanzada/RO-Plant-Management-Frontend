@@ -401,7 +401,7 @@ class MainForm extends Component {
                                             })(<Input name="house" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
                                     </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
+                                    <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                                         <h3>Discount</h3>
                                         <div className="discount-details">
                                             {
@@ -460,6 +460,9 @@ class MainForm extends Component {
                                     <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}> */}
 
                                         <div className = "create-button-div">
+                                            <Button onClick={this.onClose} style={{ marginRight: 8 }}>
+                                                Cancel
+                                            </Button>
                                             <Button type="primary" htmlType="submit"  onClick={this.handledSubmit} loading={disableBtn}><Icon type="plus" /> {id ? 'Update' : 'Create'}</Button>
 
                                         </div>

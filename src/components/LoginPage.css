@@ -387,7 +387,7 @@ img {
 }
 
 .new-account .ant-drawer-body .ant-form .ant-form-item {
-    width: 48%;
+    width: 47%;
     float: left;
 }
 
@@ -410,8 +410,14 @@ img {
 }
 
 .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
-    top: 35px;
-    right: -5px;
+    float: right;
+    position: static;
+    margin: 35px 0 0 10px;
+}
+.new-account .ant-drawer-body .discount-details .discounts {
+    padding: 0;
+    width: 100%;
+    display: inline-block;
 }
 
 .new-account .ant-drawer-body .remove-padding {
@@ -504,20 +510,25 @@ img {
 }
 
 .create-button-div {
-    position: sticky;
-    bottom: 0;
-    width: 100%;
-    z-index: 10;
-    padding: 10px 0 10px 16px;
-    text-align: right;
     left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+    text-align: right;
+    position: absolute;
     background-color: #fff;
     border-radius: 0 0 4px 4px;
+    padding: 10px 16px 10px 16px;
+    box-shadow: 0 0 4px 0 #cecece;
 }
 
 .form-create-update {
     min-height: 400px;
     height: 100%;
+}
+.discount-box {
+    padding-bottom: 50px;
 }
 
 
