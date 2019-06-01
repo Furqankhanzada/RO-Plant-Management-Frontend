@@ -134,10 +134,10 @@ class MainForm extends Component {
     };
     handledSubmit = (e) => {
         e.preventDefault();
-        const { id, form, createCustomer, updateCustomer, history } = this.props;
+        const { id, form, createCustomer, updateCustomer } = this.props;
         const { validateFields, resetFields } = form;
 
-        let { discounts, deleteDiscount, editDiscount } = this.state;
+        let { discounts, deleteDiscount } = this.state;
         const dupDiscount = [];
         const editDup = [];
         validateFields(async (err, values) => {
