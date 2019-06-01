@@ -35,22 +35,9 @@
     height: 40px;
 }
 
-/*button {*/
-/*width: login-form-button;*/
-/*}*/
 .ant-form-item-children {
     width: 100%;
 }
-
-/*p {*/
-/*color: rgb(204, 204, 204);*/
-/*text-align: center;*/
-/*margin-top: 16px;*/
-/*font-size: 12px;*/
-/*display: flex;*/
-/*justify-content: space-between;*/
-/*}*/
-
 
 .logo {
     text-align: center;
@@ -65,9 +52,6 @@ img {
     width: 40px;
     margin-right: 8px;
 }
-
-
-
 
 .ant-spin-container,
 .ant-spin-nested-loading {
@@ -143,7 +127,6 @@ img {
     margin-right: 18px;
 }
 
-
 .ant-table-body::-webkit-scrollbar {
     width: 1em;
     height: 8px;
@@ -158,15 +141,13 @@ img {
     background-color: #e6e6e6;
 }
 
-.user-main-div {
+.contents {
     background: #fff;
     padding: 24px;
     min-height: 'calc(100vh - 230px)';
     position: relative;
     margin-bottom: 80px;
 }
-
-
 
 .loader {
     background-color: #fff;
@@ -220,7 +201,6 @@ img {
     transition: opacity 1s ease 0.5s, z-index 0.1s ease 1.5s;
 }
 
-
 .create-main-div {
     margin: 0 0 90px;
     border-radius: 5px;
@@ -271,9 +251,6 @@ img {
     margin-right: 15px;
 }
 
-
-
-
 @keyframes spinner {
     0% {
         transform: rotate(0deg);
@@ -302,7 +279,20 @@ img {
 
 .discount-details .discounts {
     position: relative;
-    padding: 0px 20px 0 0;
+    padding: 0 20px 0 0;
+}
+.discount-details .discounts .ant-form-item {
+    margin-right: 14px;
+    width: 35% !important;
+}
+.discount-details .discounts .ant-form-item:nth-child(odd) {
+    display: inline-block;
+    float: none !important;
+}
+.discount-details .discounts .ant-form-item:last-of-type {
+    width: 20% !important;
+    display: inline-block;
+    float: none !important;
 }
 
 .discount-details .discounts .removeButtonDiscount {
@@ -412,7 +402,7 @@ img {
 .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
     float: right;
     position: static;
-    margin: 35px 0 0 10px;
+    margin: 34px 0 0 10px;
 }
 .new-account .ant-drawer-body .discount-details .discounts {
     padding: 0;
@@ -520,6 +510,17 @@ img {
     .new-account .ant-drawer-body .ant-form .ant-form-item {
         width: 100%;
     }
+    .discount-details .discounts .ant-form-item {
+        width: 100% !important;
+        margin-right: 0;
+    }
+    .discount-details .discounts .ant-form-item:nth-of-type(2) {
+        width: 50% !important;
+    }
+    .discount-details .discounts .ant-form-item:last-of-type {
+        width: 45% !important;
+        margin-left: 13px;
+    }
     .new-account .ant-drawer-body .discount-details .discounts {
         padding: 0 10px;
         border-radius: 4px;
@@ -539,6 +540,12 @@ img {
     }
     .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
         margin: 35px 0 0 5px;
+    }
+    .discount-details .discounts .ant-form-item {
+        width: 34% !important;
+    }
+    .discount-details .discounts .ant-form-item:last-of-type {
+        margin-right: 0;
     }
 
 }
@@ -584,10 +591,8 @@ img {
     }
 
 }
-
 /*/// small media query end here ///*/
 
 /*/// medium media query start here ///*/
 @media (min-width: 992px) and (max-width: 1199px) {}
-
 /*/// medium media query end here ///*/
