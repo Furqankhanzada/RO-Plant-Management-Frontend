@@ -18,10 +18,11 @@ class Sidebar extends Component {
                     defaultSelectedKeys={defaultSelectedKeys ? defaultSelectedKeys : []}
                     defaultOpenKeys={defaultOpenKeys ? defaultOpenKeys : []}
                 >
-                    <SubMenu key="sub1" title={<span><Icon type="team" />Customers</span>}>
-                        <Menu.Item key="1" onClick={() => history.push('/customers/create')}>Create</Menu.Item>
-                        <Menu.Item key="2" onClick={() => history.push('/customers')}>List</Menu.Item>
-                    </SubMenu>
+
+                    <Menu.Item key="1" onClick={() => history.push('/customers')}>
+                        <Icon type="team" />
+                        <span>Customers</span>
+                    </Menu.Item>
                     <SubMenu key="sub2" title={<span><Icon type="team" />Products</span>}>
                         <Menu.Item key="3" onClick={() => history.push('/products/create')}>Create</Menu.Item>
                         <Menu.Item key="4" onClick={() => history.push('/products')}>List</Menu.Item>
