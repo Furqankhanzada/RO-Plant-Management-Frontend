@@ -444,6 +444,9 @@ img {
 .ant-drawer-body>.ant-layout {
     height: 100%;
 }
+.new-account .ant-drawer-header {
+    padding: 16px 15px;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
