@@ -59,8 +59,7 @@ class RootContainer extends Component {
         this.refreshTokenFn = this.refreshTokenFn.bind(this);
 
         this.state = {
-            token: props.token,
-            drawer: false
+            token: props.token
         }
     }
 
@@ -99,18 +98,11 @@ class RootContainer extends Component {
     componentDidMount() {
         this.bootStrapData()
     }
-    openDrawer = () => {
-        this.setState({
-            drawer: !this.state.drawer
-        })
-    };
     render() {
-        const { drawer } = this.state;
-
         return (
             <Router>
 
-                {this.renderRoute(drawer, this.openDrawer)}
+                {this.renderRoute()}
 
             </Router>
         )
