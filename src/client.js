@@ -16,6 +16,10 @@ const defaults = {
         open: false,
         id: '',
         __typename: "Drawer"
+    },
+    MainDrawer: {
+        open: false,
+        __typename: "MainDrawer"
     }
 }
 
@@ -28,11 +32,28 @@ export const GET_DRAWER_STATUS = gql`
 }
 `;
 
+export const GET_MAIN_DRAWER_STATUS = gql`
+{
+    MainDrawer @client {
+        open
+    }
+}
+`;
+
 const resolvers = {
     Mutation: {
         openDrawer: (_, { status, id }, { cache }) => {
             const updatedStatus = { open: status,id, __typename: "Drawer" };
             const data = {Drawer: updatedStatus, __typename: "Drawer"}
+            cache.writeData({data})
+            return data
+        },
+        openMainDrawer: (_, {} ,{ cache }) => {
+            const previous = cache.readQuery({ query: GET_MAIN_DRAWER_STATUS });
+            const { MainDrawer } = previous;
+            const { open } = MainDrawer;
+            const updatedStatus = { open: !open, __typename: "MainDrawer" };
+            const data = {MainDrawer: updatedStatus, __typename: "MainDrawer"};
             cache.writeData({data})
             return data
         }
