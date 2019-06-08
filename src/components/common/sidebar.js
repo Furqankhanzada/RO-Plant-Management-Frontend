@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { Layout, Menu, Icon } from 'antd';
 import { withRouter } from 'react-router-dom'
 const { Sider } = Layout;
@@ -6,9 +6,6 @@ const SubMenu = Menu.SubMenu;
 
 
 class Sidebar extends Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         const { history, defaultSelectedKeys, defaultOpenKeys, drawer } = this.props;
         return (

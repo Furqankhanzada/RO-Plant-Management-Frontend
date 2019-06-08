@@ -5,6 +5,8 @@ import { CUSTOMER_QUERY } from '../../graphql/queries/customer.js'
 import { Query } from 'react-apollo';
 import { Layout } from 'antd';
 import CustomerForm from './form';
+import { client } from '../../index'
+import gql from 'graphql-tag';
 
 const { Option } = Select;
 
@@ -18,7 +20,16 @@ class CustomerDrawer extends Component {
     }
 
     onClose = () => {
-        this.props.hideUpdateForm()
+        client.mutate({
+            mutation: gql`
+            mutation openDrawer($status: Boolean!, $id: String) {
+                openDrawer(status: $status, id: $id) @client {
+                    Drawer
+                }
+            }
+            `,
+            variables: { status: false, id: '' }
+        })
     };
 
     render() {
@@ -30,7 +41,7 @@ class CustomerDrawer extends Component {
                     title={id ? 'Update Customer' : 'Create Customer'}
                     width={720}
                     onClose={this.onClose}
-                    visible={visible || id}
+                    visible={visible}
                 >
                     <Query query={PRODUCTS_QUERY}>
                         {({ data }) => {
@@ -58,11 +69,11 @@ class CustomerDrawer extends Component {
                                                     {({ data, loading }) => {
                                                         if (id && data) {
                                                             return (
-                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={loading} history={history} closeUpdateDrawer={this.onClose} />
+                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={id ? id : false} data={data} loading={loading} history={history} />
                                                             )
                                                         } else {
                                                             return (
-                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={false} closeUpdateDrawer={this.onClose} />
+                                                                <CustomerForm options={options} handledSubmit={this.submitForm} id={false} />
                                                             )
                                                         }
                                                     }}

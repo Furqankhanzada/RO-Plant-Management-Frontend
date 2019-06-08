@@ -4,7 +4,8 @@ import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { GET_CUSTOMERS, CUSTOMER_QUERY } from '../../graphql/queries/customer';
 import { CREATE_CUSTOMER_MUTATION, UPDATE_CUSTOMER_MUTATION } from '../../graphql/mutations/customer';
-
+import { client } from '../../index'
+import gql from 'graphql-tag';
 
 const FormItem = Form.Item;
 class MainForm extends Component {
@@ -142,7 +143,6 @@ class MainForm extends Component {
         const editDup = [];
         validateFields(async (err, values) => {
 
-            console.log(err)
             if (!err) {
                 this.setState({
                     disableBtn: true,
@@ -225,7 +225,6 @@ class MainForm extends Component {
                     updateCustomer({
                         variables: customer,
                         update: (proxy, { data: { updateCustomer } }) => {
-                            const mobile = { updateCustomer }
                             // Read the data from our cache for this query.
                             let data = proxy.readQuery({ query: CUSTOMER_QUERY, variables: { id } });
                             data.customer = updateCustomer
@@ -238,7 +237,16 @@ class MainForm extends Component {
                             editDiscount: [],
                             deleteDiscount: []
                         })
-                        this.props.closeUpdateDrawer()
+                        client.mutate({
+                            mutation: gql`
+                            mutation openDrawer($status: Boolean!, $id: String) {
+                                openDrawer(status: $status, id: $id) @client {
+                                    Drawer
+                                }
+                            }
+                            `,
+                            variables: { status: false, id: '' }
+                        })
                     })
                         .catch(err => {
                             this.setState({
@@ -279,7 +287,16 @@ class MainForm extends Component {
                         }, () => {
                             resetFields();
                             message.success('Customer has been created successfully');
-                            this.props.closeUpdateDrawer()
+                            client.mutate({
+                                mutation: gql`
+                                mutation openDrawer($status: Boolean!, $id: String) {
+                                    openDrawer(status: $status, id: $id) @client {
+                                        Drawer
+                                    }
+                                }
+                                `,
+                                variables: { status: false, id: '' }
+                            })
                         });
                     }).catch(err => {
                         this.setState({
@@ -304,6 +321,20 @@ class MainForm extends Component {
             [ev.target.name]: ev.target.value
         });
     };
+
+    closeDrawer = () => {
+        client.mutate({
+            mutation: gql`
+            mutation openDrawer($status: Boolean!, $id: String) {
+                openDrawer(status: $status, id: $id) @client {
+                    Drawer
+                }
+            }
+            `,
+            variables: { status: false, id: '' }
+        })
+    }
+
     render() {
         const { form, id, options, loading } = this.props;
         const { getFieldDecorator } = form;
@@ -457,7 +488,7 @@ class MainForm extends Component {
                                 </Row>
 
                                 <div className="create-button-div">
-                                    <Button onClick={() => this.props.closeUpdateDrawer()} style={{ marginRight: 8 }}>
+                                    <Button onClick={this.closeDrawer} style={{ marginRight: 8 }}>
                                         Cancel
                                             </Button>
                                     <Button type="primary" htmlType="submit" onClick={this.handledSubmit} loading={disableBtn}> {id ? 'Update' : 'Submit'}</Button>

@@ -1,12 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
-import { Layout, AutoComplete } from 'antd';
-import Sidebar from './common/sidebar'
-import { AppBar } from './common/header'
+import { AutoComplete } from 'antd';
 import { Query } from 'react-apollo';
 import CustomerForm from './customers/form';
 import { PRODUCTS_QUERY } from '../graphql/queries/product'
-import BreadCrumbs from './BreadCrumbs';
 
 const Option = AutoComplete.Option;
 
@@ -43,8 +40,7 @@ class CreateCustomer extends Component {
 
 
     render() {
-        const { drawer } = this.state;
-        const { history, match, data } = this.props;
+        const { match } = this.props;
         const { params } = match;
         const { id } = params;
         return (

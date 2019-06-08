@@ -3,6 +3,10 @@ import List from './list.js'
 import Filter from './filter.js'
 import { stringify, parse } from 'qs'
 import CustomerDrawer from './CustomerDrawer'
+import gql from 'graphql-tag';
+import { client } from '../../index'
+import { GET_DRAWER_STATUS } from '../../client'
+import { Query } from 'react-apollo'
 
 class User extends PureComponent {
     constructor(props) {
@@ -14,18 +18,28 @@ class User extends PureComponent {
         }
     }
     hideUpdateForm = () => {
-        this.setState({
-            id: '',
-            tempId: false,
-            visible: false
+        client.mutate({
+            mutation: gql`
+            mutation openDrawer($status: Boolean!, $id: String) {
+                openDrawer(status: $status, id: $id) @client {
+                    Drawer
+                }
+            }
+            `,
+            variables: { status: false, id: '' }
         })
     }
 
     openUpdateForm = (id) => {
-        this.setState({
-            id,
-            tempId: true,
-            visible: true
+        client.mutate({
+            mutation: gql`
+            mutation openDrawer($status: Boolean!, $id: String) {
+                openDrawer(status: $status, id: $id) @client {
+                    Drawer
+                }
+            }
+            `,
+            variables: { status: true, id }
         })
     }
 
@@ -36,8 +50,6 @@ class User extends PureComponent {
     }
     render() {
         const { loading, history, customers } = this.props;
-        const { id, tempId, visible } = this.state;
-
         // Fill filters input by url query params
         const { location: { search } } = history;
         const query = parse(search.replace('?', ''));
@@ -81,9 +93,23 @@ class User extends PureComponent {
 
         return (
             <div className="contents">
-                <Filter {...filterProps} history={history} id={id} tempId={tempId} hideUpdateForm={this.hideUpdateForm} showDrawerProp={this.showDrawerProp} />
-                <List history={history} {...listProps} openUpdateForm={this.openUpdateForm} />
-                <CustomerDrawer visible={visible} showDrawerProp={this.showDrawerProp} id={id} hideUpdateForm={this.hideUpdateForm}/>
+                <Filter {...filterProps} history={history} />
+                <List history={history} {...listProps} />
+                <Query query={GET_DRAWER_STATUS}>
+                    {
+                        ({ data }) => {
+                            const { Drawer } = data;
+                            if (Drawer) {
+                                const { id, open } = Drawer
+                                return (
+                                    <CustomerDrawer visible={open} id={id} />
+                                )
+                            } else {
+                                return null
+                            }
+                        }
+                    }
+                </Query>
             </div>
         )
     }

@@ -1,6 +1,8 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import moment from 'moment'
-import { Button, Form, Input, Row, Icon, Col, Select } from 'antd';
+import { Button, Form, Input, Row, Icon, Col } from 'antd';
+import { client } from '../../index'
+import gql from 'graphql-tag';
 
 const { Search } = Input;
 
@@ -18,11 +20,6 @@ const TwoColProps = {
 };
 
 class Filter extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     componentDidUpdate(prevProps) {
         if (Object.keys(prevProps.filter).length === 0) {
             this.handleReset()
@@ -75,8 +72,20 @@ class Filter extends Component {
         onFilterChange(fields)
     };
 
+    openDrawer = () => {
+        client.mutate({
+            mutation: gql`
+            mutation openDrawer($status: Boolean!, $id: String) {
+                openDrawer(status: $status, id: $id) @client {
+                    Drawer
+                }
+            }
+            `,
+            variables: { status: true, id: '' }
+        })
+    }
     render() {
-        const { filter, form: { getFieldDecorator }, id } = this.props;
+        const { filter, form: { getFieldDecorator } } = this.props;
         const { name, mobile } = filter;
         let initialCreateTime = [];
         if (filter.createTime && filter.createTime[0]) {
@@ -129,7 +138,7 @@ class Filter extends Component {
                                 <span>Reset</span>
                             </Button>
                         </div>
-                        <Button type="primary" onClick={() => this.props.showDrawerProp()}>
+                        <Button type="primary" onClick={this.openDrawer}>
                           <Icon type="plus" />
                           <span>Create</span>
                         </Button>

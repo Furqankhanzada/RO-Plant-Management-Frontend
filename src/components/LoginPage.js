@@ -6,6 +6,7 @@ import { gql } from 'apollo-boost'
 import { AUTH_TOKEN } from '../constant'
 import '../main.css'
 
+
 const FormItem = Form.Item;
 
 function hasErrors(fieldsError) {
@@ -22,7 +23,7 @@ class LoginPage extends Component {
         };
     }
 
-    handleSubmit (e) {
+    handleSubmit(e) {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -61,8 +62,9 @@ class LoginPage extends Component {
         return (
             <Fragment>
                 <div className='form'>
+                   
                     <div className='logo'>
-                        <img alt="logo" src={require('../assests/images/labbaik.png')} className = "login-signup-logo"/>
+                        <img alt="logo" src={require('../assests/images/labbaik.png')} className="login-signup-logo" />
                     </div>
                     <Form onSubmit={this.handleSubmit.bind(this)} className="login-form">
                         <FormItem hasFeedback>

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import { parse } from 'qs'
@@ -26,7 +26,6 @@ class CustomersPage extends Component {
     }
     //const { match } = this.props;
 
-    console.log(prevProps,"prev====", this.props)
     if (this.props.location !== prevProps.location) {
       this.onRouteChanged();
     }
