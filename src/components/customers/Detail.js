@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react'
 import { Table, Divider, Tag } from 'antd';
 
-import { Layout } from 'antd';
+import { Layout, Card, Icon, Empty, Row, Col, Statistic } from 'antd';
 
 const columns = [
     {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        render: text => <p>{text}</p>,
     },
     {
         title: 'Age',
@@ -81,7 +80,54 @@ class Detail extends PureComponent {
     render() {
         return (
                 <Layout className="user-main-div">
-                    <Table columns={columns} dataSource={data} />
+                    <Row>
+                        <Col span={6}>
+                            <Card
+                                style={{ width: 300, marginBottom: 25 }}
+                                cover={
+                                    <img
+                                        alt="example"
+                                        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                                    />
+                                }
+                                actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
+                            >
+                                <h3>Abdul Raheem</h3>
+                                <p>03462799866</p>
+                                <p>FL-1, R-3, Sector-1, Sultanabad Manghopir Road Karachi</p>
+                                <Tag color="#87d068">Cash</Tag>
+                                <Tag color="#2db7f5">Monthly</Tag>
+                            </Card>
+                        </Col>
+                        <Col span={18}>
+                            <Row gutter={16}>
+                                <Col span={6}>
+                                    <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Active Users" value={112893} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Active Users" value={112893} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Account Balance (CNY)" value={112893} precision={2} />
+                                </Col>
+                            </Row>
+                            <Divider />
+                            <Empty
+                                style={{ marginTop: 60 }}
+                                description={
+                                    <span>
+                                       Chart Will be here
+                                    </span>
+                                }
+                            >
+                            </Empty>
+
+                        </Col>
+                    </Row>
+                    <Table columns={columns} dataSource={data} bordered simple />
                 </Layout>
             )
     }
