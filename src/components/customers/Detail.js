@@ -1,16 +1,13 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import { Table, Divider, Tag } from 'antd';
-import  Sidebar  from './../common/sidebar'
-import { AppBar } from './../common/header'
 
-import { Layout } from 'antd';
+import { Layout, Card, Icon, Empty, Row, Col, Statistic } from 'antd';
 
 const columns = [
     {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        render: text => <a href="#">{text}</a>,
     },
     {
         title: 'Age',
@@ -40,19 +37,19 @@ const columns = [
             );
         })}
       </span>
-        ),
+        )
     },
     {
         title: 'Action',
         key: 'action',
         render: (text, record) => (
             <span>
-        <a href="#">Invite {record.name}</a>
+        <p>Invite {record.name}</p>
         <Divider type="vertical" />
-        <a href="#">Delete</a>
+        <p>Delete</p>
       </span>
-        ),
-    },
+        )
+    }
 ];
 
 const data = [
@@ -81,10 +78,56 @@ const data = [
 
 class Detail extends PureComponent {
     render() {
-        const { history } = this.props;
         return (
                 <Layout className="user-main-div">
-                    <Table columns={columns} dataSource={data} />
+                    <Row>
+                        <Col span={6}>
+                            <Card
+                                style={{ width: 300, marginBottom: 25 }}
+                                cover={
+                                    <img
+                                        alt="example"
+                                        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                                    />
+                                }
+                                actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
+                            >
+                                <h3>Abdul Raheem</h3>
+                                <p>03462799866</p>
+                                <p>FL-1, R-3, Sector-1, Sultanabad Manghopir Road Karachi</p>
+                                <Tag color="#87d068">Cash</Tag>
+                                <Tag color="#2db7f5">Monthly</Tag>
+                            </Card>
+                        </Col>
+                        <Col span={18}>
+                            <Row gutter={16}>
+                                <Col span={6}>
+                                    <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Active Users" value={112893} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Active Users" value={112893} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Account Balance (CNY)" value={112893} precision={2} />
+                                </Col>
+                            </Row>
+                            <Divider />
+                            <Empty
+                                style={{ marginTop: 60 }}
+                                description={
+                                    <span>
+                                       Chart Will be here
+                                    </span>
+                                }
+                            >
+                            </Empty>
+
+                        </Col>
+                    </Row>
+                    <Table columns={columns} dataSource={data} bordered simple />
                 </Layout>
             )
     }

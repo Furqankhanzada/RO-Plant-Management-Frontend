@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import { parse } from 'qs'
@@ -14,10 +14,18 @@ class CustomersPage extends Component {
     super(props);
     this.state = {
       current: 'mail',
-      drawer: false
+      drawer: false,
+      id: ''
     }
   }
   componentDidUpdate(prevProps) {
+    const { match } = this.props;
+    const {params} = match;
+    if(params.id){
+      this.props.history.push(`/customers/update/${params.id}`)
+    }
+    //const { match } = this.props;
+
     if (this.props.location !== prevProps.location) {
       this.onRouteChanged();
     }

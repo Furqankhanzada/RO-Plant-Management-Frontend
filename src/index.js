@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+import {stateLink} from './client';
 
 
 import { HttpLink, InMemoryCache, ApolloClient } from 'apollo-client-preset'
@@ -53,8 +54,8 @@ const link = split(
 );
 
 // apollo client setup
-const client = new ApolloClient({
-    link: ApolloLink.from([link]),
+export const client = new ApolloClient({
+    link: ApolloLink.from([stateLink, link]),
     cache: new InMemoryCache(),
     connectToDevTools: true
 });
