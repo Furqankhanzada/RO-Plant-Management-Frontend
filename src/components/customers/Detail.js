@@ -3,7 +3,7 @@ import { Table, Divider, Tag } from 'antd';
 import  Sidebar  from './../common/sidebar'
 import { AppBar } from './../common/header'
 
-import { Layout, Card, Icon, Avatar } from 'antd';
+import { Layout, Card, Icon, Empty, Row, Col } from 'antd';
 
 const columns = [
     {
@@ -85,20 +85,37 @@ class Detail extends PureComponent {
 
         return (
                 <Layout className="user-main-div">
-                    <Card
-                        style={{ width: 300, marginBottom: 25 }}
-                        cover={
-                            <img
-                                alt="example"
-                                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                            />
-                        }
-                        actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
-                    >
-                        <h3>Abdul Raheem</h3>
-                        <p>03462799866</p>
-                        <p>FL-1, R-3, Sector-1, Sultanabad</p>
-                    </Card>
+                    <Row>
+                        <Col span={6}>
+                            <Card
+                                style={{ width: 300, marginBottom: 25 }}
+                                cover={
+                                    <img
+                                        alt="example"
+                                        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                                    />
+                                }
+                                actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
+                            >
+                                <h3>Abdul Raheem</h3>
+                                <p>03462799866</p>
+                                <p>FL-1, R-3, Sector-1, Sultanabad Manghopir Road Karachi</p>
+                                <Tag color="#87d068">Cash</Tag>
+                                <Tag color="#2db7f5">Monthly</Tag>
+                            </Card>
+                        </Col>
+                        <Col span={18}>
+                            <Empty
+                                style={{ marginTop: 100 }}
+                                description={
+                                    <span>
+                                       Chart Will be here
+                                    </span>
+                                }
+                            >
+                            </Empty>
+                        </Col>
+                    </Row>
                     <Table columns={columns} dataSource={data} bordered simple />
                 </Layout>
             )
