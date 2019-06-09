@@ -3,7 +3,7 @@ import { Table, Divider, Tag } from 'antd';
 import  Sidebar  from './../common/sidebar'
 import { AppBar } from './../common/header'
 
-import { Layout, Card, Icon, Empty, Row, Col } from 'antd';
+import { Layout, Card, Icon, Empty, Row, Col, Statistic } from 'antd';
 
 const columns = [
     {
@@ -105,8 +105,23 @@ class Detail extends PureComponent {
                             </Card>
                         </Col>
                         <Col span={18}>
+                            <Row gutter={16}>
+                                <Col span={6}>
+                                    <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Active Users" value={112893} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Active Users" value={112893} />
+                                </Col>
+                                <Col span={6}>
+                                    <Statistic title="Account Balance (CNY)" value={112893} precision={2} />
+                                </Col>
+                            </Row>
+                            <Divider />
                             <Empty
-                                style={{ marginTop: 100 }}
+                                style={{ marginTop: 60 }}
                                 description={
                                     <span>
                                        Chart Will be here
@@ -114,6 +129,7 @@ class Detail extends PureComponent {
                                 }
                             >
                             </Empty>
+
                         </Col>
                     </Row>
                     <Table columns={columns} dataSource={data} bordered simple />
