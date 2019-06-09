@@ -5,7 +5,7 @@ import {gql} from "apollo-boost/lib/index";
 import {graphql} from "react-apollo/index";
 import { Link, withRouter } from 'react-router-dom'
 import { GET_CUSTOMERS } from '../../graphql/queries/customer'
-
+import { client } from '../../index'
 const { confirm } = Modal;
 
 class List extends PureComponent {
@@ -16,7 +16,17 @@ class List extends PureComponent {
         }
     }
     onEditItem(record) {
-        this.props.history.push(`/customers/update/${record.id}`)
+        const { id } = record;
+        client.mutate({
+            mutation: gql`
+            mutation openDrawer($status: Boolean!, $id: String) {
+                openDrawer(status: $status, id: $id) @client {
+                    Drawer
+                }
+            }
+            `,
+            variables: { status: true, id }
+        })
     }
     handleMenuClick (record, e) {
         const { deleteCustomer } = this.props;
@@ -86,7 +96,7 @@ class List extends PureComponent {
                 key: 'avatar',
                 width: 72,
                 fixed: 'left',
-                render: text => <Avatar style={{ marginLeft: 8 }} src={text} />,
+                render: text => <Avatar style={{ marginLeft: 8 }} src={require('../../assests/images/user.png')} />,
             },
             {
                 title: <span>Name</span>,

@@ -1,11 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { gql } from 'apollo-boost';
 import { withRouter } from 'react-router-dom'
-import { Layout, AutoComplete, Table } from 'antd';
-import { Sidebar } from './common/sidebar'
-import { AppBar } from './common/header'
+import { AutoComplete, Table } from 'antd';
 import { Query } from 'react-apollo';
-import BreadCrumbs from './BreadCrumbs';
 
 const Option = AutoComplete.Option;
 
@@ -44,10 +41,6 @@ class Products extends Component {
     };
 
     render() {
-
-        const { drawer } = this.state;
-        const { history } = this.props;
-
         return (
             <Query query={PRODUCT}>
                 {({ data: { products = [] }, loading }) => {

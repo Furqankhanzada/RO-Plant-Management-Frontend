@@ -4,7 +4,8 @@ import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { GET_CUSTOMERS, CUSTOMER_QUERY } from '../../graphql/queries/customer';
 import { CREATE_CUSTOMER_MUTATION, UPDATE_CUSTOMER_MUTATION } from '../../graphql/mutations/customer';
-
+import { client } from '../../index'
+import gql from 'graphql-tag';
 
 const FormItem = Form.Item;
 class MainForm extends Component {
@@ -53,27 +54,40 @@ class MainForm extends Component {
         })
     };
     componentWillReceiveProps(nextProps) {
-        if (nextProps.data) {
+        if (nextProps.data && nextProps.id) {
             const { data, id } = nextProps;
             if (Object.keys(data).length !== 0) {
                 const { customer } = data;
-                const discountArray = customer.discounts.map((value, index) => {
-                    value.product.selected = true;
-                    return value
-                })
-                if (id) {
-                    this.setState({
-                        name: customer.name,
-                        password: '12345664',
-                        town: customer.address.town,
-                        area: customer.address.area,
-                        block: customer.address.block,
-                        house: customer.address.house,
-                        mobile: customer.mobile,
-                        discounts: discountArray
+                if (customer) {
+                    const discountArray = customer.discounts.map((value, index) => {
+                        value.product.selected = true;
+                        return value
                     })
+                    if (id) {
+                        this.setState({
+                            name: customer.name,
+                            password: '12345664',
+                            town: customer.address.town,
+                            area: customer.address.area,
+                            block: customer.address.block,
+                            house: customer.address.house,
+                            mobile: customer.mobile,
+                            discounts: discountArray
+                        })
+                    }
                 }
             }
+        } else {
+            this.setState({
+                name: '',
+                password: '',
+                town: '',
+                area: '',
+                block: '',
+                house: '',
+                mobile: '',
+                discounts: []
+            })
         }
     }
 
@@ -121,15 +135,14 @@ class MainForm extends Component {
     };
     handledSubmit = (e) => {
         e.preventDefault();
-        const { id, form, createCustomer, updateCustomer, history } = this.props;
+        const { id, form, createCustomer, updateCustomer } = this.props;
         const { validateFields, resetFields } = form;
 
-        let { discounts, deleteDiscount, editDiscount } = this.state;
+        let { discounts, deleteDiscount } = this.state;
         const dupDiscount = [];
         const editDup = [];
         validateFields(async (err, values) => {
-           
-            console.log(err)
+
             if (!err) {
                 this.setState({
                     disableBtn: true,
@@ -156,8 +169,8 @@ class MainForm extends Component {
                                     discount: discounts[i].discount,
                                     product: {
                                         create: {
-                                           name: discounts[i].product.name,
-                                           price: discounts[i].product.price
+                                            name: discounts[i].product.name,
+                                            price: discounts[i].product.price
                                         }
                                     }
                                 }
@@ -196,7 +209,6 @@ class MainForm extends Component {
                     delete customer.mobile
                     customer.id = id
 
-
                     if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
                         delete customer.data.discounts.create
                         customer.data.discounts.delete = deleteDiscount
@@ -213,20 +225,11 @@ class MainForm extends Component {
                     updateCustomer({
                         variables: customer,
                         update: (proxy, { data: { updateCustomer } }) => {
-                            const mobile = {updateCustomer}
                             // Read the data from our cache for this query.
                             let data = proxy.readQuery({ query: CUSTOMER_QUERY, variables: { id } });
-
-                            // Add our comment from the mutation to the end.
-                            // const index = data.find(value=>{
-                            //     return value.mobile === mobile
-                            // })
-
                             data.customer = updateCustomer
-                            // data.customers.push(createCustomer)
-                            // data.customers = [...data.customers]
                             // // Write our data back to the cache.
-                            proxy.writeQuery({ query: CUSTOMER_QUERY, data, variables: {  where: {id} } });
+                            proxy.writeQuery({ query: CUSTOMER_QUERY, data, variables: { where: { id } } });
                         }
                     }).then(result => {
                         this.setState({
@@ -234,7 +237,16 @@ class MainForm extends Component {
                             editDiscount: [],
                             deleteDiscount: []
                         })
-                        history.push(`/customers/${id}`)
+                        client.mutate({
+                            mutation: gql`
+                            mutation openDrawer($status: Boolean!, $id: String) {
+                                openDrawer(status: $status, id: $id) @client {
+                                    Drawer
+                                }
+                            }
+                            `,
+                            variables: { status: false, id: '' }
+                        })
                     })
                         .catch(err => {
                             this.setState({
@@ -275,6 +287,16 @@ class MainForm extends Component {
                         }, () => {
                             resetFields();
                             message.success('Customer has been created successfully');
+                            client.mutate({
+                                mutation: gql`
+                                mutation openDrawer($status: Boolean!, $id: String) {
+                                    openDrawer(status: $status, id: $id) @client {
+                                        Drawer
+                                    }
+                                }
+                                `,
+                                variables: { status: false, id: '' }
+                            })
                         });
                     }).catch(err => {
                         this.setState({
@@ -299,6 +321,20 @@ class MainForm extends Component {
             [ev.target.name]: ev.target.value
         });
     };
+
+    closeDrawer = () => {
+        client.mutate({
+            mutation: gql`
+            mutation openDrawer($status: Boolean!, $id: String) {
+                openDrawer(status: $status, id: $id) @client {
+                    Drawer
+                }
+            }
+            `,
+            variables: { status: false, id: '' }
+        })
+    }
+
     render() {
         const { form, id, options, loading } = this.props;
         const { getFieldDecorator } = form;
@@ -318,7 +354,7 @@ class MainForm extends Component {
                         loading || (disableBtn && id) ? (<Spin className="update_form_loader" />) : (
                             <React.Fragment>
                                 <Row gutter={16}>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                                         <h3>General</h3>
                                         <FormItem label={`Mobile Number`} >
                                             {getFieldDecorator('mobile', {
@@ -342,7 +378,7 @@ class MainForm extends Component {
                                             })(<Input name="name" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
                                     </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                                         <h3>Address</h3>
                                         <FormItem label={`Town`} >
                                             {getFieldDecorator('town', {
@@ -387,12 +423,13 @@ class MainForm extends Component {
                                             })(<Input name="house" onChange={this.getCustomerDetails} />)}
                                         </FormItem>
                                     </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
+                                    <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                                         <h3>Discount</h3>
                                         <div className="discount-details">
                                             {
                                                 discounts.map((value, index) => {
-
+                                                    const productPrice = value.product.price;
+                                                    const price = productPrice && value.discount ? ((value.discount / 100) * productPrice).toFixed(2) : 0;
                                                     return (
                                                         <div className="discounts" key={index}>
                                                             <Icon
@@ -409,7 +446,6 @@ class MainForm extends Component {
                                                                     dropdownStyle={{ width: 300 }}
                                                                     style={{ width: '100%' }}
                                                                     dataSource={options}
-
                                                                     placeholder="Products"
                                                                     value={value.product ? value.product.selected ? value.product.name : '' : ''}
                                                                     onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}
@@ -418,6 +454,7 @@ class MainForm extends Component {
                                                                 </AutoComplete>
 
                                                             </Form.Item>
+
                                                             <Form.Item label={'Add Discount'}>
                                                                 <InputNumber
                                                                     value={value.discount}
@@ -428,6 +465,13 @@ class MainForm extends Component {
                                                                     onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
                                                                 />
                                                             </Form.Item>
+
+                                                            <FormItem label={`Discounted Price`} >
+                                                                <InputNumber disabled={true}
+                                                                    value={productPrice ? productPrice - price : 0}
+                                                                    formatter={value => `PKR ${value}`}
+                                                                    parser={value => value.replace('PKR', '')} />
+                                                            </FormItem>
                                                         </div>
                                                     )
 
@@ -442,11 +486,14 @@ class MainForm extends Component {
 
                                     </Col>
                                 </Row>
-                                <Row className="top-space" type="flex" justify="center">
-                                    <Col xs={{ span: 16 }} sm={{ span: 16 }} md={{ span: 8 }} lg={{ span: 5 }} xl={{ span: 4 }}>
-                                        <Button type="primary" htmlType="submit" className="login-form-button" onClick={this.handledSubmit} loading={disableBtn}>{id ? 'Update' : 'Create'}</Button>
-                                    </Col>
-                                </Row>
+
+                                <div className="create-button-div">
+                                    <Button onClick={this.closeDrawer} style={{ marginRight: 8 }}>
+                                        Cancel
+                                            </Button>
+                                    <Button type="primary" htmlType="submit" onClick={this.handledSubmit} loading={disableBtn}> {id ? 'Update' : 'Submit'}</Button>
+
+                                </div>
                             </React.Fragment>
                         )
                     }

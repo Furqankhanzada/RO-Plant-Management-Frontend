@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Form, Input, message } from 'antd';
 import { graphql } from 'react-apollo';
@@ -79,12 +79,8 @@ class CreatesProducts extends Component {
     };
 
     render() {
-
-        const { drawer } = this.state;
         const { getFieldDecorator } = this.props.form;
         const { disableBtn } = this.state;
-        const { history } = this.props;
-
         return (
             
                             <div className="create-main-div">

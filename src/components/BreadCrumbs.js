@@ -25,20 +25,17 @@ class BreadCrumbs extends Component {
         };
         if (!breadcrumbNameMap[pathname]) {
             if (!pathname.split('/')[3]) {
-                console.log(pathname.split('/')[2], "breadcrumbNameMap[pathname]")
                 breadcrumbNameMap[pathname] = { name: pathname.split('/')[2], iconType: pathname.split('/')[2] === 'update' ? 'edit' : '' };
             } else {
                 breadcrumbNameMap[pathname] = { name: pathname.split('/')[3] };
             }
         }
-        console.log(pathname.split('/')[3], "breadasods")
         const extraBreadcrumbItems = pathSnippets.map((_, index) => {
             let url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-            console.log(pathname.split('/')[3], "url========")
 
             return (
                 <Breadcrumb.Item key={url}>
-                    <Link to={url == '/customers/update' ? `/customers/${pathname.split('/')[3]}` : url}><Icon type={breadcrumbNameMap[url].iconType} />{breadcrumbNameMap[url].name}</Link>
+                    <Link to={url === '/customers/update' ? `/customers/${pathname.split('/')[3]}` : url}><Icon type={breadcrumbNameMap[url].iconType} />{breadcrumbNameMap[url].name}</Link>
                 </Breadcrumb.Item>
             );
         });
