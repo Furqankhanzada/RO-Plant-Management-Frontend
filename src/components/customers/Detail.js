@@ -7,29 +7,34 @@ import { Layout, Card, Icon, Empty, Row, Col, Statistic } from 'antd';
 
 const columns = [
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
+        title: 'Date',
+        dataIndex: 'date',
+        key: 'date',
     },
     {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
+        title: 'Bottle In',
+        dataIndex: 'bottleIn',
+        key: 'bottleIn',
     },
     {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
+        title: 'Bottle Out',
+        dataIndex: 'bottleOut',
+        key: 'bottleOut',
     },
     {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
+        title: 'Bottle Balance',
+        dataIndex: 'bottleBalance',
+        key: 'bottleBalance',
+    },
+    {
+        title: 'Payment Status',
+        key: 'paymentStatus',
+        dataIndex: 'paymentStatus',
         render: tags => (
             <span>
         {tags.map(tag => {
             let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
+            if (tag === 'Unpaid') {
                 color = 'volcano';
             }
             return (
@@ -40,6 +45,16 @@ const columns = [
         })}
       </span>
         ),
+    },
+    {
+        title: 'Amount',
+        dataIndex: 'amount',
+        key: 'amount',
+    },
+    {
+        title: 'Amount Received',
+        dataIndex: 'amountReceived',
+        key: 'amountReceived',
     },
     {
         title: 'Action',
@@ -57,24 +72,33 @@ const columns = [
 const data = [
     {
         key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
+        date: '10/02/2019',
+        bottleIn: 5,
+        bottleOut: 0,
+        bottleBalance: 5,
+        paymentStatus: ['Paid'],
+        amount: 300,
+        amountReceived: 0,
     },
     {
         key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
+        date: '10/02/2019',
+        bottleIn: 5,
+        bottleOut: 5,
+        bottleBalance: 5,
+        paymentStatus: ['Unpaid'],
+        amount: 300,
+        amountReceived: 0,
     },
     {
         key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
+        date: '10/02/2019',
+        bottleIn: 5,
+        bottleOut: 4,
+        bottleBalance: 6,
+        paymentStatus: ['Paid'],
+        amount: 300,
+        amountReceived: 600,
     },
 ];
 
@@ -98,8 +122,11 @@ class Detail extends PureComponent {
                                 actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
                             >
                                 <h3>Abdul Raheem</h3>
-                                <p>03462799866</p>
+                                <p
+                                    style={{ marginBottom:0, fontWeight:600 }}
+                                >03462799866</p>
                                 <p>FL-1, R-3, Sector-1, Sultanabad Manghopir Road Karachi</p>
+                                <h2>Price : 60</h2>
                                 <Tag color="#87d068">Cash</Tag>
                                 <Tag color="#2db7f5">Monthly</Tag>
                             </Card>
@@ -107,16 +134,16 @@ class Detail extends PureComponent {
                         <Col span={18}>
                             <Row gutter={16}>
                                 <Col span={6}>
-                                    <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+                                    <Statistic title="Total Amount" value={1250} precision={2} />
                                 </Col>
                                 <Col span={6}>
-                                    <Statistic title="Active Users" value={112893} />
+                                    <Statistic title="Amount Recived" value={1000} precision={2} />
                                 </Col>
                                 <Col span={6}>
-                                    <Statistic title="Active Users" value={112893} />
+                                    <Statistic title="Due Amount" value={250} precision={2} />
                                 </Col>
                                 <Col span={6}>
-                                    <Statistic title="Account Balance (CNY)" value={112893} precision={2} />
+                                    <Statistic title="Bottles Deliver" value={17} />
                                 </Col>
                             </Row>
                             <Divider />
