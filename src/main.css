@@ -35,22 +35,9 @@
     height: 40px;
 }
 
-/*button {*/
-/*width: login-form-button;*/
-/*}*/
 .ant-form-item-children {
     width: 100%;
 }
-
-/*p {*/
-    /*color: rgb(204, 204, 204);*/
-    /*text-align: center;*/
-    /*margin-top: 16px;*/
-    /*font-size: 12px;*/
-    /*display: flex;*/
-    /*justify-content: space-between;*/
-/*}*/
-
 
 .logo {
     text-align: center;
@@ -65,9 +52,6 @@ img {
     width: 40px;
     margin-right: 8px;
 }
-
-
-
 
 .ant-spin-container,
 .ant-spin-nested-loading {
@@ -143,7 +127,6 @@ img {
     margin-right: 18px;
 }
 
-
 .ant-table-body::-webkit-scrollbar {
     width: 1em;
     height: 8px;
@@ -158,15 +141,13 @@ img {
     background-color: #e6e6e6;
 }
 
-.user-main-div {
+.contents {
     background: #fff;
     padding: 24px;
     min-height: 'calc(100vh - 230px)';
     position: relative;
     margin-bottom: 80px;
 }
-
-
 
 .loader {
     background-color: #fff;
@@ -220,19 +201,17 @@ img {
     transition: opacity 1s ease 0.5s, z-index 0.1s ease 1.5s;
 }
 
-
 .create-main-div {
     margin: 0 0 90px;
     border-radius: 5px;
-    position: relative;
-    padding: 0 10px 10px;
+    margin: 0 0 90px;
+    height: 100%
 }
 
 .create-main-div .ant-form {
     border-radius: 5px;
     background: white;
     padding: 15px;
-    box-shadow: 0 2px 7px 0 #cecece;
 }
 
 .create-main-div .ant-form .ant-form-item {
@@ -272,9 +251,6 @@ img {
     margin-right: 15px;
 }
 
-
-
-
 @keyframes spinner {
     0% {
         transform: rotate(0deg);
@@ -303,7 +279,20 @@ img {
 
 .discount-details .discounts {
     position: relative;
-    padding: 0px 20px 0 0;
+    padding: 0 20px 0 0;
+}
+.discount-details .discounts .ant-form-item {
+    margin-right: 14px;
+    width: 35% !important;
+}
+.discount-details .discounts .ant-form-item:nth-child(odd) {
+    display: inline-block;
+    float: none !important;
+}
+.discount-details .discounts .ant-form-item:last-of-type {
+    width: 20% !important;
+    display: inline-block;
+    float: none !important;
 }
 
 .discount-details .discounts .removeButtonDiscount {
@@ -383,6 +372,73 @@ img {
     margin-bottom: 20px;
 }
 
+.new-account .ant-drawer-body {
+    padding: 0;
+}
+
+.new-account .ant-drawer-body .ant-form .ant-form-item {
+    width: 49%;
+    float: left;
+}
+
+.new-account .ant-drawer-body .ant-form .ant-form-item:nth-child(odd) {
+    float: right;
+}
+
+.new-account .ant-drawer-body .create-main-div {
+    margin: 0;
+    background: white;
+}
+
+.new-account .ant-drawer-body .create-main-div h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.new-account .ant-drawer-body .top-space {
+    margin-top: 15px;
+}
+
+.new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
+    color: red;
+    float: right;
+    position: static;
+    margin: 34px 0 0 10px;
+}
+.new-account .ant-drawer-body .discount-details .discounts {
+    padding: 0;
+    width: 100%;
+    display: inline-block;
+}
+
+.new-account .ant-drawer-body .remove-padding {
+    padding: 0 !important;
+    height: auto !important;
+}
+
+.new-account .ant-drawer-body .fields-adds {
+    width: 100% !important;
+}
+
+.new-account .ant-drawer-body .fields-adds .ant-form-item-control-wrapper {
+    margin: 20px 0 0 0;
+}
+
+.new-account .ant-drawer-body .dashboard-main {
+    min-height: inherit;
+}
+
+.ant-drawer-body {
+    height: calc(100% - 54px);
+}
+
+.ant-drawer-body>.ant-layout {
+    height: 100%;
+}
+.new-account .ant-drawer-header {
+    padding: 16px 15px;
+}
+
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
 
@@ -444,11 +500,79 @@ img {
         width: 100%;
         padding: 15px 15px 0 !important;
     }
+    .ant-drawer-content-wrapper {
+        width: 100% !important;
+    }
 
 }
-.form-create-update{
-    min-height: 400px
+
+@media (min-width: 320px) and (max-width: 430px) {
+
+    .new-account .ant-drawer-body .ant-form .ant-form-item {
+        width: 100%;
+    }
+    .discount-details .discounts .ant-form-item {
+        width: 100% !important;
+        margin-right: 0;
+    }
+    .discount-details .discounts .ant-form-item:nth-of-type(2) {
+        width: 50% !important;
+    }
+    .discount-details .discounts .ant-form-item:last-of-type {
+        width: 45% !important;
+        margin-left: 13px;
+    }
+    .new-account .ant-drawer-body .discount-details .discounts {
+        padding: 0 10px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        box-shadow: 0 0 5px 0 #cecece;
+    }
+    .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
+        color: red;
+        margin: 9px 0 0 10px;
+    }
+
 }
+@media (min-width: 431px) and (max-width: 767px) {
+
+    .discount-details .ant-form-item {
+        width: 47% !important;
+    }
+    .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
+        margin: 35px 0 0 5px;
+    }
+    .discount-details .discounts .ant-form-item {
+        width: 34% !important;
+    }
+    .discount-details .discounts .ant-form-item:last-of-type {
+        margin-right: 0;
+    }
+
+}
+
+.create-button-div {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+    text-align: right;
+    position: absolute;
+    background-color: #fff;
+    border-radius: 0 0 4px 4px;
+    padding: 10px 16px 10px 16px;
+    box-shadow: 0 0 4px 0 #cecece;
+}
+
+.form-create-update {
+    min-height: 400px;
+    height: 100%;
+}
+.discount-box {
+    padding-bottom: 50px;
+}
+
 
 .ant-breadcrumb-link:hover{
     cursor: pointer;
@@ -468,10 +592,8 @@ img {
     }
 
 }
-
 /*/// small media query end here ///*/
 
 /*/// medium media query start here ///*/
 @media (min-width: 992px) and (max-width: 1199px) {}
-
 /*/// medium media query end here ///*/

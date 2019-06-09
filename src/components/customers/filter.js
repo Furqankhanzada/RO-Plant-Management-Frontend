@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { Button, Row, Col, DatePicker, Input, Cascader, Form, Icon } from 'antd'
-//import city from 'utils/city'
-const city = [];
+import { Button, Form, Input, Row, Icon, Col } from 'antd';
+import { client } from '../../index'
+import gql from 'graphql-tag';
+
 const { Search } = Input;
-const { RangePicker } = DatePicker;
 
 const ColProps = {
     xs: 24,
@@ -72,28 +72,21 @@ class Filter extends Component {
         onFilterChange(fields)
     };
 
+    openDrawer = () => {
+        client.mutate({
+            mutation: gql`
+            mutation openDrawer($status: Boolean!, $id: String) {
+                openDrawer(status: $status, id: $id) @client {
+                    Drawer
+                }
+            }
+            `,
+            variables: { status: true, id: '' }
+        })
+    }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
         const { name, mobile } = filter;
-        const FilterItem = ({ label = '', children }) => {
-            const labelArray = label.split('');
-            return (
-                <div className='filterItem'>
-                    {labelArray.length > 0 ? (
-                        <div className='labelWrap '>
-                            {labelArray.map((item, index) => (
-                                <span className="labelText" key={index}>
-              {item}
-            </span>
-                            ))}
-                        </div>
-                    ) : (
-                        ''
-                    )}
-                    <div className='item'>{children}</div>
-                </div>
-            )
-        }
         let initialCreateTime = [];
         if (filter.createTime && filter.createTime[0]) {
             initialCreateTime[0] = moment(filter.createTime[0])
@@ -117,7 +110,7 @@ class Filter extends Component {
                     xl={{ span: 5 }}
                     md={{ span: 8 }}
                     id="addressCascader"
-                    >
+                >
                     {getFieldDecorator('mobile', { initialValue: mobile })(
                         <Search
                             placeholder={`Search Mobile Number`}
@@ -131,26 +124,27 @@ class Filter extends Component {
                     xl={{ span: 15 }}
                     md={{ span: 32 }}
                     sm={{ span: 24 }}
-                    >
+                >
                     <Row type="flex" align="middle" justify="space-between">
                         <div>
                             <Button
                                 type="primary"
                                 className="margin-right search-btn"
                                 onClick={this.handleSubmit}
-                                >
+                            >
                                 <span>Search</span>
                             </Button>
                             <Button onClick={this.handleReset}>
                                 <span>Reset</span>
                             </Button>
                         </div>
-                        <Button type="primary" onClick={()=>this.props.history.push('/customers/create')}>
-                            <Icon type="plus" />
-                            <span>Create</span>
+                        <Button type="primary" onClick={this.openDrawer}>
+                          <Icon type="plus" />
+                          <span>Create</span>
                         </Button>
                     </Row>
                 </Col>
+
             </Row>
         )
     }

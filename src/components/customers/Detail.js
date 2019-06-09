@@ -1,7 +1,5 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import { Table, Divider, Tag } from 'antd';
-import  Sidebar  from './../common/sidebar'
-import { AppBar } from './../common/header'
 
 import { Layout, Card, Icon, Empty, Row, Col, Statistic } from 'antd';
 
@@ -44,7 +42,7 @@ const columns = [
             );
         })}
       </span>
-        ),
+        )
     },
     {
         title: 'Amount',
@@ -61,12 +59,12 @@ const columns = [
         key: 'action',
         render: (text, record) => (
             <span>
-        <a href="#">Invite {record.name}</a>
+        <p>Invite {record.name}</p>
         <Divider type="vertical" />
-        <a href="#">Delete</a>
+        <p>Delete</p>
       </span>
-        ),
-    },
+        )
+    }
 ];
 
 const data = [
@@ -104,9 +102,6 @@ const data = [
 
 class Detail extends PureComponent {
     render() {
-        const { history } = this.props;
-        const { Meta } = Card;
-
         return (
                 <Layout className="user-main-div">
                     <Row>
