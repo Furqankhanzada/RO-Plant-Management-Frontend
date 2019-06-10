@@ -124,14 +124,14 @@ class List extends PureComponent {
                 title: <span>Operation</span>,
                 key: 'id',
                 fixed: 'right',
-                render: this.actionColumn.bind(this),
+                render: this.actionColumn.bind(this)
             }
-        ]
+        ];
 
         return (
             <Table
                 {...tableProps}
-                //pagination={{ ...tableProps.pagination, showTotal: total =>`Total ${total} Items`}}
+                pagination={false}
                 bordered
                 scroll={{ x: 1200 }}
                 columns={columns}
