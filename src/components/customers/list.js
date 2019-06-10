@@ -113,7 +113,7 @@ class List extends PureComponent {
                 title: <span>Address</span>,
                 dataIndex: 'address',
                 key: 'address',
-                render: (text) => `${text.house} ${text.block} ${text.town}`
+                render: (text) => `${text.house} ${text.area} ${text.block} ${text.town}`
             },
             {
                 title: <span>Bottles balance</span>,

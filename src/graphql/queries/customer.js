@@ -10,6 +10,7 @@ export const GET_CUSTOMERS = gql`
                 town
                 house
                 block
+                area
             }
             createdAt
             bottle{
@@ -29,6 +30,7 @@ export const CUSTOMER_SUBSCRIPTION = gql`
                 town
                 house
                 block
+                area
             }
             createdAt
             bottle{
