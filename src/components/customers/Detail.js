@@ -104,10 +104,11 @@ class Detail extends PureComponent {
     render() {
         return (
                 <Layout className="user-main-div">
-                    <Row>
+                    <div className="card">
+                        <Row>
                         <Col span={6}>
                             <Card
-                                style={{ width: 300, marginBottom: 25 }}
+                                style={{ width: '100%' }}
                                 cover={
                                     <img
                                         alt="example"
@@ -127,34 +128,38 @@ class Detail extends PureComponent {
                             </Card>
                         </Col>
                         <Col span={18}>
-                            <Row gutter={16}>
-                                <Col span={6}>
-                                    <Statistic title="Total Amount" value={1250} precision={2} />
-                                </Col>
-                                <Col span={6}>
-                                    <Statistic title="Amount Recived" value={1000} precision={2} />
-                                </Col>
-                                <Col span={6}>
-                                    <Statistic title="Due Amount" value={250} precision={2} />
-                                </Col>
-                                <Col span={6}>
-                                    <Statistic title="Bottles Deliver" value={17} />
-                                </Col>
-                            </Row>
-                            <Divider />
-                            <Empty
-                                style={{ marginTop: 60 }}
-                                description={
-                                    <span>
-                                       Chart Will be here
-                                    </span>
-                                }
-                            >
-                            </Empty>
-
+                            <div className="quantity">
+                                <Row gutter={16}>
+                                    <Col span={6}>
+                                        <Statistic title="Total Amount" value={1250} precision={2} />
+                                    </Col>
+                                    <Col span={6}>
+                                        <Statistic title="Amount Recived" value={1000} precision={2} />
+                                    </Col>
+                                    <Col span={6}>
+                                        <Statistic title="Due Amount" value={250} precision={2} />
+                                    </Col>
+                                    <Col span={6}>
+                                        <Statistic title="Bottles Deliver" value={17} />
+                                    </Col>
+                                </Row>
+                                <Divider />
+                                <Empty
+                                    style={{ marginTop: 60 }}
+                                    description={
+                                        <span>
+                                           Chart Will be here
+                                        </span>
+                                    }
+                                >
+                                </Empty>
+                            </div>
                         </Col>
                     </Row>
-                    <Table columns={columns} dataSource={data} bordered simple />
+                    </div>
+                    <div className="card">
+                        <Table columns={columns} pagination={false} dataSource={data} bordered simple />
+                    </div>
                 </Layout>
             )
     }

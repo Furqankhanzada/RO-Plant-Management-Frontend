@@ -443,6 +443,16 @@ img {
     padding: 16px 15px;
 }
 
+.card {
+    background: white;
+    padding: 10px 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 2px 0 #cecece;
+}
+.quantity {
+    padding: 0 0 0 10px;
+}
+
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
 
