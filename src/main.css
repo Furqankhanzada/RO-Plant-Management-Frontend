@@ -73,7 +73,10 @@ img {
 }
 
 .dashboard-main {
-    min-height: calc(100vh - 93px);
+    min-height: calc(100vh - 64px);
+}
+.dashboard-main .ant-layout {
+    height: calc(100vh - 64px) !important;
 }
 
 .header-custom {
@@ -263,6 +266,7 @@ img {
 
 .products-table {
     background: white;
+    margin-bottom: 20px;
     box-shadow: 0 0 3px 0 #cecece;
 }
 
@@ -502,6 +506,12 @@ img {
     }
     .ant-drawer-content-wrapper {
         width: 100% !important;
+    }
+    .contents {
+        padding: 20px 10px;
+    }
+    .contents .search-btn {
+        margin-right: 10px;
     }
 
 }
