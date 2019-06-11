@@ -95,7 +95,7 @@ class MainForm extends Component {
         const { discounts, editDiscount } = this.state;
         const discountsObject = discounts[index];
         if (type === "percentage") {
-            discountsObject.discount = ev;
+            discountsObject.discount = parseInt((discountsObject.product.price - (ev / 100) * discountsObject.product.price).toFixed());
         } else {
             const selectedProduct = JSON.parse(ev);
             discountsObject.product = {
@@ -457,7 +457,7 @@ class MainForm extends Component {
 
                                                             <Form.Item label={'Add Discount'}>
                                                                 <InputNumber
-                                                                    value={value.discount}
+                                                                    value={value.discount ? (100 - (value.discount / productPrice) * 100).toFixed() : 0}
                                                                     min={0}
                                                                     max={90}
                                                                     formatter={value => `${value}%`}
@@ -467,10 +467,11 @@ class MainForm extends Component {
                                                             </Form.Item>
 
                                                             <FormItem label={`Discounted Price`} >
-                                                                <InputNumber disabled={true}
-                                                                    value={productPrice ? productPrice - price : 0}
+                                                                <InputNumber disabled = {true}
+                                                                    value={value.discount == 0 ? productPrice : value.discount}
                                                                     formatter={value => `PKR ${value}`}
-                                                                    parser={value => value.replace('PKR', '')} />
+                                                                    parser={value => value.replace('PKR', '')}                                                
+                                                                    />
                                                             </FormItem>
                                                         </div>
                                                     )
