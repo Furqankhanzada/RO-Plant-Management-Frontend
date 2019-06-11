@@ -174,7 +174,7 @@ class Detail extends PureComponent {
                         </div>
                     </Col>
                 </Row>
-                <div className="card padding-none">
+                <div className="card padding-none bottom-space">
                     <Table columns={columns} pagination={false} dataSource={data} scroll={{ x: 1000 }} bordered simple />
                 </div>
             </Layout>

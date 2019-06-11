@@ -479,6 +479,9 @@ img {
 .flex-box {
     display: flex;
 }
+.bottom-space {
+    margin-bottom: 20px;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
