@@ -14,9 +14,6 @@ class RightDrawer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      visible: this.props.visible
-    }
   }
   onClose() {
     client.mutate({
