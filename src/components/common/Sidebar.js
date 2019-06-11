@@ -9,14 +9,14 @@ const SubMenu = Menu.SubMenu;
 
 class Sidebar extends Component {
     render() {
-        const { history, defaultSelectedKeys, defaultOpenKeys, drawer } = this.props;
+        const { history, defaultSelectedKeys, defaultOpenKeys } = this.props;
         return (
             <Query query={GET_MAIN_DRAWER_STATUS}>
                 {
                     ({ data }) => {
                         const { MainDrawer } = data;
                         if (MainDrawer) {
-                            const { open } = MainDrawer
+                            const { open } = MainDrawer;
                             return (
                                 <Sider className={` ${open ? 'showHideView' : ''}`} width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
                                     <Menu
@@ -30,7 +30,7 @@ class Sidebar extends Component {
                                             <span>Customers</span>
                                         </Menu.Item>
 
-                                      <Menu.Item key="1" onClick={() => history.push('/transactions')}>
+                                      <Menu.Item key="2" onClick={() => history.push('/transactions')}>
                                         <Icon type="bar-chart" />
                                         <span>Transactions</span>
                                       </Menu.Item>

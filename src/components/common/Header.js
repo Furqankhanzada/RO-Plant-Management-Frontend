@@ -20,7 +20,6 @@ export class AppBar extends Component {
         })
     }
     render(){
-        const { handleClick } = this.props;
         return (
             <Header className="header header-custom " style={{ backgroundColor: '#ffffff' }}>
                 <div className='nav-logo'>
@@ -44,7 +43,7 @@ export class AppBar extends Component {
                         </Menu.Item>
                     </SubMenu>
                 </Menu>
-    
+
             </Header>
         )
     }
