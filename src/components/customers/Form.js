@@ -319,7 +319,7 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form, customer = {}, options, loading } = this.props;
+    const { form, customer: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
     const { name, mobile, town, area, block, house } = this.state;
@@ -334,7 +334,7 @@ class MainForm extends Component {
       <div className="create-main-div">
         <Form layout="horizontal" onSubmit={this.handledSubmit.bind(this)} className="form-create-update">
           {
-            loading || (disableBtn && customer.id) ? (<Spin className="update_form_loader" />) : (
+            loading || (disableBtn && id) ? (<Spin className="update_form_loader" />) : (
               <React.Fragment>
                 <Row gutter={16}>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
@@ -475,7 +475,7 @@ class MainForm extends Component {
                     Cancel
                   </Button>
                   <Button type="primary" htmlType="submit" onClick={this.handledSubmit.bind(this)} loading={disableBtn}>
-                    {customer.id ? 'Update' : 'Submit'}
+                    {id ? 'Update' : 'Submit'}
                   </Button>
                 </div>
               </React.Fragment>

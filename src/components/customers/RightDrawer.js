@@ -31,7 +31,7 @@ class RightDrawer extends Component {
     })
   }
   render() {
-    const { history, id, visible } = this.props;
+    const { id, visible } = this.props;
     return (
       <Row gutter={24}>
         <Drawer
@@ -60,15 +60,9 @@ class RightDrawer extends Component {
                       <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
                         <Query query={CUSTOMER_QUERY} variables={{ id }} >
                           {({ data: { customer }, loading }) => {
-                            if (id) {
-                              return (
-                                <CustomerForm options={options} customer={customer} loading={loading} />
-                              )
-                            } else {
-                              return (
-                                <CustomerForm options={options} />
-                              )
-                            }
+                            return (
+                              <CustomerForm options={options} customer={customer || {}} loading={loading} />
+                            )
                           }}
                         </Query>
                       </Layout>
