@@ -128,6 +128,7 @@ class List extends PureComponent {
     return (
       <Table
         {...tableProps}
+        size='small'
         pagination={false}
         bordered
         scroll={{ x: 1200 }}

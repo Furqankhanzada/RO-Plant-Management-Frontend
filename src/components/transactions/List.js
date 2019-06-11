@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
-import { Table, Modal, Avatar, Dropdown, Menu, Icon, Button } from 'antd'
+import { Table, Modal, Tag, Dropdown, Menu, Icon, Button } from 'antd'
 import _ from 'lodash';
 import {gql} from "apollo-boost/lib/index";
 import {graphql} from "react-apollo/index";
 import { Link, withRouter } from 'react-router-dom'
-import { GET_CUSTOMERS } from '../../graphql/queries/customer'
+import { GET_TRANSACTIONS } from '../../graphql/queries/transaction'
 import { client } from '../../index'
 const { confirm } = Modal;
 
@@ -29,7 +29,7 @@ class List extends PureComponent {
     })
   }
   handleMenuClick (record, e) {
-    const { deleteCustomer } = this.props;
+    const { deleteTransaction } = this.props;
     if (e.key === '1') {
       this.onEditItem(record);
     } else if (e.key === '2') {
@@ -37,23 +37,23 @@ class List extends PureComponent {
         title: `Are you sure delete this record?`,
         onOk: () => {
           this.setState({loading: true});
-          deleteCustomer({
+          deleteTransaction({
             variables: {
               where: {
                 id: record.id
               }
             },
-            update: (proxy, { data: { deleteCustomer } }) => {
+            update: (proxy, { data: { deleteTransaction } }) => {
               // Read the data from our cache for this query.
-              const data = proxy.readQuery({ query: GET_CUSTOMERS, variables:{where:{}} });
+              const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables:{where:{}} });
               // Add our comment from the mutation to the end.
-              _.remove(data.customers, (customer) => {
-                return customer.id === deleteCustomer.id
+              _.remove(data.transactions, (transaction) => {
+                return transaction.id === deleteTransaction.id
               });
 
-              data.customers = [...data.customers];
+              data.transactions = [...data.transactions];
               // Write our data back to the cache.
-              proxy.writeQuery({ query: GET_CUSTOMERS, data, variables:{where:{}}});
+              proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables:{where:{}}});
               this.setState({loading: false});
             }
           })
@@ -88,34 +88,72 @@ class List extends PureComponent {
     const { ...tableProps } = this.props;
     const columns = [
       {
-        title: <span>Avatar</span>,
-        dataIndex: 'avatar',
-        key: 'avatar',
-        width: 72,
-        fixed: 'left',
-        render: text => <Avatar style={{ marginLeft: 8 }} src={require('../../assests/images/user.png')} />,
+        title: <span>createdAt</span>,
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        render: (text) => text,
       },
       {
         title: <span>Name</span>,
-        dataIndex: 'name',
-        key: 'name',
-        render: (text, record) => <Link to={`/customers/${record.id}`}>{text}</Link>,
+        dataIndex: 'user.name',
+        key: 'user.name',
+        render: (text, record) => <Link to={`/customers/${record.user.id}`}>{text}</Link>,
       },
       {
-        title: <span>Mobile</span>,
-        dataIndex: 'mobile',
-        key: 'mobile',
+        title: <span>Type</span>,
+        dataIndex: 'type',
+        key: 'type',
+        render: (text) => <Tag color='green' >{text}</Tag>,
       },
       {
-        title: <span>Address</span>,
-        dataIndex: 'address',
-        key: 'address',
-        render: (text) => `${text.house} ${text.area} ${text.block} ${text.town}`
+        title: <span>Status</span>,
+        dataIndex: 'status',
+        key: 'status',
+        render: (status) => {
+          let color = '#e0e0e0';
+          switch (status) {
+            case 'PROCESSING':
+              color = 'orange';
+              break;
+            case 'COMPLETED':
+              color = 'green';
+              break
+          }
+          return <Tag color={color} >{status}</Tag>
+        },
       },
       {
-        title: <span>Bottles balance</span>,
-        dataIndex: 'bottle.balance',
-        key: 'bottle.balance',
+        title: <span>Payment</span>,
+        children: [
+          {
+            title: <span>Method</span>,
+            dataIndex: 'payment.method',
+            key: 'payment.method',
+          },
+          {
+            title: <span>Paid</span>,
+            dataIndex: 'payment.paid',
+            key: 'payment.paid',
+            render: (text) => `Rs${text}`,
+          },
+          {
+            title: <span>Balance</span>,
+            dataIndex: 'payment.balance',
+            key: 'payment.balance',
+            render: (text) => `Rs${text}`
+          },
+          {
+            title: <span>Status</span>,
+            dataIndex: 'payment.status',
+            key: 'payment.status',
+          }
+        ]
+      },
+      {
+        title: <span>Items</span>,
+        dataIndex: 'items',
+        key: 'items',
+        render: (text) => text.length,
       },
       {
         title: <span>Operation</span>,
@@ -128,6 +166,7 @@ class List extends PureComponent {
     return (
       <Table
         {...tableProps}
+        size='small'
         pagination={false}
         bordered
         scroll={{ x: 1200 }}
@@ -142,12 +181,12 @@ class List extends PureComponent {
 
 withRouter(List);
 
-const DELETE_CUSTOMER_MUTATION = gql`
-    mutation deleteCustomer($where: UserWhereUniqueInput!) {
-        deleteCustomer(where: $where){
+const DELETE_TRANSACTION_MUTATION = gql`
+    mutation deleteTransaction($where: TransactionWhereUniqueInput!) {
+        deleteTransaction(where: $where){
             id
         }
     }
 `;
 
-export default graphql(DELETE_CUSTOMER_MUTATION, { name: 'deleteCustomer' })(List)
+export default graphql(DELETE_TRANSACTION_MUTATION, { name: 'deleteTransaction' })(List)

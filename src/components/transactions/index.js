@@ -11,14 +11,14 @@ class User extends PureComponent {
     super(props);
   }
   render() {
-    const { loading, history, customers } = this.props;
+    const { loading, history, transactions } = this.props;
     // Fill filters input by url query params
     const { location: { search } } = history;
     const query = parse(search.replace('?', ''));
 
     const handleRefresh = newQuery => {
       this.props.history.push({
-        pathname: '/customers',
+        pathname: '/transactions',
         search: stringify(
           {
             ...query,
@@ -30,7 +30,7 @@ class User extends PureComponent {
     };
 
     const listProps = {
-      dataSource: customers,
+      dataSource: transactions,
       loading,
       onChange(page) {
         handleRefresh({
