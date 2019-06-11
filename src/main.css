@@ -446,21 +446,25 @@ img {
 .card {
     background: white;
     padding: 10px 10px;
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
     box-shadow: 0 2px 2px 0 #cecece;
 }
 .quantity {
+    width: 100%;
+    margin-bottom: 20px;
     padding: 0 0 0 10px;
 }
 .quantity .card {
-    min-height: 437px;
+    height: 100%;
 }
 .padding-none {
     padding: 0;
 }
 .loading-center {
+    width: 100%;
     min-height: 437px;
     position: relative;
+    margin-bottom: 20px;
 }
 .loading-center .ant-spin-spinning {
     left: 0;
@@ -470,6 +474,10 @@ img {
     position: absolute;
     align-items: center;
     justify-content: center;
+}
+
+.flex-box {
+    display: flex;
 }
 
 /*/// extra small media query start here ///*/

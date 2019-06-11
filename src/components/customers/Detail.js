@@ -110,9 +110,9 @@ class Detail extends PureComponent {
 
         return (
             <Layout className="user-main-div">
-                <Row>
+                <Row className="flex-box">
 
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                    <Col className="flex-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                         <div className="card padding-none loading-center">
                             <Query query={CUSTOMER_QUERY} variables={{ id }}>
                                 {({ data: { customer }, loading }) => {
@@ -143,7 +143,7 @@ class Detail extends PureComponent {
                         </div>
                     </Col>
 
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }} xl={{ span: 18 }}>
+                    <Col className="flex-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }} xl={{ span: 18 }}>
                         <div className="quantity">
                             <div className="card">
                                 <Row gutter={16}>
