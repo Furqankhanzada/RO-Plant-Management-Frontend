@@ -4,13 +4,13 @@ import { PRODUCTS_QUERY } from '../../graphql/queries/product'
 import { CUSTOMER_QUERY } from '../../graphql/queries/customer.js'
 import { Query } from 'react-apollo';
 import { Layout } from 'antd';
-import CustomerForm from './form';
+import CustomerForm from './Form';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
 const { Option } = Select;
 
-class CustomerDrawer extends Component {
+class RightDrawer extends Component {
 
     constructor(props) {
         super(props);
@@ -91,4 +91,4 @@ class CustomerDrawer extends Component {
     }
 }
 
-export default CustomerDrawer
+export default RightDrawer

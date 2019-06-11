@@ -443,6 +443,16 @@ img {
     padding: 16px 15px;
 }
 
+.card {
+    background: white;
+    padding: 10px 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 2px 0 #cecece;
+}
+.quantity {
+    padding: 0 0 0 10px;
+}
+
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
 
@@ -513,6 +523,12 @@ img {
     .contents .search-btn {
         margin-right: 10px;
     }
+    .bottom-space {
+        padding-bottom: 15px;
+    }
+    .ant-divider-horizontal {
+        margin: 15px 0 24px;
+    }
 
 }
 
@@ -542,6 +558,12 @@ img {
         color: red;
         margin: 9px 0 0 10px;
     }
+    .quantity {
+        padding: 20px 0 0 0;
+    }
+    .card .ant-card-body {
+        padding: 15px;
+    }
 
 }
 @media (min-width: 431px) and (max-width: 767px) {
@@ -557,6 +579,9 @@ img {
     }
     .discount-details .discounts .ant-form-item:last-of-type {
         margin-right: 0;
+    }
+    .quantity {
+        padding: 25px 0 0 0;
     }
 
 }
@@ -599,6 +624,9 @@ img {
 
     .create-main-div .ant-form {
         margin-bottom: 20px;
+    }
+    .quantity {
+        padding: 25px 0 0 0;
     }
 
 }

@@ -9,18 +9,17 @@ import {
 import LoginPage from './LoginPage'
 import ProductPage from './Products'
 import CustomersPage from './CustomersPage'
-import CreateCustomer from './CreateCustomer'
-import UpdateCustomer from './UpdateCustomer'
+import CustomersDetail from "./customers/Detail";
+import TransactionsPage from './TransactionsPage'
 import { Layout } from 'antd';
 import CreateProduct from './CreateProduct'
 import { AUTH_TOKEN } from '../constant'
 import { isTokenExpired } from '../helper/jwtHelper'
 import { graphql } from 'react-apollo'
 import { gql } from 'apollo-boost'
-import CustomersDetail from "./customers/Detail";
 import BreadCrumbs from "./BreadCrumbs";
-import Sidebar from './common/sidebar'
-import { AppBar } from './common/header'
+import Sidebar from './common/Sidebar'
+import { AppBar } from './common/Header'
 
 const ProtectedRoute = ({ component: Component, token, ...rest }) => {
     return token ? (
@@ -114,9 +113,11 @@ class RootContainer extends Component {
                 <Switch>
                     <ProtectedRoute exact path="/" token={this.state.token} component={CustomersPage} />
                     <ProtectedRoute exact path="/customers" token={this.state.token} component={CustomersPage} />
-                    <ProtectedRoute exact path="/customers/create" token={this.state.token} component={CreateCustomer} />
                     <ProtectedRoute exact path="/customers/:id" token={this.state.token} component={CustomersDetail} />
-                    <ProtectedRoute exact path="/customers/update/:id" token={this.state.token} component={UpdateCustomer} />
+
+                  <ProtectedRoute exact path="/transactions" token={this.state.token} component={TransactionsPage} />
+                  <ProtectedRoute exact path="/transactions/:id" token={this.state.token} component={CustomersDetail} />
+
                     <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage} />
                     <ProtectedRoute exact path="/products/create" token={this.state.token} component={CreateProduct} />
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
