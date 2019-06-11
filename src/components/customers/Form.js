@@ -38,7 +38,7 @@ class MainForm extends Component {
 
   add() {
     const { discounts } = this.state;
-    const { id } = this.props;
+    const { customer: { id } = {} } = this.props;
 
     const discountsObj = {
       discount: 0,
@@ -54,39 +54,23 @@ class MainForm extends Component {
     })
   };
   componentWillReceiveProps(nextProps) {
-    if (nextProps.data && nextProps.id) {
-      const { data, id } = nextProps;
-      if (Object.keys(data).length !== 0) {
-        const { customer } = data;
-        if (customer) {
-          const discountArray = customer.discounts.map((value, index) => {
-            value.product.selected = true;
-            return value
-          });
+    if (nextProps.customer) {
+      const { customer } = nextProps;
+      if (Object.keys(customer).length) {
+          const { id, name, mobile, address: { town, area, block, house } } = customer;
+          // If updating customer
           if (id) {
-            this.setState({
-              name: customer.name,
-              town: customer.address.town,
-              area: customer.address.area,
-              block: customer.address.block,
-              house: customer.address.house,
-              mobile: customer.mobile,
-              discounts: discountArray
-            })
+              // make discounts
+            const discountArray = customer.discounts.map((value) => {
+              value.product.selected = true;
+              return value
+            });
+            // set customer to state
+            this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
           }
-        }
       }
     } else {
-      this.setState({
-        name: '',
-        password: '',
-        town: '',
-        area: '',
-        block: '',
-        house: '',
-        mobile: '',
-        discounts: []
-      })
+      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '', discounts: []})
     }
   }
 
@@ -118,7 +102,7 @@ class MainForm extends Component {
   }
   removeDiscount(index, value) {
     const { discounts, deleteDiscount } = this.state;
-    const { id } = this.props;
+    const { customer: { id } = {} } = this.props;
 
     if (id) {
       const deleteDiscountObj = { id: value.id };
@@ -134,7 +118,7 @@ class MainForm extends Component {
   }
   handledSubmit (e) {
     e.preventDefault();
-    const { id, form, createCustomer, updateCustomer } = this.props;
+    const { customer: { id } = {}, form, createCustomer, updateCustomer } = this.props;
     const { validateFields, resetFields } = form;
 
     let { discounts, deleteDiscount } = this.state;
@@ -335,7 +319,7 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form, id, options, loading } = this.props;
+    const { form, customer = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
     const { name, mobile, town, area, block, house } = this.state;
@@ -350,7 +334,7 @@ class MainForm extends Component {
       <div className="create-main-div">
         <Form layout="horizontal" onSubmit={this.handledSubmit.bind(this)} className="form-create-update">
           {
-            loading || (disableBtn && id) ? (<Spin className="update_form_loader" />) : (
+            loading || (disableBtn && customer.id) ? (<Spin className="update_form_loader" />) : (
               <React.Fragment>
                 <Row gutter={16}>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
@@ -363,7 +347,7 @@ class MainForm extends Component {
                             required: true
                           }
                         ]
-                      })(<Input disabled={id ? true : false} name="mobile" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="mobile" onChange={this.getCustomerDetails.bind(this)} />)}
                     </FormItem>
                     <FormItem label={`Name`} >
                       {getFieldDecorator('name', {
@@ -491,7 +475,7 @@ class MainForm extends Component {
                     Cancel
                   </Button>
                   <Button type="primary" htmlType="submit" onClick={this.handledSubmit.bind(this)} loading={disableBtn}>
-                    {id ? 'Update' : 'Submit'}
+                    {customer.id ? 'Update' : 'Submit'}
                   </Button>
                 </div>
               </React.Fragment>

@@ -19,18 +19,10 @@ class TransactionsPage extends Component {
     }
   }
   componentDidUpdate(prevProps) {
-    const { match } = this.props;
-    const {params} = match;
-    if(params.id){
-      this.props.history.push(`/transactions/update/${params.id}`)
-    }
-    //const { match } = this.props;
-
     if (this.props.location !== prevProps.location) {
       this.onRouteChanged();
     }
   }
-
   onRouteChanged() {
     const { transactionsQuery: { refetch }, location: { search } } = this.props;
     const query = parse(search);
@@ -60,19 +52,6 @@ class TransactionsPage extends Component {
       })
     }
   }
-
-  handleClick = (e) => {
-    this.setState({
-      current: e.key
-    })
-  };
-
-  openDrawer = () => {
-    this.setState({
-      drawer: !this.state.drawer
-    })
-  };
-
   render() {
     const { transactions, loading } = this.props.transactionsQuery;
     return (

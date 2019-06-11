@@ -41,8 +41,9 @@ export const CUSTOMER_SUBSCRIPTION = gql`
 `;
 
 export const CUSTOMER_QUERY = gql`
-query customerDetail($id:ID){
-    customer(where:{id:$id}){
+query customerDetail($id: ID){
+    customer(where:{id: $id}) {
+        id
         name
         mobile
         address{
