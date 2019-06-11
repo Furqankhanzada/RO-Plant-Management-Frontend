@@ -52,22 +52,20 @@ class MainForm extends Component {
     this.setState({
       discounts
     })
-  };
+  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.customer) {
+    if (nextProps.customer.id) {
       const { customer } = nextProps;
-      if (Object.keys(customer).length) {
-          const { id, name, mobile, address: { town, area, block, house } } = customer;
-          // If updating customer
-          if (id) {
-              // make discounts
-            const discountArray = customer.discounts.map((value) => {
-              value.product.selected = true;
-              return value
-            });
-            // set customer to state
-            this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
-          }
+      const { id, name, mobile, address: { town, area, block, house } } = customer;
+      // If updating customer
+      if (id) {
+        // make discounts
+        const discountArray = customer.discounts.map((value) => {
+          value.product.selected = true;
+          return value
+        });
+        // set customer to state
+        this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
       }
     } else {
       this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '', discounts: []})

@@ -9,11 +9,6 @@ import { Query } from 'react-apollo'
 class User extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      id: '',
-      tempId: false,
-      visible: false
-    }
   }
   render() {
     const { loading, history, customers } = this.props;

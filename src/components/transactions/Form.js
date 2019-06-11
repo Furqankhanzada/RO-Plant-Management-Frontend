@@ -38,7 +38,7 @@ class MainForm extends Component {
 
   add() {
     const { discounts } = this.state;
-    const { id } = this.props;
+    const { customer: { id } = {} } = this.props;
 
     const discountsObj = {
       discount: 0,
@@ -52,41 +52,23 @@ class MainForm extends Component {
     this.setState({
       discounts
     })
-  };
+  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.data && nextProps.id) {
-      const { data, id } = nextProps;
-      if (Object.keys(data).length !== 0) {
-        const { customer } = data;
-        if (customer) {
-          const discountArray = customer.discounts.map((value, index) => {
-            value.product.selected = true;
-            return value
-          });
-          if (id) {
-            this.setState({
-              name: customer.name,
-              town: customer.address.town,
-              area: customer.address.area,
-              block: customer.address.block,
-              house: customer.address.house,
-              mobile: customer.mobile,
-              discounts: discountArray
-            })
-          }
-        }
+    if (nextProps.customer.id) {
+      const { customer } = nextProps;
+      const { id, name, mobile, address: { town, area, block, house } } = customer;
+      // If updating customer
+      if (id) {
+        // make discounts
+        const discountArray = customer.discounts.map((value) => {
+          value.product.selected = true;
+          return value
+        });
+        // set customer to state
+        this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
       }
     } else {
-      this.setState({
-        name: '',
-        password: '',
-        town: '',
-        area: '',
-        block: '',
-        house: '',
-        mobile: '',
-        discounts: []
-      })
+      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '', discounts: []})
     }
   }
 
@@ -118,7 +100,7 @@ class MainForm extends Component {
   }
   removeDiscount(index, value) {
     const { discounts, deleteDiscount } = this.state;
-    const { id } = this.props;
+    const { customer: { id } = {} } = this.props;
 
     if (id) {
       const deleteDiscountObj = { id: value.id };
@@ -134,7 +116,7 @@ class MainForm extends Component {
   }
   handledSubmit (e) {
     e.preventDefault();
-    const { id, form, createCustomer, updateCustomer } = this.props;
+    const { customer: { id } = {}, form, createCustomer, updateCustomer } = this.props;
     const { validateFields, resetFields } = form;
 
     let { discounts, deleteDiscount } = this.state;
@@ -335,7 +317,7 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form, id, options, loading } = this.props;
+    const { form, customer: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
     const { name, mobile, town, area, block, house } = this.state;
@@ -363,7 +345,7 @@ class MainForm extends Component {
                             required: true
                           }
                         ]
-                      })(<Input disabled={id ? true : false} name="mobile" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="mobile" onChange={this.getCustomerDetails.bind(this)} />)}
                     </FormItem>
                     <FormItem label={`Name`} >
                       {getFieldDecorator('name', {
