@@ -452,6 +452,25 @@ img {
 .quantity {
     padding: 0 0 0 10px;
 }
+.quantity .card {
+    min-height: 437px;
+}
+.padding-none {
+    padding: 0;
+}
+.loading-center {
+    min-height: 437px;
+    position: relative;
+}
+.loading-center .ant-spin-spinning {
+    left: 0;
+    right: 0;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
