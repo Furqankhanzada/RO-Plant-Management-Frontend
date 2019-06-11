@@ -29,6 +29,12 @@ class Sidebar extends Component {
                                             <Icon type="team" />
                                             <span>Customers</span>
                                         </Menu.Item>
+
+                                      <Menu.Item key="1" onClick={() => history.push('/transactions')}>
+                                        <Icon type="bar-chart" />
+                                        <span>Transactions</span>
+                                      </Menu.Item>
+
                                         <SubMenu key="sub2" title={<span><Icon type="shopping" />Products</span>}>
                                             <Menu.Item key="3" onClick={() => history.push('/products/create')}>Create</Menu.Item>
                                             <Menu.Item key="4" onClick={() => history.push('/products')}>List</Menu.Item>
