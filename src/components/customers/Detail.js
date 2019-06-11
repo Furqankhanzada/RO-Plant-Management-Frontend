@@ -106,7 +106,7 @@ class Detail extends PureComponent {
                 <Layout className="user-main-div">
                     <div className="card">
                         <Row>
-                        <Col span={6}>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                             <Card
                                 style={{ width: '100%' }}
                                 cover={
@@ -127,19 +127,19 @@ class Detail extends PureComponent {
                                 <Tag color="#2db7f5">Monthly</Tag>
                             </Card>
                         </Col>
-                        <Col span={18}>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }} xl={{ span: 18 }}>
                             <div className="quantity">
                                 <Row gutter={16}>
-                                    <Col span={6}>
+                                    <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                                         <Statistic title="Total Amount" value={1250} precision={2} />
                                     </Col>
-                                    <Col span={6}>
+                                    <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                                         <Statistic title="Amount Recived" value={1000} precision={2} />
                                     </Col>
-                                    <Col span={6}>
+                                    <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                                         <Statistic title="Due Amount" value={250} precision={2} />
                                     </Col>
-                                    <Col span={6}>
+                                    <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                                         <Statistic title="Bottles Deliver" value={17} />
                                     </Col>
                                 </Row>
@@ -158,7 +158,7 @@ class Detail extends PureComponent {
                     </Row>
                     </div>
                     <div className="card">
-                        <Table columns={columns} pagination={false} dataSource={data} bordered simple />
+                        <Table columns={columns} pagination={false} dataSource={data} scroll={{ x: 1000 }} bordered simple />
                     </div>
                 </Layout>
             )
