@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin } from 'antd';
+import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Select } from 'antd';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { GET_TRANSACTIONS, GET_TRANSACTION } from '../../graphql/queries/transaction';
@@ -7,6 +7,7 @@ import { CREATE_TRANSACTION_MUTATION, UPDATE_TRANSACTION_MUTATION } from '../../
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
+const { Option } = Select;
 const FormItem = Form.Item;
 class MainForm extends Component {
 
@@ -19,9 +20,9 @@ class MainForm extends Component {
           product: ''
         }
       ],
-      name: '',
-      password: '',
-      mobile: '',
+      user: '',
+      type: '',
+      status: '',
       town: '',
       area: '',
       block: '',
@@ -56,7 +57,7 @@ class MainForm extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.transaction.id) {
       const { transaction } = nextProps;
-      const { id, name, mobile, address: { town, area, block, house } } = transaction;
+      const { id, type, user, status, address: { town, area, block, house } } = transaction;
       // If updating transaction
       if (id) {
         // make discounts
@@ -65,10 +66,10 @@ class MainForm extends Component {
           return value
         });
         // set transaction to state
-        this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
+        this.setState({ user, type, status, town, area, block, house, discounts: discountArray})
       }
     } else {
-      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '', discounts: []})
+      this.setState({ user: '', type: 'SELL', status: 'PENDING', password: '', town: '', area: '', block: '', house: '', discounts: []})
     }
   }
 
@@ -129,7 +130,9 @@ class MainForm extends Component {
           disableBtn: true,
           loading: true
         });
-        const { name, mobile, town, area, block, house } = values;
+        const { type, user, status, town, area, block, house } = values;
+
+        console.log('types',values)
 
         for (let i = 0; i < discounts.length; i++) {
           if (discounts[i].discount !== 0 && discounts[i].product) {
@@ -168,26 +171,13 @@ class MainForm extends Component {
 
         let transaction = {
           data: {
-            mobile,
-            name,
-            password: `${mobile}-labbaik`,
-            address: {
-              create: {
-                town,
-                area,
-                block,
-                house
-              }
-            },
-            discounts: {
-              create: dupDiscount
-            }
+            user,
+            type
           }
         };
 
         if (id) {
-          delete transaction.password;
-          delete transaction.mobile;
+          delete transaction.user;
           transaction.id = id;
 
           if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
@@ -320,7 +310,7 @@ class MainForm extends Component {
     const { form, transaction: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
-    const { name, mobile, town, area, block, house } = this.state;
+    const { user, type, status, town, area, block, house } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -337,27 +327,45 @@ class MainForm extends Component {
                 <Row gutter={16}>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                     <h3>General</h3>
-                    <FormItem label={`Mobile Number`} >
-                      {getFieldDecorator('mobile', {
-                        initialValue: mobile,
+                    <FormItem label={`Customer`} >
+                      {getFieldDecorator('user', {
+                        initialValue: user,
                         rules: [
                           {
                             required: true
                           }
                         ]
-                      })(<Input name="mobile" onChange={this.getTransactionDetails.bind(this)} />)}
+                      })(<Input name="user" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
-                    <FormItem label={`Name`} >
-                      {getFieldDecorator('name', {
-                        initialValue: name,
-                        rules: [
-                          {
-                            required: true,
-                            message: `The input is not valid phone!`
-                          }
-                        ]
-                      })(<Input name="name" onChange={this.getTransactionDetails.bind(this)} />)}
-                    </FormItem>
+                    <Form.Item label={`Type`}>
+                      {getFieldDecorator('type', {
+                        initialValue: type,
+                        rules: [{ required: true, message: 'Type is Required!' }],
+                      })(
+                          <Select
+                              onChange={this.handleSelectChange}
+                          >
+                            <Option value="SELL">SELL</Option>
+                            <Option value="PURCHASE">PURCHASE</Option>
+                          </Select>,
+                      )}
+                    </Form.Item>
+                    <Form.Item label={`Status`}>
+                      {getFieldDecorator('status', {
+                        initialValue: status,
+                        rules: [{ required: true, message: 'Status is Required!' }],
+                      })(
+                          <Select
+                              placeholder="Select a Option"
+                              onChange={this.handleSelectChange}
+                          >
+                            <Option value="PENDING">PENDING</Option>
+                            <Option value="PROCESSING">PROCESSING</Option>
+                            <Option value="COMPLETED">COMPLETE</Option>
+                          </Select>,
+                      )}
+                    </Form.Item>
+
                   </Col>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                     <h3>Address</h3>
