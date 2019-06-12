@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
-import { Table, Modal, Tag, Dropdown, Menu, Icon, Button } from 'antd'
+import { Table, Modal, Tag, Badge, Dropdown, Menu, Icon, Button } from 'antd'
 import _ from 'lodash';
+import moment from 'moment';
 import {gql} from "apollo-boost/lib/index";
 import {graphql} from "react-apollo/index";
 import { Link, withRouter } from 'react-router-dom'
@@ -88,10 +89,10 @@ class List extends PureComponent {
     const { ...tableProps } = this.props;
     const columns = [
       {
-        title: <span>createdAt</span>,
+        title: <span>Transaction At</span>,
         dataIndex: 'createdAt',
         key: 'createdAt',
-        render: (text) => text,
+        render: (text) => moment(text).format('MMMM Do YYYY'),
       },
       {
         title: <span>Name</span>,
@@ -129,23 +130,41 @@ class List extends PureComponent {
             title: <span>Method</span>,
             dataIndex: 'payment.method',
             key: 'payment.method',
+            render: (method) => {
+              return <Tag color='magenta'>{method}</Tag>
+            }
           },
           {
             title: <span>Paid</span>,
             dataIndex: 'payment.paid',
             key: 'payment.paid',
-            render: (text) => `Rs${text}`,
+            render: (text) => <Badge style={{backgroundColor: '#52c41a'}} count={`Rs${text}`} />
           },
           {
             title: <span>Balance</span>,
             dataIndex: 'payment.balance',
             key: 'payment.balance',
-            render: (text) => `Rs${text}`
+            render: (text) => <Badge style={{backgroundColor: '#ffa0a0'}} count={`Rs${text}`} />
+          },
+          {
+            title: <span>Total</span>,
+            dataIndex: 'payment.balance',
+            key: 'payment.balance',
+            render: (text, record) => <Badge count={`Rs${record.payment.paid + record.payment.balance}`} />
           },
           {
             title: <span>Status</span>,
             dataIndex: 'payment.status',
             key: 'payment.status',
+            render: (status) => {
+              let color = 'red';
+              switch (status) {
+                case 'PAID':
+                  color = '#87d068';
+                  break;
+              }
+              return <Tag color={color} >{status}</Tag>
+            }
           }
         ]
       },
