@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { Row, Drawer, Select } from 'antd';
 import { PRODUCTS_QUERY } from '../../graphql/queries/product'
-import { TRANSACTION_QUERY } from '../../graphql/queries/transaction.js'
+import { GET_TRANSACTION } from '../../graphql/queries/transaction.js'
 import { Query } from 'react-apollo';
 import { Layout } from 'antd';
 import TransactionForm from './Form';
@@ -49,13 +49,15 @@ class RightDrawer extends Component {
                     <span>Price: {group.price}</span>
                   </Option>
                 )) : [];
+
+              console.log('id: ', id);
               return (
 
                 <Fragment>
                   <Layout>
                     <Layout className="dashboard-main">
                       <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                        <Query query={TRANSACTION_QUERY} variables={{ id }} >
+                        <Query query={GET_TRANSACTION} variables={{ id }} >
                           {({ data: { transaction }, loading }) => {
                             return (
                               <TransactionForm options={options} transaction={transaction || {}} loading={loading} />
