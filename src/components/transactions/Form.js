@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin } from 'antd';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import { GET_CUSTOMERS, CUSTOMER_QUERY } from '../../graphql/queries/customer';
-import { CREATE_CUSTOMER_MUTATION, UPDATE_CUSTOMER_MUTATION } from '../../graphql/mutations/customer';
+import { GET_TRANSACTIONS, GET_TRANSACTION } from '../../graphql/queries/transaction';
+import { CREATE_TRANSACTION_MUTATION, UPDATE_TRANSACTION_MUTATION } from '../../graphql/mutations/transaction';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
@@ -38,7 +38,7 @@ class MainForm extends Component {
 
   add() {
     const { discounts } = this.state;
-    const { customer: { id } = {} } = this.props;
+    const { transaction: { id } = {} } = this.props;
 
     const discountsObj = {
       discount: 0,
@@ -54,17 +54,17 @@ class MainForm extends Component {
     })
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.customer.id) {
-      const { customer } = nextProps;
-      const { id, name, mobile, address: { town, area, block, house } } = customer;
-      // If updating customer
+    if (nextProps.transaction.id) {
+      const { transaction } = nextProps;
+      const { id, name, mobile, address: { town, area, block, house } } = transaction;
+      // If updating transaction
       if (id) {
         // make discounts
-        const discountArray = customer.discounts.map((value) => {
+        const discountArray = transaction.discounts.map((value) => {
           value.product.selected = true;
           return value
         });
-        // set customer to state
+        // set transaction to state
         this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
       }
     } else {
@@ -100,7 +100,7 @@ class MainForm extends Component {
   }
   removeDiscount(index, value) {
     const { discounts, deleteDiscount } = this.state;
-    const { customer: { id } = {} } = this.props;
+    const { transaction: { id } = {} } = this.props;
 
     if (id) {
       const deleteDiscountObj = { id: value.id };
@@ -116,7 +116,7 @@ class MainForm extends Component {
   }
   handledSubmit (e) {
     e.preventDefault();
-    const { customer: { id } = {}, form, createCustomer, updateCustomer } = this.props;
+    const { transaction: { id } = {}, form, createTransaction, updateTransaction } = this.props;
     const { validateFields, resetFields } = form;
 
     let { discounts, deleteDiscount } = this.state;
@@ -166,7 +166,7 @@ class MainForm extends Component {
           }
         }
 
-        let customer = {
+        let transaction = {
           data: {
             mobile,
             name,
@@ -186,31 +186,31 @@ class MainForm extends Component {
         };
 
         if (id) {
-          delete customer.password;
-          delete customer.mobile;
-          customer.id = id;
+          delete transaction.password;
+          delete transaction.mobile;
+          transaction.id = id;
 
           if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
-            delete customer.data.discounts.create;
-            customer.data.discounts.delete = deleteDiscount
+            delete transaction.data.discounts.create;
+            transaction.data.discounts.delete = deleteDiscount
           }
           else if (dupDiscount.length < 1 && deleteDiscount.length < 1 && editDup.length < 1) {
-            delete customer.data.discounts
+            delete transaction.data.discounts
           }
           else if (dupDiscount.length > 0 && deleteDiscount.length > 0) {
-            customer.data.discounts.delete = deleteDiscount
+            transaction.data.discounts.delete = deleteDiscount
           }
           if (editDup.length > 0) {
-            customer.data.discounts.update = editDup;
+            transaction.data.discounts.update = editDup;
           }
-          updateCustomer({
-            variables: customer,
-            update: (proxy, { data: { updateCustomer } }) => {
+          updateTransaction({
+            variables: transaction,
+            update: (proxy, { data: { updateTransaction } }) => {
               // Read the data from our cache for this query.
-              let data = proxy.readQuery({ query: CUSTOMER_QUERY, variables: { id } });
-              data.customer = updateCustomer;
+              let data = proxy.readQuery({ query: GET_TRANSACTION, variables: { id } });
+              data.transaction = updateTransaction;
               // // Write our data back to the cache.
-              proxy.writeQuery({ query: CUSTOMER_QUERY, data, variables: { where: { id } } });
+              proxy.writeQuery({ query: GET_TRANSACTION, data, variables: { where: { id } } });
             }
           }).then(result => {
             this.setState({
@@ -243,18 +243,18 @@ class MainForm extends Component {
           })
         } else {
           if (dupDiscount.length < 1) {
-            delete customer.data.discounts
+            delete transaction.data.discounts
           }
-          createCustomer({
-            variables: customer,
-            update: (proxy, { data: { createCustomer } }) => {
+          createTransaction({
+            variables: transaction,
+            update: (proxy, { data: { createTransaction } }) => {
               // Read the data from our cache for this query.
-              const data = proxy.readQuery({ query: GET_CUSTOMERS, variables: { where: {} } });
+              const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: {} } });
               // Add our comment from the mutation to the end.
-              data.customers.push(createCustomer);
-              data.customers = [...data.customers];
+              data.transactions.push(createTransaction);
+              data.transactions = [...data.transactions];
               // Write our data back to the cache.
-              proxy.writeQuery({ query: GET_CUSTOMERS, data, variables: { where: {} } });
+              proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables: { where: {} } });
             }
           }).then(result => {
             this.setState({
@@ -267,7 +267,7 @@ class MainForm extends Component {
               ],
             }, () => {
               resetFields();
-              message.success('Customer has been created successfully');
+              message.success('Transaction has been created successfully');
               client.mutate({
                 mutation: gql`
                     mutation openDrawer($status: Boolean!, $id: String) {
@@ -296,7 +296,7 @@ class MainForm extends Component {
     });
   }
 
-  getCustomerDetails(ev) {
+  getTransactionDetails(ev) {
     const { setFieldsValue } = this.props.form;
     setFieldsValue({
       [ev.target.name]: ev.target.value
@@ -317,7 +317,7 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form, customer: { id } = {}, options, loading } = this.props;
+    const { form, transaction: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
     const { name, mobile, town, area, block, house } = this.state;
@@ -345,7 +345,7 @@ class MainForm extends Component {
                             required: true
                           }
                         ]
-                      })(<Input name="mobile" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="mobile" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
                     <FormItem label={`Name`} >
                       {getFieldDecorator('name', {
@@ -356,7 +356,7 @@ class MainForm extends Component {
                             message: `The input is not valid phone!`
                           }
                         ]
-                      })(<Input name="name" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="name" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
                   </Col>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
@@ -369,7 +369,7 @@ class MainForm extends Component {
                             required: true
                           }
                         ]
-                      })(<Input name="town" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="town" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
                     <FormItem label={`Area`} >
                       {getFieldDecorator('area', {
@@ -379,7 +379,7 @@ class MainForm extends Component {
                             required: true
                           }
                         ]
-                      })(<Input name="area" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="area" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
                     <FormItem label={`Block`} >
                       {getFieldDecorator('block', {
@@ -390,7 +390,7 @@ class MainForm extends Component {
                             message: `The input is not valid phone!`
                           }
                         ]
-                      })(<Input name="block" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="block" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
                     <FormItem label={`House`} >
                       {getFieldDecorator('house', {
@@ -401,7 +401,7 @@ class MainForm extends Component {
                             message: `The input is not valid Address!`
                           }
                         ]
-                      })(<Input name="house" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="house" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
                   </Col>
                   <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
@@ -486,13 +486,13 @@ class MainForm extends Component {
 
 }
 
-const ComposedForm = Form.create({ name: 'customer' })(MainForm);
+const ComposedForm = Form.create({ name: 'transaction' })(MainForm);
 
-const CustomerForm = compose(
-  graphql(CREATE_CUSTOMER_MUTATION, { name: "createCustomer" }),
-  graphql(UPDATE_CUSTOMER_MUTATION, { name: "updateCustomer" })
+const TransactionForm = compose(
+  graphql(CREATE_TRANSACTION_MUTATION, { name: "createTransaction" }),
+  graphql(UPDATE_TRANSACTION_MUTATION, { name: "updateTransaction" })
 )(ComposedForm);
 
-withRouter(CustomerForm);
+withRouter(TransactionForm);
 
-export default CustomerForm;
+export default TransactionForm;

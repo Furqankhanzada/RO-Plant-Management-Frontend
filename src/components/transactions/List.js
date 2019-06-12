@@ -148,8 +148,8 @@ class List extends PureComponent {
           },
           {
             title: <span>Total</span>,
-            dataIndex: 'payment.balance',
-            key: 'payment.balance',
+            dataIndex: 'payment.total',
+            key: 'payment.total',
             render: (text, record) => <Badge count={`Rs${record.payment.paid + record.payment.balance}`} />
           },
           {
