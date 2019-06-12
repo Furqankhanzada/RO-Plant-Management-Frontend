@@ -71,7 +71,7 @@ class MainForm extends Component {
         this.setState({ user, type, status, town, paid, balance, house, discounts: discountArray})
       }
     } else {
-      this.setState({ user: '', type: 'SELL', status: 'PENDING', PaymentStatus: 'PAID', PaymentMethod: 'CASH', password: '', town: '', area: '', block: '', house: '', discounts: []})
+      this.setState({ user: '', type: 'SELL', status: 'PENDING', PaymentStatus: 'PAID', PaymentMethod: 'CASH', paid: '0', balance: '0', house: '', discounts: []})
     }
   }
 
@@ -312,7 +312,7 @@ class MainForm extends Component {
     const { form, transaction: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
-    const { user, type, status, PaymentStatus, PaymentMethod, town, paid, balance, house } = this.state;
+    const { user, type, status, PaymentStatus, PaymentMethod, town, paid , balance, house } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -401,13 +401,16 @@ class MainForm extends Component {
                     </Form.Item>
                     <FormItem label={`Paid`} >
                       {getFieldDecorator('paid', {
-                        initialValue: paid,
+                          initialValue: paid,
                         rules: [
                           {
                             required: true
                           }
                         ]
-                      })(<Input name="paid" onChange={this.getTransactionDetails.bind(this)} />)}
+                      })(<InputNumber
+                                      formatter={value => `Rs${value}`}
+                                      parser={value => value.replace('Rs', '')}
+                      />)}
                     </FormItem>
                     <FormItem label={`Balance`} >
                       {getFieldDecorator('balance', {
@@ -418,7 +421,10 @@ class MainForm extends Component {
                             message: `Balance is Required!`
                           }
                         ]
-                      })(<Input name="balance" onChange={this.getTransactionDetails.bind(this)} />)}
+                      })(<InputNumber
+                          formatter={value => `Rs${value}`}
+                          parser={value => value.replace('Rs', '')}
+                      />)}
                     </FormItem>
                   </Col>
                   <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
