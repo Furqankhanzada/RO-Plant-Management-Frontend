@@ -23,9 +23,11 @@ class MainForm extends Component {
       user: '',
       type: '',
       status: '',
+      PaymentStatus: '',
+      PaymentMethod:'',
       town: '',
-      area: '',
-      block: '',
+      paid: '',
+      balance: '',
       house: '',
       products: [],
       result: [],
@@ -57,7 +59,7 @@ class MainForm extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.transaction.id) {
       const { transaction } = nextProps;
-      const { id, type, user, status, address: { town, area, block, house } } = transaction;
+      const { id, type, user, status, address: { town, paid, balance, house } } = transaction;
       // If updating transaction
       if (id) {
         // make discounts
@@ -66,10 +68,10 @@ class MainForm extends Component {
           return value
         });
         // set transaction to state
-        this.setState({ user, type, status, town, area, block, house, discounts: discountArray})
+        this.setState({ user, type, status, town, paid, balance, house, discounts: discountArray})
       }
     } else {
-      this.setState({ user: '', type: 'SELL', status: 'PENDING', password: '', town: '', area: '', block: '', house: '', discounts: []})
+      this.setState({ user: '', type: 'SELL', status: 'PENDING', PaymentStatus: 'PAID', PaymentMethod: 'CASH', password: '', town: '', area: '', block: '', house: '', discounts: []})
     }
   }
 
@@ -130,7 +132,7 @@ class MainForm extends Component {
           disableBtn: true,
           loading: true
         });
-        const { type, user, status, town, area, block, house } = values;
+        const { type, user, status, town, paid, balance, house } = values;
 
         console.log('types',values)
 
@@ -310,7 +312,7 @@ class MainForm extends Component {
     const { form, transaction: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
-    const { user, type, status, town, area, block, house } = this.state;
+    const { user, type, status, PaymentStatus, PaymentMethod, town, paid, balance, house } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -368,48 +370,55 @@ class MainForm extends Component {
 
                   </Col>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
-                    <h3>Address</h3>
-                    <FormItem label={`Town`} >
-                      {getFieldDecorator('town', {
-                        initialValue: town,
+                    <h3>Payment</h3>
+                    <Form.Item label={`Method`}>
+                      {getFieldDecorator('PaymentMethod', {
+                        initialValue: PaymentMethod,
+                        rules: [{ required: true, message: 'Type is Required!' }],
+                      })(
+                          <Select
+                              onChange={this.handleSelectChange}
+                          >
+                            <Option value="CASH">CASH</Option>
+                            <Option value="BANK_TRANSFER">BANK TRANSFER</Option>
+                            <Option value="CHEQUE">CHEQUE</Option>
+                          </Select>,
+                      )}
+                    </Form.Item>
+                    <Form.Item label={`Status`}>
+                      {getFieldDecorator('status', {
+                        initialValue: PaymentStatus,
+                        rules: [{ required: true, message: 'Status is Required!' }],
+                      })(
+                          <Select
+                              placeholder="Select a Payment status"
+                              onChange={this.handleSelectChange}
+                          >
+                            <Option value="PAID">PAID</Option>
+                            <Option value="UNPAID">UNPAID</Option>
+                          </Select>,
+                      )}
+                    </Form.Item>
+                    <FormItem label={`Paid`} >
+                      {getFieldDecorator('paid', {
+                        initialValue: paid,
                         rules: [
                           {
                             required: true
                           }
                         ]
-                      })(<Input name="town" onChange={this.getTransactionDetails.bind(this)} />)}
+                      })(<Input name="paid" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
-                    <FormItem label={`Area`} >
-                      {getFieldDecorator('area', {
-                        initialValue: area,
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(<Input name="area" onChange={this.getTransactionDetails.bind(this)} />)}
-                    </FormItem>
-                    <FormItem label={`Block`} >
-                      {getFieldDecorator('block', {
-                        initialValue: block,
+                    <FormItem label={`Balance`} >
+                      {getFieldDecorator('balance', {
+                        initialValue: balance,
                         rules: [
                           {
                             required: true,
-                            message: `The input is not valid phone!`
+                            message: `Balance is Required!`
                           }
                         ]
-                      })(<Input name="block" onChange={this.getTransactionDetails.bind(this)} />)}
-                    </FormItem>
-                    <FormItem label={`House`} >
-                      {getFieldDecorator('house', {
-                        initialValue: house,
-                        rules: [
-                          {
-                            required: true,
-                            message: `The input is not valid Address!`
-                          }
-                        ]
-                      })(<Input name="house" onChange={this.getTransactionDetails.bind(this)} />)}
+                      })(<Input name="balance" onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
                   </Col>
                   <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
