@@ -20,15 +20,6 @@ class MainForm extends Component {
           product: ''
         }
       ],
-      user: '',
-      type: '',
-      status: '',
-      PaymentStatus: '',
-      PaymentMethod:'',
-      town: '',
-      paid: '',
-      balance: '',
-      house: '',
       products: [],
       result: [],
       drawer: false,
@@ -71,7 +62,18 @@ class MainForm extends Component {
         this.setState({ user, type, status, town, paid, balance, house, discounts: discountArray})
       }
     } else {
-      this.setState({ user: '', type: 'SELL', status: 'PENDING', PaymentStatus: 'PAID', PaymentMethod: 'CASH', paid: '0', balance: '0', house: '', discounts: []})
+      this.setState({
+          user: '',
+          type: 'SELL',
+          status: 'PENDING',
+          discounts: [],
+          payment: {
+              status: 'UNPAID',
+              method: 'CASH',
+              paid: 0,
+              balance: 0,
+          }
+      })
     }
   }
 
@@ -312,7 +314,7 @@ class MainForm extends Component {
     const { form, transaction: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
-    const { user, type, status, PaymentStatus, PaymentMethod, town, paid , balance, house } = this.state;
+    const { user, type, status, payment } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -372,8 +374,8 @@ class MainForm extends Component {
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                     <h3>Payment</h3>
                     <Form.Item label={`Method`}>
-                      {getFieldDecorator('PaymentMethod', {
-                        initialValue: PaymentMethod,
+                      {getFieldDecorator('payment.method', {
+                        initialValue: payment.method,
                         rules: [{ required: true, message: 'Type is Required!' }],
                       })(
                           <Select
@@ -386,8 +388,8 @@ class MainForm extends Component {
                       )}
                     </Form.Item>
                     <Form.Item label={`Status`}>
-                      {getFieldDecorator('status', {
-                        initialValue: PaymentStatus,
+                      {getFieldDecorator('payment.status', {
+                        initialValue: payment.status,
                         rules: [{ required: true, message: 'Status is Required!' }],
                       })(
                           <Select
@@ -400,8 +402,8 @@ class MainForm extends Component {
                       )}
                     </Form.Item>
                     <FormItem label={`Paid`} >
-                      {getFieldDecorator('paid', {
-                          initialValue: paid,
+                      {getFieldDecorator('payment.paid', {
+                          initialValue: payment.paid,
                         rules: [
                           {
                             required: true
@@ -413,8 +415,8 @@ class MainForm extends Component {
                       />)}
                     </FormItem>
                     <FormItem label={`Balance`} >
-                      {getFieldDecorator('balance', {
-                        initialValue: balance,
+                      {getFieldDecorator('payment.balance', {
+                        initialValue: payment.balance,
                         rules: [
                           {
                             required: true,
