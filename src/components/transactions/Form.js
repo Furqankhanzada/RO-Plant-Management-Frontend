@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Select } from 'antd';
-import { graphql, compose } from 'react-apollo';
+import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Select, Empty } from 'antd';
+import { graphql, compose, Query } from 'react-apollo';
+import { debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
+import { GET_CUSTOMERS } from '../../graphql/queries/customer';
 import { GET_TRANSACTIONS, GET_TRANSACTION } from '../../graphql/queries/transaction';
 import { CREATE_TRANSACTION_MUTATION, UPDATE_TRANSACTION_MUTATION } from '../../graphql/mutations/transaction';
 import { client } from '../../index'
@@ -14,6 +16,7 @@ class MainForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      searchValue: '',
       discounts: [
         {
           discount: 0,
@@ -27,7 +30,8 @@ class MainForm extends Component {
       selectedValue: '',
       deleteDiscount: [],
       editDiscount: []
-    }
+    };
+    this.searchCustomer = debounce(this.searchCustomer, 400);
   }
 
   add() {
@@ -136,7 +140,7 @@ class MainForm extends Component {
           disableBtn: true,
           loading: true
         });
-        const { type, user, status, town, paid, balance, house } = values;
+        const { type, user } = values;
 
         console.log('types',values)
 
@@ -312,10 +316,16 @@ class MainForm extends Component {
     })
   }
 
+  searchCustomer(searchValue) {
+    this.setState({
+      searchValue
+    });
+  }
+
   render() {
     const { form, transaction: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
-    const { discounts, disableBtn } = this.state;
+    const { discounts, disableBtn, searchValue } = this.state;
     const { user, type, status, payment } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
@@ -323,7 +333,12 @@ class MainForm extends Component {
         sm: { span: 24, offset: 0 }
       }
     };
-    
+
+    let where = {};
+    if (searchValue) {
+      where.name_contains = searchValue
+    }
+
     return (
       <div className="create-main-div">
         <Form layout="horizontal" onSubmit={this.handledSubmit.bind(this)} className="form-create-update">
@@ -333,17 +348,44 @@ class MainForm extends Component {
                 <Row gutter={16}>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                     <h3>General</h3>
-                    <FormItem label={`Customer`} >
-                      {getFieldDecorator('user', {
-                        initialValue: user,
 
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(<Input name="user"   onChange={this.getTransactionDetails.bind(this)} />)}
-                    </FormItem>
+
+
+
+
+                    <Query query={GET_CUSTOMERS} variables={{ where, first: 3 }}>
+                      {({ loading, error, data: { customers = [] } }) => {
+                        console.log('data: ', customers)
+                        if (error) return `Error! ${error.message}`;
+                        return (
+                          <Form.Item label={`Customer`}>
+                            {getFieldDecorator('user', {
+                              initialValue: user,
+                              rules: [{ required: true, message: 'Type is Required!' }],
+                            })(
+                              <Select
+                                showSearch={true}
+                                onChange={this.handleSelectChange}
+                                onSearch={this.searchCustomer.bind(this)}
+                                placeholder="Select customer"
+                                filterOption={false}
+                                notFoundContent={loading ? <Spin size="small" /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+                              >
+                                {customers.map(({ id, name, mobile}) => <Option key={id}>{name} : {mobile}</Option>)}
+
+
+                              </Select>,
+                            )}
+                          </Form.Item>
+                        );
+                      }}
+                    </Query>
+
+
+
+
+
+
                     <Form.Item label={`Type`}>
                       {getFieldDecorator('type', {
                         initialValue: type,
