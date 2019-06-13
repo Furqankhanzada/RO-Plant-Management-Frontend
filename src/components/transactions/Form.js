@@ -67,12 +67,14 @@ class MainForm extends Component {
           type: 'SELL',
           status: 'PENDING',
           discounts: [],
-          payment: {
+        quantity: '',
+        payment: {
               status: 'UNPAID',
               method: 'CASH',
               paid: 0,
               balance: 0,
           }
+
       })
     }
   }
@@ -321,7 +323,7 @@ class MainForm extends Component {
         sm: { span: 24, offset: 0 }
       }
     };
-
+    
     return (
       <div className="create-main-div">
         <Form layout="horizontal" onSubmit={this.handledSubmit.bind(this)} className="form-create-update">
@@ -334,12 +336,13 @@ class MainForm extends Component {
                     <FormItem label={`Customer`} >
                       {getFieldDecorator('user', {
                         initialValue: user,
+
                         rules: [
                           {
                             required: true
                           }
                         ]
-                      })(<Input name="user" onChange={this.getTransactionDetails.bind(this)} />)}
+                      })(<Input name="user"   onChange={this.getTransactionDetails.bind(this)} />)}
                     </FormItem>
                     <Form.Item label={`Type`}>
                       {getFieldDecorator('type', {
@@ -430,7 +433,7 @@ class MainForm extends Component {
                     </FormItem>
                   </Col>
                   <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
-                    <h3>Discount</h3>
+                    <h3>Items</h3>
                     <div className="discount-details">
                       {
                         discounts.map((value, index) => {
@@ -457,25 +460,17 @@ class MainForm extends Component {
                                 >
                                   <Input suffix={<Icon type="search" className="certain-category-icon" />} />
                                 </AutoComplete>
-
                               </Form.Item>
-
-                              <Form.Item label={'Add Discount'}>
+                              <FormItem label={`Quantity`} >
                                 <InputNumber
-                                  value={value.discount ? (100 - (value.discount / productPrice) * 100).toFixed() : 0}
-                                  min={0}
-                                  max={90}
-                                  formatter={value => `${value}%`}
-                                  parser={value => value.replace('%', '')}
-                                  onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
+                                    defaultValue={0}
+                                    formatter={value => `${value}`}
                                 />
-                              </Form.Item>
-
-                              <FormItem label={`Discounted Price`} >
+                              </FormItem>
+                              <FormItem label={`Total`} >
                                 <InputNumber disabled = {true}
-                                             value={value.discount === 0 ? productPrice : value.discount}
                                              formatter={value => `PKR ${value}`}
-                                             parser={value => value.replace('PKR', '')}
+                                    parser={value => value.replace('PKR', '')}
                                 />
                               </FormItem>
                             </div>
