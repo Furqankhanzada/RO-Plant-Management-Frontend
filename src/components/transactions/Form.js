@@ -350,6 +350,9 @@ class MainForm extends Component {
 
                     <Query query={GET_CUSTOMERS} variables={{ where, first: 3 }}>
                       {({ loading, error, data: { customers = [] } }) => {
+                        if(loading) {
+                          customers = [];
+                        }
                         if (error) return `Error! ${error.message}`;
                         return (
                           <Form.Item label={`Customer`}>
@@ -374,12 +377,6 @@ class MainForm extends Component {
                         );
                       }}
                     </Query>
-
-
-
-
-
-
                     <Form.Item label={`Type`}>
                       {getFieldDecorator('type', {
                         initialValue: type,
