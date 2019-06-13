@@ -67,17 +67,17 @@ class MainForm extends Component {
       }
     } else {
       this.setState({
-          user: '',
-          type: 'SELL',
-          status: 'PENDING',
-          discounts: [],
+        user: '',
+        type: 'SELL',
+        status: 'PENDING',
+        discounts: [],
         quantity: '',
         payment: {
-              status: 'UNPAID',
-              method: 'CASH',
-              paid: 0,
-              balance: 0,
-          }
+          status: 'UNPAID',
+          method: 'CASH',
+          paid: 0,
+          balance: 0,
+        }
 
       })
     }
@@ -323,10 +323,9 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form, transaction: { id } = {}, options, loading } = this.props;
-    const { getFieldDecorator } = form;
-    const { discounts, disableBtn, searchValue } = this.state;
-    const { user, type, status, payment } = this.state;
+    const { form: { getFieldDecorator }, transaction: { id } = {}, options, loading } = this.props;
+    const { discounts, disableBtn, searchValue, user, type, status, payment } = this.state;
+
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -349,13 +348,8 @@ class MainForm extends Component {
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                     <h3>General</h3>
 
-
-
-
-
                     <Query query={GET_CUSTOMERS} variables={{ where, first: 3 }}>
                       {({ loading, error, data: { customers = [] } }) => {
-                        console.log('data: ', customers)
                         if (error) return `Error! ${error.message}`;
                         return (
                           <Form.Item label={`Customer`}>
@@ -391,12 +385,12 @@ class MainForm extends Component {
                         initialValue: type,
                         rules: [{ required: true, message: 'Type is Required!' }],
                       })(
-                          <Select
-                              onChange={this.handleSelectChange}
-                          >
-                            <Option value="SELL">SELL</Option>
-                            <Option value="PURCHASE">PURCHASE</Option>
-                          </Select>,
+                        <Select
+                          onChange={this.handleSelectChange}
+                        >
+                          <Option value="SELL">SELL</Option>
+                          <Option value="PURCHASE">PURCHASE</Option>
+                        </Select>,
                       )}
                     </Form.Item>
                     <Form.Item label={`Status`}>
@@ -404,14 +398,14 @@ class MainForm extends Component {
                         initialValue: status,
                         rules: [{ required: true, message: 'Status is Required!' }],
                       })(
-                          <Select
-                              placeholder="Select a Option"
-                              onChange={this.handleSelectChange}
-                          >
-                            <Option value="PENDING">PENDING</Option>
-                            <Option value="PROCESSING">PROCESSING</Option>
-                            <Option value="COMPLETED">COMPLETE</Option>
-                          </Select>,
+                        <Select
+                          placeholder="Select a Option"
+                          onChange={this.handleSelectChange}
+                        >
+                          <Option value="PENDING">PENDING</Option>
+                          <Option value="PROCESSING">PROCESSING</Option>
+                          <Option value="COMPLETED">COMPLETE</Option>
+                        </Select>,
                       )}
                     </Form.Item>
 
@@ -423,13 +417,13 @@ class MainForm extends Component {
                         initialValue: payment.method,
                         rules: [{ required: true, message: 'Type is Required!' }],
                       })(
-                          <Select
-                              onChange={this.handleSelectChange}
-                          >
-                            <Option value="CASH">CASH</Option>
-                            <Option value="BANK_TRANSFER">BANK TRANSFER</Option>
-                            <Option value="CHEQUE">CHEQUE</Option>
-                          </Select>,
+                        <Select
+                          onChange={this.handleSelectChange}
+                        >
+                          <Option value="CASH">CASH</Option>
+                          <Option value="BANK_TRANSFER">BANK TRANSFER</Option>
+                          <Option value="CHEQUE">CHEQUE</Option>
+                        </Select>,
                       )}
                     </Form.Item>
                     <Form.Item label={`Status`}>
@@ -437,26 +431,26 @@ class MainForm extends Component {
                         initialValue: payment.status,
                         rules: [{ required: true, message: 'Status is Required!' }],
                       })(
-                          <Select
-                              placeholder="Select a Payment status"
-                              onChange={this.handleSelectChange}
-                          >
-                            <Option value="PAID">PAID</Option>
-                            <Option value="UNPAID">UNPAID</Option>
-                          </Select>,
+                        <Select
+                          placeholder="Select a Payment status"
+                          onChange={this.handleSelectChange}
+                        >
+                          <Option value="PAID">PAID</Option>
+                          <Option value="UNPAID">UNPAID</Option>
+                        </Select>,
                       )}
                     </Form.Item>
                     <FormItem label={`Paid`} >
                       {getFieldDecorator('payment.paid', {
-                          initialValue: payment.paid,
+                        initialValue: payment.paid,
                         rules: [
                           {
                             required: true
                           }
                         ]
                       })(<InputNumber
-                                      formatter={value => `Rs${value}`}
-                                      parser={value => value.replace('Rs', '')}
+                        formatter={value => `Rs${value}`}
+                        parser={value => value.replace('Rs', '')}
                       />)}
                     </FormItem>
                     <FormItem label={`Balance`} >
@@ -469,8 +463,8 @@ class MainForm extends Component {
                           }
                         ]
                       })(<InputNumber
-                          formatter={value => `Rs${value}`}
-                          parser={value => value.replace('Rs', '')}
+                        formatter={value => `Rs${value}`}
+                        parser={value => value.replace('Rs', '')}
                       />)}
                     </FormItem>
                   </Col>
@@ -505,14 +499,14 @@ class MainForm extends Component {
                               </Form.Item>
                               <FormItem label={`Quantity`} >
                                 <InputNumber
-                                    defaultValue={0}
-                                    formatter={value => `${value}`}
+                                  defaultValue={0}
+                                  formatter={value => `${value}`}
                                 />
                               </FormItem>
                               <FormItem label={`Total`} >
                                 <InputNumber disabled = {true}
                                              formatter={value => `PKR ${value}`}
-                                    parser={value => value.replace('PKR', '')}
+                                             parser={value => value.replace('PKR', '')}
                                 />
                               </FormItem>
                             </div>
