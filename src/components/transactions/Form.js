@@ -140,9 +140,7 @@ class MainForm extends Component {
           disableBtn: true,
           loading: true
         });
-        const { type, user } = values;
-
-        console.log('types',values)
+        const { type, user, payment } = values;
 
         for (let i = 0; i < discounts.length; i++) {
           if (discounts[i].discount !== 0 && discounts[i].product) {
@@ -178,11 +176,17 @@ class MainForm extends Component {
             }
           }
         }
-
+        // create transaction object
         let transaction = {
           data: {
-            user,
-            type
+            user:{
+              connect: user
+            },
+            payment:{
+              create:{
+                ...payment
+              }
+            }
           }
         };
 
@@ -245,6 +249,7 @@ class MainForm extends Component {
           if (dupDiscount.length < 1) {
             delete transaction.data.discounts
           }
+
           createTransaction({
             variables: transaction,
             update: (proxy, { data: { createTransaction } }) => {
