@@ -19,7 +19,7 @@ class MainForm extends Component {
       searchValue: '',
       discounts: [
         {
-          discount: 0,
+          quantity: 0,
           product: ''
         }
       ],
@@ -29,7 +29,9 @@ class MainForm extends Component {
       disableBtn: false,
       selectedValue: '',
       deleteDiscount: [],
-      editDiscount: []
+      editDiscount: [],
+      user: '',
+      type: '', status: '', payment: {}
     };
     this.searchCustomer = debounce(this.searchCustomer, 400);
   }
@@ -39,8 +41,9 @@ class MainForm extends Component {
     const { transaction: { id } = {} } = this.props;
 
     const discountsObj = {
-      discount: 0,
-      product: ''
+      quantity: 0,
+      product: '',
+      total: 0
     };
     if (id) {
       discountsObj.new = true
@@ -54,16 +57,16 @@ class MainForm extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.transaction.id) {
       const { transaction } = nextProps;
-      const { id, type, user, status, address: { town, paid, balance, house } } = transaction;
-      // If updating transaction
+      const { id, type, user, status, payment } = transaction;
+      // // If updating transaction
       if (id) {
         // make discounts
-        const discountArray = transaction.discounts.map((value) => {
+        const discountArray = transaction.items.map((value) => {
           value.product.selected = true;
           return value
         });
         // set transaction to state
-        this.setState({ user, type, status, town, paid, balance, house, discounts: discountArray})
+        this.setState({ user, type, status, payment, discounts: discountArray })
       }
     } else {
       this.setState({
@@ -87,7 +90,7 @@ class MainForm extends Component {
     const { discounts, editDiscount } = this.state;
     const discountsObject = discounts[index];
     if (type === "percentage") {
-      discountsObject.discount = parseInt((discountsObject.product.price - (ev / 100) * discountsObject.product.price).toFixed());
+      discountsObject.quantity = ev
     } else {
       const selectedProduct = JSON.parse(ev);
       discountsObject.product = {
@@ -125,7 +128,7 @@ class MainForm extends Component {
       discounts
     })
   }
-  handledSubmit (e) {
+  handledSubmit(e) {
     e.preventDefault();
     const { transaction: { id } = {}, form, createTransaction, updateTransaction } = this.props;
     const { validateFields, resetFields } = form;
@@ -140,12 +143,12 @@ class MainForm extends Component {
           disableBtn: true,
           loading: true
         });
-        const { type, user, payment } = values;
-
+        const { type, user, payment, status } = values;
         for (let i = 0; i < discounts.length; i++) {
-          if (discounts[i].discount !== 0 && discounts[i].product) {
+          if (discounts[i].quantity !== 0 && discounts[i].product) {
             let discountsObj = {
-              discount: discounts[i].discount,
+              quantity: discounts[i].quantity,
+              total: discounts[i].quantity * discounts[i].product.price,
               product: {
                 connect: {
                   id: discounts[i].product.id
@@ -158,11 +161,10 @@ class MainForm extends Component {
                   id: discounts[i].discountId
                 },
                 data: {
-                  discount: discounts[i].discount,
+                  quantity: discounts[i].quantity,
                   product: {
-                    create: {
-                      name: discounts[i].product.name,
-                      price: discounts[i].product.price
+                    connect: {
+                      id: discounts[i].product.id
                     }
                   }
                 }
@@ -179,43 +181,45 @@ class MainForm extends Component {
         // create transaction object
         let transaction = {
           data: {
-            user:{
-              connect: user
+            user: {
+              connect: {
+                id: user
+              }
             },
-            payment:{
-              create:{
+            payment: {
+              create: {
                 ...payment
               }
+            },
+            type,
+            status,
+            items: {
+              create: dupDiscount
             }
           }
         };
 
         if (id) {
-          delete transaction.user;
+          delete transaction.data.user;
           transaction.id = id;
 
           if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
-            delete transaction.data.discounts.create;
-            transaction.data.discounts.delete = deleteDiscount
+            delete transaction.data.items.create;
+            transaction.data.items.delete = deleteDiscount
           }
           else if (dupDiscount.length < 1 && deleteDiscount.length < 1 && editDup.length < 1) {
-            delete transaction.data.discounts
+            delete transaction.data.items
           }
           else if (dupDiscount.length > 0 && deleteDiscount.length > 0) {
-            transaction.data.discounts.delete = deleteDiscount
+            transaction.data.items.delete = deleteDiscount
           }
           if (editDup.length > 0) {
-            transaction.data.discounts.update = editDup;
+            transaction.data.items.update = editDup;
           }
+
           updateTransaction({
             variables: transaction,
-            update: (proxy, { data: { updateTransaction } }) => {
-              // Read the data from our cache for this query.
-              let data = proxy.readQuery({ query: GET_TRANSACTION, variables: { id } });
-              data.transaction = updateTransaction;
-              // // Write our data back to the cache.
-              proxy.writeQuery({ query: GET_TRANSACTION, data, variables: { where: { id } } });
-            }
+            refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }, { query: GET_TRANSACTION, variables: { id } }]
           }).then(result => {
             this.setState({
               disableBtn: false,
@@ -233,25 +237,25 @@ class MainForm extends Component {
               variables: { status: false, id: '' }
             })
           })
-          .catch(err => {
-            this.setState({
-              disableBtn: false
-            });
-            const { graphQLErrors } = err;
-            graphQLErrors.forEach(element => {
-              message.error(element.message);
-            });
-            this.setState({
-              loading: false
-            });
-          })
+            .catch(err => {
+              this.setState({
+                disableBtn: false
+              });
+              const { graphQLErrors } = err;
+              graphQLErrors.forEach(element => {
+                message.error(element.message);
+              });
+              this.setState({
+                loading: false
+              });
+            })
         } else {
           if (dupDiscount.length < 1) {
             delete transaction.data.discounts
           }
-
           createTransaction({
             variables: transaction,
+            refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }],
             update: (proxy, { data: { createTransaction } }) => {
               // Read the data from our cache for this query.
               const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: {} } });
@@ -330,7 +334,6 @@ class MainForm extends Component {
   render() {
     const { form: { getFieldDecorator }, transaction: { id } = {}, options, loading } = this.props;
     const { discounts, disableBtn, searchValue, user, type, status, payment } = this.state;
-
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -355,14 +358,14 @@ class MainForm extends Component {
 
                     <Query query={GET_CUSTOMERS} variables={{ where, first: 3 }}>
                       {({ loading, error, data: { customers = [] } }) => {
-                        if(loading) {
+                        if (loading) {
                           customers = [];
                         }
                         if (error) return `Error! ${error.message}`;
                         return (
                           <Form.Item label={`Customer`}>
                             {getFieldDecorator('user', {
-                              initialValue: user,
+                              initialValue: user ? `${user.name} : ${user.mobile}` : '',
                               rules: [{ required: true, message: 'Type is Required!' }],
                             })(
                               <Select
@@ -371,9 +374,10 @@ class MainForm extends Component {
                                 onSearch={this.searchCustomer.bind(this)}
                                 placeholder="Select customer"
                                 filterOption={false}
+                                disabled={user.name ? true : false}
                                 notFoundContent={loading ? <Spin size="small" /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
                               >
-                                {customers.map(({ id, name, mobile}) => <Option key={id}>{name} : {mobile}</Option>)}
+                                {customers.map(({ id, name, mobile }) => <Option key={id}>{name} : {mobile}</Option>)}
 
 
                               </Select>,
@@ -501,14 +505,16 @@ class MainForm extends Component {
                               </Form.Item>
                               <FormItem label={`Quantity`} >
                                 <InputNumber
-                                  defaultValue={0}
+                                  defaultValue={value.quantity}
                                   formatter={value => `${value}`}
+                                  onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
                                 />
                               </FormItem>
                               <FormItem label={`Total`} >
-                                <InputNumber disabled = {true}
-                                             formatter={value => `PKR ${value}`}
-                                             parser={value => value.replace('PKR', '')}
+                                <InputNumber disabled={true}
+                                  value={value.quantity ? value.quantity * value.product.price : 0}
+                                  formatter={value => `PKR ${value}`}
+                                  parser={value => value.replace('PKR', '')}
                                 />
                               </FormItem>
                             </div>

@@ -50,6 +50,7 @@ query transaction($id: ID){
         user {
             id
             name
+            mobile
         }
         payment {
             status
@@ -60,10 +61,13 @@ query transaction($id: ID){
         items {
             product {
                 name
+                price
+                id
             }
             quantity
             discount
             total
+            id
         }
       }
 }
