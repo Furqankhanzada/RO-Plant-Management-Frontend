@@ -20,7 +20,8 @@ class MainForm extends Component {
       items: [
         {
           quantity: 0,
-          product: ''
+          product: '',
+          total: 0
         }
       ],
       products: [],
@@ -74,7 +75,6 @@ class MainForm extends Component {
         user: '',
         type: 'SELL',
         status: 'PENDING',
-        items: [],
         quantity: '',
         payment: {
           status: 'UNPAID',
@@ -510,9 +510,9 @@ class MainForm extends Component {
                         items.map((value, index) => {
                           const { userUpdateDiscount } = this.state;
                           const { discounts } = userUpdateDiscount;
-                          const discountedProduct = discounts.find((discountObject)=>{
+                          const discountedProduct = discounts ? discounts.find((discountObject)=>{
                             return value.product.id === discountObject.product.id
-                          })
+                          }) : null
                           const productPrice =  discountedProduct ? value.quantity * discountedProduct.discount  : value.quantity * value.product.price;
                           return (
                             <div className="discounts" key={index}>
