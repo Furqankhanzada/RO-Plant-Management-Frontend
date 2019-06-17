@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { Button, Form, Input, Row, Icon, Col } from 'antd';
+import { Button, Form, Input, Row, Icon, Col, DatePicker } from 'antd';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
 const { Search } = Input;
+const { MonthPicker, RangePicker } = DatePicker;
 
 const ColProps = {
     xs: 24,
@@ -26,11 +27,11 @@ class Filter extends Component {
         }
     }
     handleFields = fields => {
-        const { createTime = [] } = fields;
-        if (createTime.length) {
-            fields.createTime = [
-                moment(createTime[0]).format('YYYY-MM-DD'),
-                moment(createTime[1]).format('YYYY-MM-DD')
+        const { transactionAt = [] } = fields;
+        if (transactionAt.length) {
+            fields.transactionAt = [
+                moment(transactionAt[0]).format('YYYY-MM-DD'),
+                moment(transactionAt[1]).format('YYYY-MM-DD')
             ]
         }
         return fields
@@ -87,42 +88,26 @@ class Filter extends Component {
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
         const { name, mobile } = filter;
-        let initialCreateTime = [];
-        if (filter.createTime && filter.createTime[0]) {
-            initialCreateTime[0] = moment(filter.createTime[0])
+        let initialtransactionAt = [];
+        if (filter.transactionAt && filter.transactionAt[0]) {
+            initialtransactionAt[0] = moment(filter.transactionAt[0])
         }
-        if (filter.createTime && filter.createTime[1]) {
-            initialCreateTime[1] = moment(filter.createTime[1])
+        if (filter.transactionAt && filter.transactionAt[1]) {
+            initialtransactionAt[1] = moment(filter.transactionAt[1])
         }
 
         return (
             <Row gutter={24}>
-                <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-                    {getFieldDecorator('name', { initialValue: name })(
-                        <Search
-                            placeholder={`Search Name`}
-                            onSearch={this.handleSubmit}
-                        />
-                    )}
-                </Col>
-                <Col
-                    {...ColProps}
-                    xl={{ span: 5 }}
-                    md={{ span: 8 }}
-                    id="addressCascader"
-                >
-                    {getFieldDecorator('mobile', { initialValue: mobile })(
-                        <Search
-                            placeholder={`Search Mobile Number`}
-                            onSearch={this.handleSubmit}
-                        />
-                    )}
+                <Col>Transaction At :</Col>
+
+                <Col {...ColProps} xl={{ span: 5 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                    <RangePicker onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker"/>
                 </Col>
 
                 <Col
                     {...TwoColProps}
-                    xl={{ span: 15 }}
-                    md={{ span: 32 }}
+                    xl={{ span: 19 }}
+                    md={{ span: 14 }}
                     sm={{ span: 24 }}
                 >
                     <Row type="flex" align="middle" justify="space-between">
@@ -144,7 +129,6 @@ class Filter extends Component {
                         </Button>
                     </Row>
                 </Col>
-
             </Row>
         )
     }
