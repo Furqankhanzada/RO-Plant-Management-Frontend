@@ -129,6 +129,9 @@ img {
 .search-btn {
     margin-right: 18px;
 }
+.anticon {
+    margin-right: 5px;
+}
 
 .ant-table-body::-webkit-scrollbar {
     width: 1em;
