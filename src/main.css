@@ -559,6 +559,9 @@ img {
     .ant-divider-horizontal {
         margin: 15px 0 24px;
     }
+    .range-picker {
+        width: 100%;
+    }
 
 }
 
