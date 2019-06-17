@@ -28,8 +28,8 @@ class MainForm extends Component {
       drawer: false,
       disableBtn: false,
       selectedValue: '',
-      deleteDiscount: [],
-      editDiscount: [],
+      deleteItem: [],
+      editItem: [],
       user: '',
       userUpdateDiscount:'',
       type: '', status: '', payment: {}
@@ -87,8 +87,8 @@ class MainForm extends Component {
     }
   }
 
-  onChangeDiscount(type, index, discountId, ev) {
-    const { items, editDiscount } = this.state;
+  onChangeItem(type, index, itemtId, ev) {
+    const { items, editItem } = this.state;
     const itemsObject = items[index];
     if (type === "percentage") {
       itemsObject.quantity = ev
@@ -101,27 +101,27 @@ class MainForm extends Component {
         selected: true
       };
     }
-    if (discountId) {
+    if (itemtId) {
       itemsObject.edit = true;
-      itemsObject.discountId = discountId
+      itemsObject.itemtId = itemtId
     }
 
     items[index] = itemsObject;
     this.setState({
       items,
       itemsObject,
-      editDiscount
+      editItem
     })
   }
-  removeDiscount(index, value) {
-    const { items, deleteDiscount } = this.state;
+  removeItem(index, value) {
+    const { items, deleteItem } = this.state;
     const { transaction: { id } = {} } = this.props;
 
     if (id) {
-      const deleteDiscountObj = { id: value.id };
-      deleteDiscount.push(deleteDiscountObj);
+      const deleteItemObj = { id: value.id };
+      deleteItem.push(deleteItemObj);
       this.setState({
-        deleteDiscount
+        deleteItem
       })
     }
     items.splice(index, 1);
@@ -134,8 +134,8 @@ class MainForm extends Component {
     const { transaction: { id } = {}, form, createTransaction, updateTransaction } = this.props;
     const { validateFields, resetFields } = form;
 
-    let { items, deleteDiscount } = this.state;
-    const dupDiscount = [];
+    let { items, deleteItem } = this.state;
+    const dupItem = [];
     const editDup = [];
     validateFields(async (err, values) => {
 
@@ -175,7 +175,7 @@ class MainForm extends Component {
             if (items[i].edit) {
               const editObj = {
                 where: {
-                  id: items[i].discountId
+                  id: items[i].itemtId
                 },
                 data: {
                   quantity: items[i].quantity,
@@ -190,9 +190,9 @@ class MainForm extends Component {
               editDup.push(editObj)
             }
             if (id && items[i].new === true) {
-              dupDiscount.push(itemsObj)
+              dupItem.push(itemsObj)
             } else if (!id) {
-              dupDiscount.push(itemsObj)
+              dupItem.push(itemsObj)
             }
           }
         }
@@ -215,7 +215,7 @@ class MainForm extends Component {
             type,
             status,
             items: {
-              create: dupDiscount
+              create: dupItem
             }
           }
         };
@@ -225,15 +225,15 @@ class MainForm extends Component {
           transaction.where = {id};
 
 
-          if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
+          if (dupItem.length < 1 && deleteItem.length > 0) {
             delete transaction.data.items.create;
-            transaction.data.items.delete = deleteDiscount
+            transaction.data.items.delete = deleteItem
           }
-          else if (dupDiscount.length < 1 && deleteDiscount.length < 1 && editDup.length < 1) {
+          else if (dupItem.length < 1 && deleteItem.length < 1 && editDup.length < 1) {
             delete transaction.data.items
           }
-          else if (dupDiscount.length > 0 && deleteDiscount.length > 0) {
-            transaction.data.items.delete = deleteDiscount
+          else if (dupItem.length > 0 && deleteItem.length > 0) {
+            transaction.data.items.delete = deleteItem
           }
           if (editDup.length > 0) {
             transaction.data.items.update = editDup;
@@ -245,8 +245,8 @@ class MainForm extends Component {
           }).then(result => {
             this.setState({
               disableBtn: false,
-              editDiscount: [],
-              deleteDiscount: []
+              editItem: [],
+              deleteItem: []
             });
             client.mutate({
               mutation: gql`
@@ -272,7 +272,7 @@ class MainForm extends Component {
               });
             })
         } else {
-          if (dupDiscount.length < 1) {
+          if (dupItem.length < 1) {
             delete transaction.data.items
           }
           createTransaction({
@@ -354,7 +354,6 @@ class MainForm extends Component {
   }
 
   getCustomer(user){
-      const { userUpdateDiscount } = this.state;
       const userDiscount = JSON.parse(user)
       this.setState({
         userUpdateDiscount: userDiscount
@@ -520,7 +519,7 @@ class MainForm extends Component {
                               <Icon
                                 className="dynamic-delete-button removeButtonDiscount"
                                 type="minus-circle-o"
-                                onClick={this.removeDiscount.bind(this, index, value)}
+                                onClick={this.removeItem.bind(this, index, value)}
                               />
                               <Form.Item label={'Select Product'}>
 
@@ -533,7 +532,7 @@ class MainForm extends Component {
                                   dataSource={options}
                                   placeholder="Products"
                                   value={value.product ? value.product.selected ? value.product.name : '' : ''}
-                                  onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}
+                                  onChange={this.onChangeItem.bind(this, 'product', index, value.id)}
                                 >
                                   <Input suffix={<Icon type="search" className="certain-category-icon" />} />
                                 </AutoComplete>
@@ -542,7 +541,7 @@ class MainForm extends Component {
                                 <InputNumber
                                   defaultValue={value.quantity}
                                   formatter={value => `${value}`}
-                                  onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
+                                  onChange={this.onChangeItem.bind(this, 'percentage', index, value.id)}
                                 />
                               </FormItem>
                               <FormItem label={`Total`} >
