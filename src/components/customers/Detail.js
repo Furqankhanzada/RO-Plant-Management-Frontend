@@ -130,10 +130,23 @@ class Detail extends PureComponent {
                                             >
                                             <h3>{customer.name}</h3>
                                             <p
-                                                style={{ marginBottom:0, fontWeight:600 }}
+                                                style={{ fontWeight:600 }}
                                                 >{customer.mobile}</p>
                                             <p>{`${customer.address.house} ${customer.address.area} ${customer.address.block} ${customer.address.town}`}</p>
-                                            <h2>Price : 60</h2>
+                                            {
+                                                customer.discounts.map((value, index) => {
+                                                    console.log(value,"=========================")
+                                                    return(
+                                                    <div className="product-details">
+                                                        <h3>Discount : <span>{value.discount ? (100 - (value.discount / value.product.price) * 100).toFixed() : 0}%</span></h3>
+                                                        <h3>Product : <span>{value.product.name}</span></h3>
+                                                        <h3>Price : <span>{value.product.price}</span></h3>
+                                                    </div>
+                                                    )
+                                            })
+                                            }
+
+
                                             <Tag color="#87d068">Cash</Tag>
                                             <Tag color="#2db7f5">Monthly</Tag>
                                         </Card>
@@ -174,7 +187,7 @@ class Detail extends PureComponent {
                         </div>
                     </Col>
                 </Row>
-                <div className="card padding-none bottom-space">
+                <div className="card padding-none space-bottom">
                     <Table columns={columns} pagination={false} dataSource={data} scroll={{ x: 1000 }} bordered simple />
                 </div>
             </Layout>
