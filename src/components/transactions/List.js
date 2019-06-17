@@ -92,7 +92,7 @@ class List extends PureComponent {
         title: <span>Transaction At</span>,
         dataIndex: 'createdAt',
         key: 'createdAt',
-        render: (text) => moment(text).format('MMMM Do YYYY'),
+        render: (text, record) => <Link to={`/transactions/${record.id}`}>{moment(text).format('MMMM Do YYYY')}</Link>,
       },
       {
         title: <span>Name</span>,

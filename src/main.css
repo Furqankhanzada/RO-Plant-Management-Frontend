@@ -665,3 +665,7 @@ img {
 /*/// medium media query start here ///*/
 @media (min-width: 992px) and (max-width: 1199px) {}
 /*/// medium media query end here ///*/
+
+.transaction-detail .ant-descriptions-view {
+    background: #fff;
+}
