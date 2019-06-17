@@ -50,9 +50,7 @@ class RightDrawer extends Component {
                   </Option>
                 )) : [];
 
-              console.log('id: ', id);
               return (
-
                 <Fragment>
                   <Layout>
                     <Layout className="dashboard-main">
