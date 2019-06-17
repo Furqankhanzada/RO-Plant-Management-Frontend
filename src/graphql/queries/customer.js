@@ -16,6 +16,15 @@ export const GET_CUSTOMERS = gql`
             bottle{
                 balance
             }
+            discounts{
+                product{
+                  id
+                  price
+                  name
+                }
+                discount
+                id
+            }
         }
     }
 `;
