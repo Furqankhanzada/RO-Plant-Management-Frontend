@@ -482,6 +482,10 @@ img {
 .bottom-space {
     margin-bottom: 20px;
 }
+.transaction-table .ant-table-fixed-right .ant-table-fixed {
+    z-index: 99;
+    position: relative;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
@@ -561,7 +565,6 @@ img {
     }
 
 }
-
 @media (min-width: 320px) and (max-width: 430px) {
 
     .new-account .ant-drawer-body .ant-form .ant-form-item {
