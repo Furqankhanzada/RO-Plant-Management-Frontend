@@ -10,8 +10,8 @@ mutation createTransaction($data: TransactionCreateInput!) {
 
 
 export const UPDATE_TRANSACTION_MUTATION = gql`
-mutation updateTransaction($data: TransactionUpdateInput!, $id:ID) {
-    updateTransaction(data: $data, id:$id){
+mutation updateTransaction($data: TransactionUpdateInput!, $where: TransactionWhereUniqueInput!) {
+    updateTransaction(data: $data, where:$where){
         id
                 }
                 }

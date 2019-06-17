@@ -51,6 +51,15 @@ query transaction($id: ID){
             id
             name
             mobile
+            discounts{
+                product{
+                  id
+                  price
+                  name
+                }
+                discount
+                id
+            }
         }
         payment {
             status

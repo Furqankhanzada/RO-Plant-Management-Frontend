@@ -185,6 +185,7 @@ class List extends PureComponent {
     return (
       <Table
         {...tableProps}
+          className="transaction-table"
         size='small'
         pagination={false}
         bordered
