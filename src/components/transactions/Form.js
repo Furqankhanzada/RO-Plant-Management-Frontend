@@ -32,8 +32,8 @@ class MainForm extends Component {
       deleteItem: [],
       editItem: [],
       user: '',
-      userUpdateDiscount:'',
-      type: '', status: '', payment: {}
+      userUpdateDiscount: '',
+      type: '', status: '', payment: {paid:0, balance: 0}
     };
     this.searchCustomer = debounce(this.searchCustomer, 400);
   }
@@ -56,6 +56,8 @@ class MainForm extends Component {
       items
     })
   }
+
+  
   componentWillReceiveProps(nextProps) {
     if (nextProps.transaction.id) {
       const { transaction } = nextProps;
@@ -76,22 +78,29 @@ class MainForm extends Component {
         type: 'SELL',
         status: 'PENDING',
         quantity: '',
-        payment: {
-          status: 'UNPAID',
-          method: 'CASH',
-          paid: 0,
-          balance: 0,
-        }
+
 
       })
     }
   }
 
   onChangeItem(type, index, itemtId, ev) {
-    const { items, editItem } = this.state;
+    const { items, editItem, payment } = this.state;
     const itemsObject = items[index];
+    let balancedPrice = 0;
     if (type === "percentage") {
       itemsObject.quantity = ev
+
+      const { userUpdateDiscount } = this.state;
+      const { discounts } = userUpdateDiscount;
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+        balancedPrice = balancedPrice + productPrice;
+      })
+
     } else {
       const selectedProduct = JSON.parse(ev);
       itemsObject.product = {
@@ -100,22 +109,37 @@ class MainForm extends Component {
         id: selectedProduct.id,
         selected: true
       };
+
+      const { userUpdateDiscount } = this.state;
+      const { discounts } = userUpdateDiscount;
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+
+        balancedPrice = balancedPrice + productPrice;
+      })
     }
     if (itemtId) {
       itemsObject.edit = true;
       itemsObject.itemtId = itemtId
     }
-
+    payment.balance = balancedPrice - payment.paid
     items[index] = itemsObject;
     this.setState({
       items,
       itemsObject,
-      editItem
+      editItem,
+      payment
     })
   }
   removeItem(index, value) {
-    const { items, deleteItem } = this.state;
+    const { items, deleteItem, payment, userUpdateDiscount } = this.state;
     const { transaction: { id } = {} } = this.props;
+    const { discounts } = userUpdateDiscount;
+    let balancedPrice = 0;
+   
 
     if (id) {
       const deleteItemObj = { id: value.id };
@@ -125,8 +149,24 @@ class MainForm extends Component {
       })
     }
     items.splice(index, 1);
+
+    items.map((value) => {
+      const discountedProduct = discounts ? discounts.find((discountObject) => {
+        return value.product.id === discountObject.product.id
+      }) : null
+      const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+      balancedPrice = balancedPrice + productPrice;
+    })
+
+
     this.setState({
-      items
+      items,
+      payment: {
+        balance: balancedPrice - payment.paid,
+        paid: payment.paid,
+        status: payment.status,
+        method: payment.method,
+      }
     })
   }
   handledSubmit(e) {
@@ -145,27 +185,25 @@ class MainForm extends Component {
           loading: true
         });
         let { type, user, payment, status } = values;
-        
-
 
         for (let i = 0; i < items.length; i++) {
           if (items[i].quantity !== 0 && items[i].product) {
             let userDiscount;
-            if(id){
+            if (id) {
               const { userUpdateDiscount } = this.state;
               userDiscount = userUpdateDiscount.discounts;
-            } else{
+            } else {
               userDiscount = JSON.parse(user).discounts
             }
 
-            if(userDiscount){
-              userDiscount = userDiscount.find((value)=>{
+            if (userDiscount) {
+              userDiscount = userDiscount.find((value) => {
                 return value.product.id === items[i].product.id
               })
             }
             let itemsObj = {
               quantity: items[i].quantity,
-              total: userDiscount ? items[i].quantity * userDiscount.discount  : items[i].quantity * items[i].product.price,
+              total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
               product: {
                 connect: {
                   id: items[i].product.id
@@ -179,7 +217,7 @@ class MainForm extends Component {
                 },
                 data: {
                   quantity: items[i].quantity,
-                  total: userDiscount ? items[i].quantity * userDiscount.discount  : items[i].quantity * items[i].product.price,
+                  total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
                   product: {
                     connect: {
                       id: items[i].product.id
@@ -197,7 +235,7 @@ class MainForm extends Component {
           }
         }
         // create transaction object
-        if(!id){
+        if (!id) {
           user = JSON.parse(user).id
         }
         let transaction = {
@@ -222,7 +260,7 @@ class MainForm extends Component {
 
         if (id) {
           delete transaction.data.user;
-          transaction.where = {id};
+          transaction.where = { id };
 
 
           if (dupItem.length < 1 && deleteItem.length > 0) {
@@ -353,13 +391,43 @@ class MainForm extends Component {
     });
   }
 
-  getCustomer(user){
-      const userDiscount = JSON.parse(user)
-      this.setState({
-        userUpdateDiscount: userDiscount
-      })
-  }
+  getCustomer(user) {
+    const userDiscount = JSON.parse(user)
+    let balancedPrice = 0;
+    const { items, payment } = this.state;
+    const { discounts } = userDiscount;
+    items.map((value) => {
+      const discountedProduct = discounts ? discounts.find((discountObject) => {
+        return value.product.id === discountObject.product.id
+      }) : null
+      const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+      balancedPrice = balancedPrice + productPrice;
+    })
 
+    this.setState({
+      userUpdateDiscount: userDiscount,
+      payment: {
+        balance: balancedPrice - payment.paid,
+        paid: payment.paid,
+        status: 'UNPAID',
+        method: 'CASH',
+      }
+    })
+
+
+  }
+  getPaidValue = (ev) => {
+    const { payment } = this.state;
+      const total = payment.paid + payment.balance;
+      if(payment.balance !== total || payment.balance>=0){
+        payment.balance = total - ev
+      }
+      payment.paid = ev;
+
+    this.setState({
+      payment
+    })
+  }
   render() {
     const { form: { getFieldDecorator }, transaction: { id } = {}, options, loading } = this.props;
     const { items, disableBtn, searchValue, user, type, status, payment } = this.state;
@@ -374,7 +442,6 @@ class MainForm extends Component {
     if (searchValue) {
       where.name_contains = searchValue
     }
-
     return (
       <div className="create-main-div">
         <Form layout="horizontal" onSubmit={this.handledSubmit.bind(this)} className="form-create-update">
@@ -406,7 +473,7 @@ class MainForm extends Component {
                                 disabled={user.name ? true : false}
                                 notFoundContent={loading ? <Spin size="small" /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
                               >
-                                {customers.map(({ id, name, mobile,discounts }) => <Option key={JSON.stringify({id,discounts})}>{name} : {mobile}</Option>)}
+                                {customers.map(({ id, name, mobile, discounts }) => <Option key={JSON.stringify({ id, discounts })}>{name} : {mobile}</Option>)}
 
 
                               </Select>,
@@ -418,7 +485,7 @@ class MainForm extends Component {
                     <Form.Item label={`Type`}>
                       {getFieldDecorator('type', {
                         initialValue: type,
-                        rules: [{ required: true, message: 'Type is Required!' }],
+                        rules: [{ message: 'Type is Required!' }],
                       })(
                         <Select
                           onChange={this.handleSelectChange}
@@ -431,7 +498,7 @@ class MainForm extends Component {
                     <Form.Item label={`Status`}>
                       {getFieldDecorator('status', {
                         initialValue: status,
-                        rules: [{ required: true, message: 'Status is Required!' }],
+                        rules: [{ message: 'Status is Required!' }],
                       })(
                         <Select
                           placeholder="Select a Option"
@@ -450,7 +517,7 @@ class MainForm extends Component {
                     <Form.Item label={`Method`}>
                       {getFieldDecorator('payment.method', {
                         initialValue: payment.method,
-                        rules: [{ required: true, message: 'Type is Required!' }],
+                        rules: [{ message: 'Type is Required!' }],
                       })(
                         <Select
                           onChange={this.handleSelectChange}
@@ -464,7 +531,7 @@ class MainForm extends Component {
                     <Form.Item label={`Status`}>
                       {getFieldDecorator('payment.status', {
                         initialValue: payment.status,
-                        rules: [{ required: true, message: 'Status is Required!' }],
+                        rules: [{ message: 'Status is Required!' }],
                       })(
                         <Select
                           placeholder="Select a Payment status"
@@ -477,29 +544,22 @@ class MainForm extends Component {
                     </Form.Item>
                     <FormItem label={`Paid`} >
                       {getFieldDecorator('payment.paid', {
-                        initialValue: payment.paid,
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
+                        initialValue: payment.paid ? payment.paid : 0,
                       })(<InputNumber
                         formatter={value => `Rs${value}`}
                         parser={value => value.replace('Rs', '')}
+                        onChange={this.getPaidValue}
+                        min={0}
+                        max={payment.balance + payment.paid}
                       />)}
                     </FormItem>
                     <FormItem label={`Balance`} >
                       {getFieldDecorator('payment.balance', {
-                        initialValue: payment.balance,
-                        rules: [
-                          {
-                            required: true,
-                            message: `Balance is Required!`
-                          }
-                        ]
+                        initialValue: payment.balance ? payment.balance : 0
                       })(<InputNumber
                         formatter={value => `Rs${value}`}
                         parser={value => value.replace('Rs', '')}
+                        disabled={true}
                       />)}
                     </FormItem>
                   </Col>
@@ -510,10 +570,10 @@ class MainForm extends Component {
                         items.map((value, index) => {
                           const { userUpdateDiscount } = this.state;
                           const { discounts } = userUpdateDiscount;
-                          const discountedProduct = discounts ? discounts.find((discountObject)=>{
+                          const discountedProduct = discounts ? discounts.find((discountObject) => {
                             return value.product.id === discountObject.product.id
                           }) : null
-                          const productPrice =  discountedProduct ? value.quantity * discountedProduct.discount  : value.quantity * value.product.price;
+                          const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
                           return (
                             <div className="discounts" key={index}>
                               <Icon
