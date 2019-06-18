@@ -54,7 +54,9 @@ class MainForm extends Component {
     })
   }
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps,"Porpasjlaskjdalkjd")
     if (nextProps.customer.id) {
+
       const { customer } = nextProps;
       const { id, name, mobile, address: { town, area, block, house } } = customer;
       // If updating customer
@@ -205,13 +207,7 @@ class MainForm extends Component {
           }
           updateCustomer({
             variables: customer,
-            update: (proxy, { data: { updateCustomer } }) => {
-              // Read the data from our cache for this query.
-              let data = proxy.readQuery({ query: CUSTOMER_QUERY, variables: { id } });
-              data.customer = updateCustomer;
-              // // Write our data back to the cache.
-              proxy.writeQuery({ query: CUSTOMER_QUERY, data, variables: { where: { id } } });
-            }
+            refetchQueries: [{ query: CUSTOMER_QUERY, variables: customer }],
           }).then(result => {
             this.setState({
               disableBtn: false,

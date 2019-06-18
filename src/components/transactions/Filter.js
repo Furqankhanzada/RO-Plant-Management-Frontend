@@ -87,7 +87,7 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        const { name, mobile } = filter;
+        const { name, mobile, } = filter;
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
             initialtransactionAt[0] = moment(filter.transactionAt[0])
@@ -95,13 +95,18 @@ class Filter extends Component {
         if (filter.transactionAt && filter.transactionAt[1]) {
             initialtransactionAt[1] = moment(filter.transactionAt[1])
         }
+        const {transactionAt} = filter;
+        const dateFormat = 'YYYY/MM/DD';
+        const momentArray = transactionAt ? transactionAt.map((value)=>{
+            return moment(value, dateFormat);
+        }) :[]
 
         return (
             <Row gutter={24}>
                 <Col>Transaction At :</Col>
 
                 <Col {...ColProps} xl={{ span: 5 }} sm={{ span: 24 }} md={{ span: 10 }}>
-                    <RangePicker onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker"/>
+                    <RangePicker value={momentArray} onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker"/>
                 </Col>
 
                 <Col
