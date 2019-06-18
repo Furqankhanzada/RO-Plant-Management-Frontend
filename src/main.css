@@ -502,6 +502,19 @@ img {
     font-weight: 600;
 }
 
+.notification-badge {
+    top: 4px;
+    position: relative;
+}
+.notification-badge i {
+    color: #b2b0c7;
+    font-size: 24px;
+    cursor: pointer;
+}
+.notification-badge .ant-badge-dot {
+    margin: -8px 0 0 0;
+}
+
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
 

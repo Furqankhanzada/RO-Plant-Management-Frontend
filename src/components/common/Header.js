@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from 'react'
-import { Layout, Menu, Avatar, Icon } from 'antd';
+import { Layout, Menu, Avatar, Icon, Popover, Button } from 'antd';
 import { client } from '../../index'
 import {gql} from "apollo-boost/lib/index";
 
@@ -8,6 +8,7 @@ const SubMenu = Menu.SubMenu;
 
 
 export class AppBar extends Component {
+
     openMainDrawer = () => {
         client.mutate({
             mutation: gql`
@@ -20,6 +21,18 @@ export class AppBar extends Component {
         })
     }
     render(){
+
+        const text = <span>Title</span>;
+
+        const content = (
+            <div>
+                <p>Content</p>
+                <p>Content</p>
+            </div>
+        );
+
+        const buttonWidth = 70;
+
         return (
             <Header className="header header-custom " style={{ backgroundColor: '#ffffff' }}>
                 <div className='nav-logo'>
@@ -43,6 +56,14 @@ export class AppBar extends Component {
                         </Menu.Item>
                     </SubMenu>
                 </Menu>
+                <div style={{ display: 'inline-block', float: 'right', margin: '0 10px' }}>
+                    <Popover placement="bottom" title={text} content={content} trigger="click">
+                        <span className="notification-badge">
+                            <Icon type="bell" />
+                            <sup data-show="true" className="ant-scroll-number ant-badge-dot" title="2"></sup>
+                        </span>
+                    </Popover>
+                </div>
 
             </Header>
         )
