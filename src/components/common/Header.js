@@ -22,12 +22,19 @@ export class AppBar extends Component {
     }
     render(){
 
-        const text = <span>Title</span>;
-
         const content = (
             <div>
-                <p>Content</p>
-                <p>Content</p>
+                <div className="notification-details">
+                    <p>New User is registered. <Icon type="right" /></p>
+                    <span>3 hours ago</span>
+                </div>
+                <div className="notification-details">
+                    <p>Application has been approved. <Icon type="right" /></p>
+                    <span>14 hours ago</span>
+                </div>
+                <div className="clear-notification">
+                    <a href="javascript:">Clear notifications</a>
+                </div>
             </div>
         );
 
@@ -57,7 +64,7 @@ export class AppBar extends Component {
                     </SubMenu>
                 </Menu>
                 <div style={{ display: 'inline-block', float: 'right', margin: '0 10px' }}>
-                    <Popover placement="bottom" title={text} content={content} trigger="click">
+                    <Popover placement="bottom" content={content} trigger="click">
                         <span className="notification-badge">
                             <Icon type="bell" />
                             <sup data-show="true" className="ant-scroll-number ant-badge-dot" title="2"></sup>

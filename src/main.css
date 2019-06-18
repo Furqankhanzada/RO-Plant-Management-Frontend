@@ -514,6 +514,49 @@ img {
 .notification-badge .ant-badge-dot {
     margin: -8px 0 0 0;
 }
+.ant-popover .ant-popover-content {
+    width: 250px;
+    margin: 7px 0 0 0;
+}
+.ant-popover .ant-popover-content .ant-popover-arrow {
+    display: none;
+}
+.ant-popover .ant-popover-content .ant-popover-inner-content {
+    padding: 10px 0;
+}
+.ant-popover-inner {
+    border-radius: 0;
+}
+
+.notification-details {
+    padding: 10px 15px;
+    border-bottom: 1px solid #f3f3f3;
+}
+.notification-details:last-child {
+    border-bottom: 0;
+}
+.notification-details p {
+    color: #666666;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+}
+.notification-details p i {
+    float: right;
+    color: #cccccc;
+    font-size: 12px;
+    margin: 18px 0 0 0;
+}
+.notification-details span {
+    color: #979797;
+}
+.clear-notification {
+    text-align: center;
+    padding: 10px 15px 10px;
+}
+.clear-notification a {
+    color: #666666;
+    font-weight: 500;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
