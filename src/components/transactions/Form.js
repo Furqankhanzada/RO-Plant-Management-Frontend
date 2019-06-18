@@ -85,14 +85,12 @@ class MainForm extends Component {
   }
 
   onChangeItem(type, index, itemtId, ev) {
-    const { items, editItem, payment } = this.state;
+    const { items, editItem, payment, userUpdateDiscount } = this.state;
     const itemsObject = items[index];
+    const { discounts } = userUpdateDiscount;
     let balancedPrice = 0;
     if (type === "percentage") {
       itemsObject.quantity = ev
-
-      const { userUpdateDiscount } = this.state;
-      const { discounts } = userUpdateDiscount;
       items.map((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
@@ -109,9 +107,6 @@ class MainForm extends Component {
         id: selectedProduct.id,
         selected: true
       };
-
-      const { userUpdateDiscount } = this.state;
-      const { discounts } = userUpdateDiscount;
       items.map((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
