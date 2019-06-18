@@ -508,6 +508,12 @@ img {
     float: right;
     font-weight: 600;
 }
+.ant-descriptions.bordered .ant-descriptions-item-label {
+    font-weight: 500;
+}
+.range-picker {
+    width: 100%;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
@@ -584,9 +590,6 @@ img {
     }
     .ant-divider-horizontal {
         margin: 15px 0 24px;
-    }
-    .range-picker {
-        width: 100%;
     }
 
 }
@@ -679,7 +682,6 @@ img {
     .remove-padding {
         padding: 10px 15px 0 !important;
     }
-
     .create-main-div .ant-form {
         margin-bottom: 20px;
     }
