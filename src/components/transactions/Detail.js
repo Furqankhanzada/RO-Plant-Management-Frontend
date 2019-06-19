@@ -2,70 +2,93 @@ import React, { PureComponent } from 'react'
 import { Table, Divider, Tag, Descriptions, Badge } from 'antd';
 import { Query } from 'react-apollo';
 import { Layout, Card, Icon, Empty, Row, Col, Statistic, Spin } from 'antd';
-import { CUSTOMER_QUERY } from '../../graphql/queries/customer'
+import { GET_TRANSACTION } from '../../graphql/queries/transaction'
 
 const columns = [
   {
     title: 'Date',
     dataIndex: 'date',
-    key: 'date'
-  },
-  {
-    title: 'Bottle In',
-    dataIndex: 'bottleIn',
-    key: 'bottleIn'
-  },
-  {
-    title: 'Bottle Out',
-    dataIndex: 'bottleOut',
-    key: 'bottleOut'
-  },
-  {
-    title: 'Bottle Balance',
-    dataIndex: 'bottleBalance',
-    key: 'bottleBalance'
-  },
-  {
-    title: 'Payment Status',
-    key: 'paymentStatus',
-    dataIndex: 'paymentStatus',
-    render: tags => (
-      <span>
-        {tags.map(tag => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'Unpaid') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </span>
-    )
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'amount',
-    key: 'amount'
-  },
-  {
-    title: 'Amount Received',
-    dataIndex: 'amountReceived',
-    key: 'amountReceived'
-  },
-  {
-    title: 'Action',
-    key: 'action',
+    key: 'date',
     render: (text, record) => (
-      <span>
-        <p>Invite {record.name}</p>
-        <Divider type="vertical" />
-        <p>Delete</p>
-      </span>
-    )
-  }
+         <span>Jun 19 2019</span>
+      )
+  },
+  {
+    title: 'Name',
+    dataIndex: 'product.name',
+    key: 'name'
+  },
+  {
+    title: 'Price',
+    dataIndex: 'product.price',
+    key: 'price'
+  },
+  {
+    title: 'Discount',
+    dataIndex: 'discount',
+    key: 'discount'
+  },
+  {
+    title: 'Quantity',
+    dataIndex: 'quantity',
+    key: 'quantity'
+  },
+  //{
+  //  title: 'Bottle In',
+  //  dataIndex: 'bottleIn',
+  //  key: 'bottleIn'
+  //},
+  //{
+  //  title: 'Bottle Out',
+  //  dataIndex: 'bottleOut',
+  //  key: 'bottleOut'
+  //},
+  //{
+  //  title: 'Bottle Balance',
+  //  dataIndex: 'bottleBalance',
+  //  key: 'bottleBalance'
+  //},
+  //{
+  //  title: 'Payment Status',
+  //  key: 'paymentStatus',
+  //  dataIndex: 'paymentStatus',
+  //  render: tags => (
+  //    <span>
+  //      {tags.map(tag => {
+  //        let color = tag.length > 5 ? 'geekblue' : 'green';
+  //        if (tag === 'Unpaid') {
+  //          color = 'volcano';
+  //        }
+  //        return (
+  //          <Tag color={color} key={tag}>
+  //            {tag.toUpperCase()}
+  //          </Tag>
+  //        );
+  //      })}
+  //    </span>
+  //  )
+  //},
+  {
+    title: 'Total',
+    dataIndex: 'total',
+    key: 'total'
+  },
+  //{
+  //  title: 'Amount Received',
+  //  dataIndex: 'amountReceived',
+  //  key: 'amountReceived'
+  //}
+  //{
+  //  title: 'Action',
+  //  key: 'action',
+  //  render: (text, record) => (
+  //    <span>
+  //      <p>Invite {record.name}</p>
+  //      <Divider type="vertical" />
+  //      <p>Delete</p>
+  //    </span>
+  //  )
+  //}
 ];
 
 const data = [
@@ -109,42 +132,40 @@ class Detail extends PureComponent {
     const { id } = params;
 
     return (
-      <Layout className="user-main-div">
-        <Row className="bottom-space">
-          <Col>
-            <Descriptions bordered className='transaction-detail'>
-              <Descriptions.Item label="Product">Cloud Database</Descriptions.Item>
-              <Descriptions.Item label="Billing Mode">Prepaid</Descriptions.Item>
-              <Descriptions.Item label="Automatic Renewal">YES</Descriptions.Item>
-              <Descriptions.Item label="Order time">2018-04-24 18:00:00</Descriptions.Item>
-              <Descriptions.Item label="Usage Time" span={3}>
-                2019-04-24 18:00:00
-              </Descriptions.Item>
-              <Descriptions.Item label="Status" span={3}>
-                <Badge status="processing" text="Running" />
-              </Descriptions.Item>
-              <Descriptions.Item label="Negotiated Amount">$80.00</Descriptions.Item>
-              <Descriptions.Item label="Discount">$20.00</Descriptions.Item>
-              <Descriptions.Item label="Official Receipts">$60.00</Descriptions.Item>
-              <Descriptions.Item label="Config Info">
-                Data disk type: MongoDB
-                <br />
-                Database version: 3.4
-                <br />
-                Package: dds.mongo.mid
-                <br />
-                Storage space: 10 GB
-                <br />
-                Replication_factor:3
-                <br />
-                Region: East China 1<br />
-              </Descriptions.Item>
-            </Descriptions>          </Col>
-        </Row>
-        <div className="card padding-none bottom-space">
-          <Table columns={columns} pagination={false} dataSource={data} scroll={{ x: 1000 }} bordered simple />
-        </div>
-      </Layout>
+      <Query query={GET_TRANSACTION} variables={{ id }}>
+        {({ data: { transaction }, loading }) => {
+          if(loading) return <Spin />;
+          let { status, user: { name, mobile, address, bottle }, payment, items }  = transaction;
+          return (
+            <Layout className="user-main-div">
+              <Row className="margin-bottom">
+                <Col>
+                  <Descriptions bordered className='transaction-detail'>
+                    <Descriptions.Item label="Customer">{name}</Descriptions.Item>
+                    <Descriptions.Item label="Mobile">{mobile}</Descriptions.Item>
+                    <Descriptions.Item label="Have Bottles (Count)">{bottle.balance}</Descriptions.Item>
+                    <Descriptions.Item label="Order time">2018-04-24 18:00:00</Descriptions.Item>
+                    <Descriptions.Item label="Address" span={3}>
+                      {`${address.house} ${address.area} ${address.block} ${address.town}`}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Status" span={3}>
+                      <Badge status="processing" text={status} />
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Payment Method" span={1.5}>{ payment.method}</Descriptions.Item>
+                    <Descriptions.Item label="Payment Status" span={1.5}>{ payment.status}</Descriptions.Item>
+                    <Descriptions.Item label="Total Amount">Rs{ payment.balance + payment.paid || 0}</Descriptions.Item>
+                    <Descriptions.Item label="Paid Amount">Rs{ payment.paid }</Descriptions.Item>
+                    <Descriptions.Item label="Balance Amount">Rs{ payment.balance }</Descriptions.Item>
+                  </Descriptions>
+                </Col>
+              </Row>
+              <div className="card padding-none margin-bottom">
+                <Table columns={columns} pagination={false} dataSource={items} scroll={{ x: 1000 }} bordered simple />
+              </div>
+            </Layout>
+          )
+        }}
+      </Query>
     )
   }
 }

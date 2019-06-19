@@ -41,43 +41,52 @@ export const TRANSACTION_SUBSCRIPTION = gql`
 `;
 
 export const GET_TRANSACTION = gql`
-query transaction($id: ID){
-    transaction(where: {id: $id}){
-        id
-        type
-        status
-        createdAt
-        user {
+    query transaction($id: ID){
+        transaction(where: {id: $id}){
             id
-            name
-            mobile
-            discounts{
-                product{
-                  id
-                  price
-                  name
-                }
-                discount
-                id
-            }
-        }
-        payment {
+            type
             status
-            balance
-            method
-            paid
-        }
-        items {
-            product {
+            createdAt
+            user {
+                id
                 name
-                price
+                mobile
+                address{
+                    town
+                    area
+                    block
+                    house
+                }
+                bottle {
+                    balance
+                }
+                discounts {
+                    product {
+                        id
+                        price
+                        name
+                    }
+                    discount
+                    id
+                }
+            }
+            payment {
+                status
+                balance
+                method
+                paid
+            }
+            items {
+                product {
+                    name
+                    price
+                    id
+                }
+                quantity
+                discount
+                total
                 id
             }
-            quantity
-            discount
-            total
-            id
         }
-      }
-}
+    }
 `;
