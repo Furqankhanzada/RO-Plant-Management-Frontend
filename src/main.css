@@ -503,20 +503,34 @@ img {
 }
 
 .notification-badge {
-    top: 4px;
+    top: 8px;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    border-radius: 50%;
     position: relative;
+    text-align: center;
+    display: inline-block;
+}
+.notification-badge:hover {
+    background-color: #f9f9fc;
+}
+.notification-badge:hover i {
+    color: #1890ff;
 }
 .notification-badge i {
+    top: -3px;
     color: #b2b0c7;
     font-size: 24px;
     cursor: pointer;
+    position: relative;
 }
 .notification-badge .ant-badge-dot {
-    margin: -8px 0 0 0;
+    margin: 10px 10px 0 0;
 }
 .ant-popover .ant-popover-content {
     width: 250px;
-    margin: 7px 0 0 0;
+    margin: -3px 0 0 0;
 }
 .ant-popover .ant-popover-content .ant-popover-arrow {
     display: none;
