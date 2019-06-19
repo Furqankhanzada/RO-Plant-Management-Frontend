@@ -460,12 +460,14 @@ img {
 .quantity .card {
     height: 100%;
 }
+.card p {
+    margin-bottom: 7px;
+}
 .padding-none {
     padding: 0;
 }
 .loading-center {
     width: 100%;
-    min-height: 437px;
     position: relative;
     margin-bottom: 20px;
 }
@@ -482,12 +484,29 @@ img {
 .flex-box {
     display: flex;
 }
-.bottom-space {
+.space-bottom {
     margin-bottom: 20px;
 }
 .transaction-table .ant-table-fixed-right .ant-table-fixed {
     z-index: 99;
     position: relative;
+}
+.ant-tag {
+    padding: 0 7px 1px;
+}
+.product-details {
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 1px 0 #cecece;
+}
+.product-details h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+}
+.product-details h3 span {
+    float: right;
+    font-weight: 600;
 }
 .ant-descriptions.bordered .ant-descriptions-item-label {
     font-weight: 500;
