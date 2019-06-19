@@ -110,7 +110,7 @@ class Detail extends PureComponent {
 
     return (
       <Layout className="user-main-div">
-        <Row className="bottom-space">
+        <Row className="margin-bottom">
           <Col>
             <Descriptions bordered className='transaction-detail'>
               <Descriptions.Item label="Product">Cloud Database</Descriptions.Item>
@@ -141,7 +141,7 @@ class Detail extends PureComponent {
               </Descriptions.Item>
             </Descriptions>          </Col>
         </Row>
-        <div className="card padding-none bottom-space">
+        <div className="card padding-none margin-bottom">
           <Table columns={columns} pagination={false} dataSource={data} scroll={{ x: 1000 }} bordered simple />
         </div>
       </Layout>

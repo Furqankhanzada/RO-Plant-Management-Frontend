@@ -514,6 +514,9 @@ img {
 .range-picker {
     width: 100%;
 }
+.margin-bottom {
+    margin-bottom: 20px;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
