@@ -131,7 +131,7 @@ class List extends PureComponent {
             dataIndex: 'payment.method',
             key: 'payment.method',
             render: (method) => {
-              return <Tag color='magenta'>{method}</Tag>
+              return <Tag color='magenta'>{method.replace("_", " ")}</Tag>
             }
           },
           {
