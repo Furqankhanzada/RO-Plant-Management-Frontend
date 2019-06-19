@@ -115,7 +115,7 @@ class Detail extends PureComponent {
           let { status, user: { name, mobile, address, bottle }, payment }  = transaction;
           return (
             <Layout className="user-main-div">
-              <Row className="bottom-space">
+              <Row className="margin-bottom">
                 <Col>
                   <Descriptions bordered className='transaction-detail'>
                     <Descriptions.Item label="Customer">{name}</Descriptions.Item>
@@ -136,7 +136,7 @@ class Detail extends PureComponent {
                   </Descriptions>
                 </Col>
               </Row>
-              <div className="card padding-none bottom-space">
+              <div className="card padding-none margin-bottom">
                 <Table columns={columns} pagination={false} dataSource={data} scroll={{ x: 1000 }} bordered simple />
               </div>
             </Layout>
