@@ -8,64 +8,87 @@ const columns = [
   {
     title: 'Date',
     dataIndex: 'date',
-    key: 'date'
-  },
-  {
-    title: 'Bottle In',
-    dataIndex: 'bottleIn',
-    key: 'bottleIn'
-  },
-  {
-    title: 'Bottle Out',
-    dataIndex: 'bottleOut',
-    key: 'bottleOut'
-  },
-  {
-    title: 'Bottle Balance',
-    dataIndex: 'bottleBalance',
-    key: 'bottleBalance'
-  },
-  {
-    title: 'Payment Status',
-    key: 'paymentStatus',
-    dataIndex: 'paymentStatus',
-    render: tags => (
-      <span>
-        {tags.map(tag => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'Unpaid') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </span>
-    )
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'amount',
-    key: 'amount'
-  },
-  {
-    title: 'Amount Received',
-    dataIndex: 'amountReceived',
-    key: 'amountReceived'
-  },
-  {
-    title: 'Action',
-    key: 'action',
+    key: 'date',
     render: (text, record) => (
-      <span>
-        <p>Invite {record.name}</p>
-        <Divider type="vertical" />
-        <p>Delete</p>
-      </span>
-    )
-  }
+         <span>Jun 19 2019</span>
+      )
+  },
+  {
+    title: 'Name',
+    dataIndex: 'product.name',
+    key: 'name'
+  },
+  {
+    title: 'Price',
+    dataIndex: 'product.price',
+    key: 'price'
+  },
+  {
+    title: 'Discount',
+    dataIndex: 'discount',
+    key: 'discount'
+  },
+  {
+    title: 'Quantity',
+    dataIndex: 'quantity',
+    key: 'quantity'
+  },
+  //{
+  //  title: 'Bottle In',
+  //  dataIndex: 'bottleIn',
+  //  key: 'bottleIn'
+  //},
+  //{
+  //  title: 'Bottle Out',
+  //  dataIndex: 'bottleOut',
+  //  key: 'bottleOut'
+  //},
+  //{
+  //  title: 'Bottle Balance',
+  //  dataIndex: 'bottleBalance',
+  //  key: 'bottleBalance'
+  //},
+  //{
+  //  title: 'Payment Status',
+  //  key: 'paymentStatus',
+  //  dataIndex: 'paymentStatus',
+  //  render: tags => (
+  //    <span>
+  //      {tags.map(tag => {
+  //        let color = tag.length > 5 ? 'geekblue' : 'green';
+  //        if (tag === 'Unpaid') {
+  //          color = 'volcano';
+  //        }
+  //        return (
+  //          <Tag color={color} key={tag}>
+  //            {tag.toUpperCase()}
+  //          </Tag>
+  //        );
+  //      })}
+  //    </span>
+  //  )
+  //},
+  {
+    title: 'Total',
+    dataIndex: 'total',
+    key: 'total'
+  },
+  //{
+  //  title: 'Amount Received',
+  //  dataIndex: 'amountReceived',
+  //  key: 'amountReceived'
+  //}
+  //{
+  //  title: 'Action',
+  //  key: 'action',
+  //  render: (text, record) => (
+  //    <span>
+  //      <p>Invite {record.name}</p>
+  //      <Divider type="vertical" />
+  //      <p>Delete</p>
+  //    </span>
+  //  )
+  //}
 ];
 
 const data = [
@@ -112,7 +135,7 @@ class Detail extends PureComponent {
       <Query query={GET_TRANSACTION} variables={{ id }}>
         {({ data: { transaction }, loading }) => {
           if(loading) return <Spin />;
-          let { status, user: { name, mobile, address, bottle }, payment }  = transaction;
+          let { status, user: { name, mobile, address, bottle }, payment, items }  = transaction;
           return (
             <Layout className="user-main-div">
               <Row className="margin-bottom">
@@ -137,7 +160,7 @@ class Detail extends PureComponent {
                 </Col>
               </Row>
               <div className="card padding-none margin-bottom">
-                <Table columns={columns} pagination={false} dataSource={data} scroll={{ x: 1000 }} bordered simple />
+                <Table columns={columns} pagination={false} dataSource={items} scroll={{ x: 1000 }} bordered simple />
               </div>
             </Layout>
           )
