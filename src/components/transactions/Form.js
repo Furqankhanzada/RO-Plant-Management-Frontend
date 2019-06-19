@@ -33,7 +33,8 @@ class MainForm extends Component {
       editItem: [],
       user: '',
       userUpdateDiscount: '',
-      type: '', status: '', payment: {paid:0, balance: 0}
+      type: '', status: '', payment: { paid: 0, balance: 0 },
+      adding: false
     };
     this.searchCustomer = debounce(this.searchCustomer, 400);
   }
@@ -53,37 +54,53 @@ class MainForm extends Component {
     // can use data-binding to get
     items.push(itemsObj);
     this.setState({
-      items
+      items,
+      adding: true
     })
   }
 
-  
+
   componentWillReceiveProps(nextProps) {
-    if (nextProps.transaction.id) {
-      const { transaction } = nextProps;
+    console.log(nextProps,"===nextProps")
+    console.log(this.state.adding,"===adding")
+
+    if (nextProps.updateStatus) {
+      const { transaction, open } = nextProps;
+      const { items, adding } = this.state;
       const { id, type, user, status, payment } = transaction;
       // // If updating transaction
       if (id) {
         // make items
-        const discountArray = transaction.items.map((value) => {
-          value.product.selected = true;
-          return value
-        });
-        // set transaction to state
-        this.setState({ user, type, status, payment, items: discountArray, userUpdateDiscount: user })
+        if (!adding) {
+          const discountArray = transaction.items.map((value) => {
+            value.product.selected = true;
+            return value
+          });
+          // set transaction to state
+          this.setState({ user: user, type, status, payment, items: discountArray, userUpdateDiscount: user })
+        }
       }
     } else {
       this.setState({
         user: '',
         type: 'SELL',
         status: 'PENDING',
-        quantity: '',
-
-
+        quantity: ''
       })
     }
   }
+  getPaidValue = (ev) => {
+    const { payment } = this.state;
+    const total = payment.paid + payment.balance;
+    if (payment.balance !== total || payment.balance >= 0) {
+      payment.balance = total - ev
+    }
+    payment.paid = ev;
 
+    this.setState({
+      payment
+    })
+  }
   onChangeItem(type, index, itemtId, ev) {
     const { items, editItem, payment, userUpdateDiscount } = this.state;
     const itemsObject = items[index];
@@ -134,35 +151,36 @@ class MainForm extends Component {
     const { transaction: { id } = {} } = this.props;
     const { discounts } = userUpdateDiscount;
     let balancedPrice = 0;
-   
 
-    if (id) {
-      const deleteItemObj = { id: value.id };
-      deleteItem.push(deleteItemObj);
+    if (items.length > 1) {
+      if (id && value.id) {
+        const deleteItemObj = { id: value.id };
+        deleteItem.push(deleteItemObj);
+        this.setState({
+          deleteItem
+        })
+      }
+      items.splice(index, 1);
+
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+        balancedPrice = balancedPrice + productPrice;
+      })
+
+
       this.setState({
-        deleteItem
+        items,
+        payment: {
+          balance: balancedPrice - payment.paid,
+          paid: payment.paid,
+          status: payment.status,
+          method: payment.method,
+        }
       })
     }
-    items.splice(index, 1);
-
-    items.map((value) => {
-      const discountedProduct = discounts ? discounts.find((discountObject) => {
-        return value.product.id === discountObject.product.id
-      }) : null
-      const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
-      balancedPrice = balancedPrice + productPrice;
-    })
-
-
-    this.setState({
-      items,
-      payment: {
-        balance: balancedPrice - payment.paid,
-        paid: payment.paid,
-        status: payment.status,
-        method: payment.method,
-      }
-    })
   }
   handledSubmit(e) {
     e.preventDefault();
@@ -184,10 +202,12 @@ class MainForm extends Component {
         for (let i = 0; i < items.length; i++) {
           if (items[i].quantity !== 0 && items[i].product) {
             let userDiscount;
+            console.log(id,"transaction id==========")
             if (id) {
               const { userUpdateDiscount } = this.state;
               userDiscount = userUpdateDiscount.discounts;
             } else {
+              console.log(user,"user=========>>>>>>>")
               userDiscount = JSON.parse(user).discounts
             }
 
@@ -274,23 +294,26 @@ class MainForm extends Component {
 
           updateTransaction({
             variables: transaction,
-            refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }, { query: GET_TRANSACTION, variables: { id } }]
+            refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }, { query: GET_TRANSACTION, variables: { id } }],
           }).then(result => {
             this.setState({
               disableBtn: false,
               editItem: [],
-              deleteItem: []
+              deleteItem: [],
+              items: [],
+              adding: false
+            }, () => {
+              client.mutate({
+                mutation: gql`
+                    mutation openDrawer($status: Boolean!, $id: String) {
+                        openDrawer(status: $status, id: $id) @client {
+                            Drawer
+                        }
+                    }
+                `,
+                variables: { status: false, id: '' }
+              })
             });
-            client.mutate({
-              mutation: gql`
-                  mutation openDrawer($status: Boolean!, $id: String) {
-                      openDrawer(status: $status, id: $id) @client {
-                          Drawer
-                      }
-                  }
-              `,
-              variables: { status: false, id: '' }
-            })
           })
             .catch(err => {
               this.setState({
@@ -329,6 +352,7 @@ class MainForm extends Component {
                   product: ''
                 }
               ],
+              adding: false
             }, () => {
               resetFields();
               message.success('Transaction has been created successfully');
@@ -377,6 +401,10 @@ class MainForm extends Component {
           }
       `,
       variables: { status: false, id: '' }
+    }).then(() => {
+      this.setState({
+        adding: false
+      })
     })
   }
 
@@ -411,21 +439,11 @@ class MainForm extends Component {
 
 
   }
-  getPaidValue = (ev) => {
-    const { payment } = this.state;
-      const total = payment.paid + payment.balance;
-      if(payment.balance !== total || payment.balance>=0){
-        payment.balance = total - ev
-      }
-      payment.paid = ev;
 
-    this.setState({
-      payment
-    })
-  }
   render() {
     const { form: { getFieldDecorator }, transaction: { id } = {}, options, loading } = this.props;
     const { items, disableBtn, searchValue, user, type, status, payment } = this.state;
+    console.log(user, "state==========================user")
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },

@@ -43,6 +43,7 @@ class Filter extends Component {
 
         let fields = getFieldsValue();
         fields = this.handleFields(fields);
+        console.log(fields,'feilds====submit')
         onFilterChange(fields)
     };
 
@@ -64,12 +65,15 @@ class Filter extends Component {
         this.handleSubmit()
     };
     handleChange = (key, values) => {
+        console.log(key,"key======key")
         const { form, onFilterChange } = this.props;
         const { getFieldsValue } = form;
 
         let fields = getFieldsValue();
         fields[key] = values;
         fields = this.handleFields(fields);
+        console.log(fields,'feilds====change')
+
         onFilterChange(fields)
     };
 
@@ -87,7 +91,7 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        const { name, mobile, } = filter;
+        const { name, mobile, transactionAt } = filter;
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
             initialtransactionAt[0] = moment(filter.transactionAt[0])
@@ -95,18 +99,22 @@ class Filter extends Component {
         if (filter.transactionAt && filter.transactionAt[1]) {
             initialtransactionAt[1] = moment(filter.transactionAt[1])
         }
-        const {transactionAt} = filter;
-        const dateFormat = 'YYYY/MM/DD';
-        const momentArray = transactionAt ? transactionAt.map((value)=>{
-            return moment(value, dateFormat);
-        }) :[]
+        // const { transactionAt } = filter;
+        // const dateFormat = 'YYYY/MM/DD';
+        // const momentArray = transactionAt ? transactionAt.map((value) => {
+        //     return moment(value, dateFormat);
+        // }) : []
 
         return (
             <Row gutter={24}>
                 <Col>Transaction At :</Col>
 
                 <Col {...ColProps} xl={{ span: 5 }} sm={{ span: 24 }} md={{ span: 10 }}>
-                    <RangePicker value={momentArray} onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker"/>
+                    {getFieldDecorator('range', { initialValue: initialtransactionAt })(
+                        <RangePicker onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker" />
+
+                    )}
+
                 </Col>
 
                 <Col
@@ -129,8 +137,8 @@ class Filter extends Component {
                             </Button>
                         </div>
                         <Button type="primary" onClick={this.openDrawer}>
-                          <Icon type="plus" />
-                          <span>Create</span>
+                            <Icon type="plus" />
+                            <span>Create</span>
                         </Button>
                     </Row>
                 </Col>
