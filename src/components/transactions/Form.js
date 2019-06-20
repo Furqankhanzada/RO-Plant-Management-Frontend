@@ -156,9 +156,6 @@ class MainForm extends Component {
       if (id && value.id) {
         const deleteItemObj = { id: value.id };
         deleteItem.push(deleteItemObj);
-        this.setState({
-          deleteItem
-        })
       }
       items.splice(index, 1);
 
@@ -178,7 +175,9 @@ class MainForm extends Component {
           paid: payment.paid,
           status: payment.status,
           method: payment.method,
-        }
+        },
+        deleteItem,
+        adding: true
       })
     }
   }
