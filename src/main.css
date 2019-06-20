@@ -546,6 +546,10 @@ img {
     padding: 10px 15px;
     border-bottom: 1px solid #f3f3f3;
 }
+.notification-details:hover {
+    cursor: pointer;
+    background: #f9f9fc;
+}
 .notification-details:last-child {
     border-bottom: 0;
 }
@@ -565,11 +569,15 @@ img {
 }
 .clear-notification {
     text-align: center;
-    padding: 10px 15px 10px;
+}
+.clear-notification:hover {
+    background: #f9f9fc;
 }
 .clear-notification a {
     color: #666666;
+    display: block;
     font-weight: 500;
+    padding: 10px 15px 10px;
 }
 
 /*/// extra small media query start here ///*/
