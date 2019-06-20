@@ -517,6 +517,9 @@ img {
 .margin-bottom {
     margin-bottom: 20px;
 }
+.transaction-label {
+    margin: 4px 0 0 0;
+}
 
 .notification-badge {
     top: 8px;
@@ -672,6 +675,9 @@ img {
     .ant-divider-horizontal {
         margin: 15px 0 24px;
     }
+    .flex-box {
+        display: block !important;
+    }
 
 }
 @media (min-width: 320px) and (max-width: 430px) {
@@ -769,12 +775,19 @@ img {
     .quantity {
         padding: 25px 0 0 0;
     }
+    .flex-box {
+        display: block !important;
+    }
 
 }
 /*/// small media query end here ///*/
 
 /*/// medium media query start here ///*/
-@media (min-width: 992px) and (max-width: 1199px) {}
+@media (min-width: 992px) and (max-width: 1199px) {
+
+
+
+}
 /*/// medium media query end here ///*/
 
 .transaction-detail .ant-descriptions-view {
