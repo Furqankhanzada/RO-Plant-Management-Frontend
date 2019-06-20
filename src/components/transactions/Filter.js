@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { Button, Form, Input, Row, Icon, Col, DatePicker } from 'antd';
+import {Button, Form, Input, Row, Icon, Col, DatePicker, Select } from 'antd';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
+const { Option, type } = Select;
 const { Search } = Input;
 const { MonthPicker, RangePicker } = DatePicker;
 
@@ -86,7 +87,7 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        const { name, mobile, transactionAt } = filter;
+        const { type, status, transactionAt } = filter;
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
             initialtransactionAt[0] = moment(filter.transactionAt[0])
@@ -97,21 +98,36 @@ class Filter extends Component {
 
         return (
             <Row gutter={24}>
-                <Col>Transaction At :</Col>
-
+                <Col {...ColProps} xl={{ span: 3 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                    {getFieldDecorator('type', { initialValue: type })(
+                        <Select
+                            onChange={this.handleChange.bind(this, 'type' )}
+                            className="type-field" >
+                            <Option value="SELL">SELL</Option>
+                            <Option value="PURCHASE">PURCHASE</Option>
+                        </Select>,
+                    )}
+                </Col>
+                <Col {...ColProps} xl={{ span: 3 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                    {getFieldDecorator('status', { initialValue: status })(
+                        <Select
+                            onChange={this.handleChange.bind(this, 'status' )}
+                            className="type-field" >
+                            <Option value="PENDING">PENDING</Option>
+                            <Option value="PROCESSING">PROCESSING</Option>
+                            <Option value="COMPLETED">COMPLETE</Option>
+                        </Select>,
+                    )}
+                </Col>
                 <Col {...ColProps} xl={{ span: 5 }} sm={{ span: 24 }} md={{ span: 10 }}>
                     {getFieldDecorator('transactionAt', {
-                        initialValue: initialtransactionAt,
-                    })(
+                        initialValue: initialtransactionAt,})(
                     < RangePicker onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker"/>
                     )}
                 </Col>
 
                 <Col
-                    {...TwoColProps}
-                    xl={{ span: 19 }}
-                    md={{ span: 14 }}
-                    sm={{ span: 24 }}
+                    {...TwoColProps} xl={{ span: 13 }} md={{ span: 14 }} sm={{ span: 24 }}
                 >
                     <Row type="flex" align="middle" justify="space-between">
                         <div>

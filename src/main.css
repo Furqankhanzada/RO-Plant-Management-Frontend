@@ -514,6 +514,9 @@ img {
 .range-picker {
     width: 100%;
 }
+.type-field{
+    width: 130px;
+}
 .margin-bottom {
     margin-bottom: 20px;
 }
@@ -663,6 +666,7 @@ img {
     padding: 10px 16px 10px 16px;
     box-shadow: 0 0 4px 0 #cecece;
 }
+
 
 .form-create-update {
     min-height: 400px;
