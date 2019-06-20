@@ -180,9 +180,9 @@ class MainForm extends Component {
   }
   handledSubmit(e) {
     e.preventDefault();
-    const { transaction: { id } = {}, form, createTransaction, updateTransaction } = this.props;
+    const { form, createTransaction, updateTransaction } = this.props;
     const { validateFields, resetFields } = form;
-
+    const id = this.props.updateStatus;
     let { items, deleteItem } = this.state;
     const dupItem = [];
     const editDup = [];
@@ -425,7 +425,7 @@ class MainForm extends Component {
       payment: {
         balance: balancedPrice - payment.paid,
         paid: payment.paid,
-        status: 'UNPAID',
+        status: payment.status,
         method: 'CASH',
       }
     })
@@ -535,7 +535,7 @@ class MainForm extends Component {
                     </Form.Item>
                     <Form.Item label={`Status`}>
                       {getFieldDecorator('payment.status', {
-                        initialValue: payment.status,
+                        initialValue: payment.balance === 0 ? 'PAID' : 'UNPAID',
                         rules: [{ message: 'Status is Required!' }],
                       })(
                         <Select
