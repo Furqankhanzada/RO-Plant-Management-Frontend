@@ -58,7 +58,7 @@ class RightDrawer extends Component {
                         <Query query={GET_TRANSACTION} variables={{ id }} >
                           {({ data: { transaction }, loading }) => {
                             return (
-                              <TransactionForm options={options} transaction={transaction || {}} loading={loading} />
+                              <TransactionForm options={options} transaction={transaction || {}} loading={loading} updateStatus={id}/>
                             )
                           }}
                         </Query>

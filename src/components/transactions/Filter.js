@@ -43,6 +43,7 @@ class Filter extends Component {
 
         let fields = getFieldsValue();
         fields = this.handleFields(fields);
+        console.log(fields,'feilds====submit')
         onFilterChange(fields)
     };
 
@@ -63,12 +64,15 @@ class Filter extends Component {
         this.handleSubmit()
     };
     handleChange = (key, values) => {
+        console.log(key,"key======key")
         const { form, onFilterChange } = this.props;
         const { getFieldsValue } = form;
 
         let fields = getFieldsValue();
         fields[key] = values;
         fields = this.handleFields(fields);
+        console.log(fields,'feilds====change')
+
         onFilterChange(fields)
     };
 
@@ -86,7 +90,7 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        const { name, mobile, } = filter;
+        const { name, mobile, transactionAt } = filter;
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
             initialtransactionAt[0] = moment(filter.transactionAt[0])
@@ -127,8 +131,8 @@ class Filter extends Component {
                             </Button>
                         </div>
                         <Button type="primary" onClick={this.openDrawer}>
-                          <Icon type="plus" />
-                          <span>Create</span>
+                            <Icon type="plus" />
+                            <span>Create</span>
                         </Button>
                     </Row>
                 </Col>

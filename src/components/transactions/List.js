@@ -104,7 +104,7 @@ class List extends PureComponent {
         title: <span>Type</span>,
         dataIndex: 'type',
         key: 'type',
-        render: (text) => <Tag color='green' >{text}</Tag>,
+        render: (text) =><Tag color={`${text === 'PURCHASE' ? 'red' : 'green'}`}><Icon type={`${text === 'PURCHASE' ? 'arrow-left' : 'arrow-right'}`}/>{text}</Tag>,
       },
       {
         title: <span>Status</span>,
@@ -131,7 +131,7 @@ class List extends PureComponent {
             dataIndex: 'payment.method',
             key: 'payment.method',
             render: (method) => {
-              return <Tag color='magenta'>{method}</Tag>
+              return <Tag color='magenta'>{method.replace("_", " ")}</Tag>
             }
           },
           {
