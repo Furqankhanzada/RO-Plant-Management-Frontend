@@ -54,7 +54,6 @@ class MainForm extends Component {
     })
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps,"Porpasjlaskjdalkjd")
     if (nextProps.customer.id) {
 
       const { customer } = nextProps;

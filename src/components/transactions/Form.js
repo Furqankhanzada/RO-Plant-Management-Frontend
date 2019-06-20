@@ -61,9 +61,6 @@ class MainForm extends Component {
 
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps,"===nextProps")
-    console.log(this.state.adding,"===adding")
-
     if (nextProps.updateStatus) {
       const { transaction, open } = nextProps;
       const { items, adding } = this.state;
@@ -156,9 +153,6 @@ class MainForm extends Component {
       if (id && value.id) {
         const deleteItemObj = { id: value.id };
         deleteItem.push(deleteItemObj);
-        this.setState({
-          deleteItem
-        })
       }
       items.splice(index, 1);
 
@@ -178,7 +172,9 @@ class MainForm extends Component {
           paid: payment.paid,
           status: payment.status,
           method: payment.method,
-        }
+        },
+        deleteItem,
+        adding: true
       })
     }
   }
@@ -202,12 +198,10 @@ class MainForm extends Component {
         for (let i = 0; i < items.length; i++) {
           if (items[i].quantity !== 0 && items[i].product) {
             let userDiscount;
-            console.log(id,"transaction id==========")
             if (id) {
               const { userUpdateDiscount } = this.state;
               userDiscount = userUpdateDiscount.discounts;
             } else {
-              console.log(user,"user=========>>>>>>>")
               userDiscount = JSON.parse(user).discounts
             }
 
@@ -294,7 +288,7 @@ class MainForm extends Component {
 
           updateTransaction({
             variables: transaction,
-            refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }, { query: GET_TRANSACTION, variables: { id } }],
+            refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }, { query: GET_TRANSACTION, variables: { id } }]
           }).then(result => {
             this.setState({
               disableBtn: false,
@@ -333,12 +327,11 @@ class MainForm extends Component {
           }
           createTransaction({
             variables: transaction,
-            refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }],
             update: (proxy, { data: { createTransaction } }) => {
               // Read the data from our cache for this query.
               const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: {} } });
               // Add our comment from the mutation to the end.
-              data.transactions.push(createTransaction);
+              data.transactions.unshift(createTransaction);
               data.transactions = [...data.transactions];
               // Write our data back to the cache.
               proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables: { where: {} } });
@@ -443,7 +436,6 @@ class MainForm extends Component {
   render() {
     const { form: { getFieldDecorator }, transaction: { id } = {}, options, loading } = this.props;
     const { items, disableBtn, searchValue, user, type, status, payment } = this.state;
-    console.log(user, "state==========================user")
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
