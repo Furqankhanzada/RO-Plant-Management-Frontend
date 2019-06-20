@@ -30,12 +30,30 @@ export const GET_TRANSACTIONS = gql`
 `;
 
 export const TRANSACTION_SUBSCRIPTION = gql`
-    subscription UserSubscription {
-        userSubscription {
+    subscription TransactionSubscription {
+        transactionSubscription {
             id
             type
             status
             createdAt
+            user {
+                id
+                name
+            }
+            payment {
+                status
+                balance
+                method
+                paid
+            }
+            items {
+                product {
+                    name
+                }
+                quantity
+                discount
+                total
+            }
         }
     }
 `;

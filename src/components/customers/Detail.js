@@ -135,7 +135,6 @@ class Detail extends PureComponent {
                                             <p>{`${customer.address.house} ${customer.address.area} ${customer.address.block} ${customer.address.town}`}</p>
                                             {
                                                 customer.discounts.map((value, index) => {
-                                                    console.log(value,"=========================")
                                                     return(
                                                     <div className="product-details">
                                                         <h3>Discount : <span>{value.discount ? (100 - (value.discount / value.product.price) * 100).toFixed() : 0}%</span></h3>

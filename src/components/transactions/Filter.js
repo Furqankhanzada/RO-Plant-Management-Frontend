@@ -43,7 +43,6 @@ class Filter extends Component {
 
         let fields = getFieldsValue();
         fields = this.handleFields(fields);
-        console.log(fields,'feilds====submit')
         onFilterChange(fields)
     };
 
@@ -64,15 +63,12 @@ class Filter extends Component {
         this.handleSubmit()
     };
     handleChange = (key, values) => {
-        console.log(key,"key======key")
         const { form, onFilterChange } = this.props;
         const { getFieldsValue } = form;
 
         let fields = getFieldsValue();
         fields[key] = values;
         fields = this.handleFields(fields);
-        console.log(fields,'feilds====change')
-
         onFilterChange(fields)
     };
 

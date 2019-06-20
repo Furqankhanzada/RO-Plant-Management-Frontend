@@ -88,7 +88,7 @@ export default graphql(GET_TRANSACTIONS, {
             if (!subscriptionData.data) {
               return prev
             }
-            const newTransaction = subscriptionData.data.userSubscription;
+            const newTransaction = subscriptionData.data.transactionSubscription;
             if (newTransaction) {
               if (prev.transactions.find(transaction => transaction.id === newTransaction.id)) {
                 return prev
