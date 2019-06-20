@@ -517,6 +517,9 @@ img {
 .margin-bottom {
     margin-bottom: 20px;
 }
+.transaction-label {
+    margin: 4px 0 0 0;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
@@ -696,7 +699,11 @@ img {
 /*/// small media query end here ///*/
 
 /*/// medium media query start here ///*/
-@media (min-width: 992px) and (max-width: 1199px) {}
+@media (min-width: 992px) and (max-width: 1199px) {
+
+
+
+}
 /*/// medium media query end here ///*/
 
 .transaction-detail .ant-descriptions-view {

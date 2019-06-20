@@ -101,9 +101,11 @@ class Filter extends Component {
 
         return (
             <Row gutter={24}>
-                <Col>Transaction At :</Col>
+                <Col className="transaction-label" xl={{ span: 3 }} lg={{ span: 4 }} sm={{ span: 6 }} md={{ span: 6 }}>
+                    <span>Transaction At :</span>
+                </Col>
 
-                <Col {...ColProps} xl={{ span: 5 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                <Col {...ColProps} xl={{ span: 6 }} lg={{ span: 10 }} sm={{ span: 18 }} md={{ span: 18 }}>
                     {getFieldDecorator('transactionAt', {
                         initialValue: initialtransactionAt,
                     })(
@@ -113,8 +115,9 @@ class Filter extends Component {
 
                 <Col
                     {...TwoColProps}
-                    xl={{ span: 19 }}
-                    md={{ span: 14 }}
+                    xl={{ span: 15 }}
+                    lg={{ span: 10 }}
+                    md={{ span: 24 }}
                     sm={{ span: 24 }}
                 >
                     <Row type="flex" align="middle" justify="space-between">
