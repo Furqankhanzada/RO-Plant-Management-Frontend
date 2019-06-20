@@ -597,6 +597,9 @@ img {
     .ant-divider-horizontal {
         margin: 15px 0 24px;
     }
+    .flex-box {
+        display: block !important;
+    }
 
 }
 @media (min-width: 320px) and (max-width: 430px) {
@@ -693,6 +696,9 @@ img {
     }
     .quantity {
         padding: 25px 0 0 0;
+    }
+    .flex-box {
+        display: block !important;
     }
 
 }

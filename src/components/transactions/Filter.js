@@ -98,7 +98,7 @@ class Filter extends Component {
         return (
             <Row gutter={24}>
                 <Col className="transaction-label" xl={{ span: 3 }} lg={{ span: 4 }} sm={{ span: 6 }} md={{ span: 6 }}>
-                    <span>Transaction At :</span>
+                    <span>Transaction At:</span>
                 </Col>
 
                 <Col {...ColProps} xl={{ span: 6 }} lg={{ span: 10 }} sm={{ span: 18 }} md={{ span: 18 }}>
