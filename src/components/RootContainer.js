@@ -11,6 +11,7 @@ import ProductPage from './Products'
 import CustomersPage from './CustomersPage'
 import CustomersDetail from "./customers/Detail";
 import TransactionsPage from './TransactionsPage'
+import TransactionsDetail from "./transactions/Detail";
 import { Layout } from 'antd';
 import CreateProduct from './CreateProduct'
 import { AUTH_TOKEN } from '../constant'
@@ -116,7 +117,7 @@ class RootContainer extends Component {
                     <ProtectedRoute exact path="/customers/:id" token={this.state.token} component={CustomersDetail} />
 
                   <ProtectedRoute exact path="/transactions" token={this.state.token} component={TransactionsPage} />
-                  <ProtectedRoute exact path="/transactions/:id" token={this.state.token} component={CustomersDetail} />
+                  <ProtectedRoute exact path="/transactions/:id" token={this.state.token} component={TransactionsDetail} />
 
                     <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage} />
                     <ProtectedRoute exact path="/products/create" token={this.state.token} component={CreateProduct} />

@@ -1,126 +1,190 @@
 import React, { Component } from 'react'
-import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin } from 'antd';
-import { graphql, compose } from 'react-apollo';
+import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Select, Empty } from 'antd';
+import { graphql, compose, Query } from 'react-apollo';
+import { debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
+import { GET_CUSTOMERS } from '../../graphql/queries/customer';
 import { GET_TRANSACTIONS, GET_TRANSACTION } from '../../graphql/queries/transaction';
 import { CREATE_TRANSACTION_MUTATION, UPDATE_TRANSACTION_MUTATION } from '../../graphql/mutations/transaction';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
+const { Option } = Select;
 const FormItem = Form.Item;
 class MainForm extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      discounts: [
+      searchValue: '',
+      items: [
         {
-          discount: 0,
-          product: ''
+          quantity: 0,
+          product: '',
+          total: 0
         }
       ],
-      name: '',
-      password: '',
-      mobile: '',
-      town: '',
-      area: '',
-      block: '',
-      house: '',
       products: [],
       result: [],
       drawer: false,
       disableBtn: false,
       selectedValue: '',
-      deleteDiscount: [],
-      editDiscount: []
-    }
+      deleteItem: [],
+      editItem: [],
+      user: '',
+      userUpdateDiscount: '',
+      type: '', status: '', payment: { paid: 0, balance: 0 },
+      adding: false
+    };
+    this.searchCustomer = debounce(this.searchCustomer, 400);
   }
 
   add() {
-    const { discounts } = this.state;
+    const { items } = this.state;
     const { transaction: { id } = {} } = this.props;
 
-    const discountsObj = {
-      discount: 0,
-      product: ''
+    const itemsObj = {
+      quantity: 0,
+      product: '',
+      total: 0
     };
     if (id) {
-      discountsObj.new = true
+      itemsObj.new = true
     }
     // can use data-binding to get
-    discounts.push(discountsObj);
+    items.push(itemsObj);
     this.setState({
-      discounts
+      items,
+      adding: true
     })
   }
+
+
   componentWillReceiveProps(nextProps) {
-    if (nextProps.transaction.id) {
-      const { transaction } = nextProps;
-      const { id, name, mobile, address: { town, area, block, house } } = transaction;
-      // If updating transaction
+    if (nextProps.updateStatus) {
+      const { transaction, open } = nextProps;
+      const { items, adding } = this.state;
+      const { id, type, user, status, payment } = transaction;
+      // // If updating transaction
       if (id) {
-        // make discounts
-        const discountArray = transaction.discounts.map((value) => {
-          value.product.selected = true;
-          return value
-        });
-        // set transaction to state
-        this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
+        // make items
+        if (!adding) {
+          const discountArray = transaction.items.map((value) => {
+            value.product.selected = true;
+            return value
+          });
+          // set transaction to state
+          this.setState({ user: user, type, status, payment, items: discountArray, userUpdateDiscount: user })
+        }
       }
     } else {
-      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '', discounts: []})
+      this.setState({
+        user: '',
+        type: 'SELL',
+        status: 'PENDING',
+        quantity: ''
+      })
     }
   }
+  getPaidValue = (ev) => {
+    const { payment } = this.state;
+    const total = payment.paid + payment.balance;
+    if (payment.balance !== total || payment.balance >= 0) {
+      payment.balance = total - ev
+    }
+    payment.paid = ev;
 
-  onChangeDiscount(type, index, discountId, ev) {
-    const { discounts, editDiscount } = this.state;
-    const discountsObject = discounts[index];
+    this.setState({
+      payment
+    })
+  }
+  onChangeItem(type, index, itemtId, ev) {
+    const { items, editItem, payment, userUpdateDiscount } = this.state;
+    const itemsObject = items[index];
+    const { discounts } = userUpdateDiscount;
+    let balancedPrice = 0;
     if (type === "percentage") {
-      discountsObject.discount = parseInt((discountsObject.product.price - (ev / 100) * discountsObject.product.price).toFixed());
+      itemsObject.quantity = ev
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+        balancedPrice = balancedPrice + productPrice;
+      })
+
     } else {
       const selectedProduct = JSON.parse(ev);
-      discountsObject.product = {
+      itemsObject.product = {
         name: selectedProduct.name,
         price: selectedProduct.price,
         id: selectedProduct.id,
         selected: true
       };
-    }
-    if (discountId) {
-      discountsObject.edit = true;
-      discountsObject.discountId = discountId
-    }
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
 
-    discounts[index] = discountsObject;
-    this.setState({
-      discounts,
-      discountsObject,
-      editDiscount
-    })
-  }
-  removeDiscount(index, value) {
-    const { discounts, deleteDiscount } = this.state;
-    const { transaction: { id } = {} } = this.props;
-
-    if (id) {
-      const deleteDiscountObj = { id: value.id };
-      deleteDiscount.push(deleteDiscountObj);
-      this.setState({
-        deleteDiscount
+        balancedPrice = balancedPrice + productPrice;
       })
     }
-    discounts.splice(index, 1);
+    if (itemtId) {
+      itemsObject.edit = true;
+      itemsObject.itemtId = itemtId
+    }
+    payment.balance = balancedPrice - payment.paid
+    items[index] = itemsObject;
     this.setState({
-      discounts
+      items,
+      itemsObject,
+      editItem,
+      payment
     })
   }
-  handledSubmit (e) {
+  removeItem(index, value) {
+    const { items, deleteItem, payment, userUpdateDiscount } = this.state;
+    const { transaction: { id } = {} } = this.props;
+    const { discounts } = userUpdateDiscount;
+    let balancedPrice = 0;
+
+    if (items.length > 1) {
+      if (id && value.id) {
+        const deleteItemObj = { id: value.id };
+        deleteItem.push(deleteItemObj);
+      }
+      items.splice(index, 1);
+
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+        balancedPrice = balancedPrice + productPrice;
+      })
+
+
+      this.setState({
+        items,
+        payment: {
+          balance: balancedPrice - payment.paid,
+          paid: payment.paid,
+          status: payment.status,
+          method: payment.method,
+        },
+        deleteItem,
+        adding: true
+      })
+    }
+  }
+  handledSubmit(e) {
     e.preventDefault();
     const { transaction: { id } = {}, form, createTransaction, updateTransaction } = this.props;
     const { validateFields, resetFields } = form;
 
-    let { discounts, deleteDiscount } = this.state;
-    const dupDiscount = [];
+    let { items, deleteItem } = this.state;
+    const dupItem = [];
     const editDup = [];
     validateFields(async (err, values) => {
 
@@ -129,121 +193,137 @@ class MainForm extends Component {
           disableBtn: true,
           loading: true
         });
-        const { name, mobile, town, area, block, house } = values;
+        let { type, user, payment, status } = values;
 
-        for (let i = 0; i < discounts.length; i++) {
-          if (discounts[i].discount !== 0 && discounts[i].product) {
-            let discountsObj = {
-              discount: discounts[i].discount,
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].quantity !== 0 && items[i].product) {
+            let userDiscount;
+            if (id) {
+              const { userUpdateDiscount } = this.state;
+              userDiscount = userUpdateDiscount.discounts;
+            } else {
+              userDiscount = JSON.parse(user).discounts
+            }
+
+            if (userDiscount) {
+              userDiscount = userDiscount.find((value) => {
+                return value.product.id === items[i].product.id
+              })
+            }
+            let itemsObj = {
+              quantity: items[i].quantity,
+              total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
               product: {
                 connect: {
-                  id: discounts[i].product.id
+                  id: items[i].product.id
                 }
               }
             };
-            if (discounts[i].edit) {
+            if (items[i].edit) {
               const editObj = {
                 where: {
-                  id: discounts[i].discountId
+                  id: items[i].itemtId
                 },
                 data: {
-                  discount: discounts[i].discount,
+                  quantity: items[i].quantity,
+                  total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
                   product: {
-                    create: {
-                      name: discounts[i].product.name,
-                      price: discounts[i].product.price
+                    connect: {
+                      id: items[i].product.id
                     }
                   }
                 }
               };
               editDup.push(editObj)
             }
-            if (id && discounts[i].new === true) {
-              dupDiscount.push(discountsObj)
+            if (id && items[i].new === true) {
+              dupItem.push(itemsObj)
             } else if (!id) {
-              dupDiscount.push(discountsObj)
+              dupItem.push(itemsObj)
             }
           }
         }
-
+        // create transaction object
+        if (!id) {
+          user = JSON.parse(user).id
+        }
         let transaction = {
           data: {
-            mobile,
-            name,
-            password: `${mobile}-labbaik`,
-            address: {
-              create: {
-                town,
-                area,
-                block,
-                house
+            user: {
+              connect: {
+                id: user
               }
             },
-            discounts: {
-              create: dupDiscount
+            payment: {
+              create: {
+                ...payment
+              }
+            },
+            type,
+            status,
+            items: {
+              create: dupItem
             }
           }
         };
 
         if (id) {
-          delete transaction.password;
-          delete transaction.mobile;
-          transaction.id = id;
+          delete transaction.data.user;
+          transaction.where = { id };
 
-          if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
-            delete transaction.data.discounts.create;
-            transaction.data.discounts.delete = deleteDiscount
+
+          if (dupItem.length < 1 && deleteItem.length > 0) {
+            delete transaction.data.items.create;
+            transaction.data.items.delete = deleteItem
           }
-          else if (dupDiscount.length < 1 && deleteDiscount.length < 1 && editDup.length < 1) {
-            delete transaction.data.discounts
+          else if (dupItem.length < 1 && deleteItem.length < 1 && editDup.length < 1) {
+            delete transaction.data.items
           }
-          else if (dupDiscount.length > 0 && deleteDiscount.length > 0) {
-            transaction.data.discounts.delete = deleteDiscount
+          else if (dupItem.length > 0 && deleteItem.length > 0) {
+            transaction.data.items.delete = deleteItem
           }
           if (editDup.length > 0) {
-            transaction.data.discounts.update = editDup;
+            transaction.data.items.update = editDup;
           }
+
           updateTransaction({
             variables: transaction,
-            update: (proxy, { data: { updateTransaction } }) => {
-              // Read the data from our cache for this query.
-              let data = proxy.readQuery({ query: GET_TRANSACTION, variables: { id } });
-              data.transaction = updateTransaction;
-              // // Write our data back to the cache.
-              proxy.writeQuery({ query: GET_TRANSACTION, data, variables: { where: { id } } });
-            }
+            refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }, { query: GET_TRANSACTION, variables: { id } }]
           }).then(result => {
             this.setState({
               disableBtn: false,
-              editDiscount: [],
-              deleteDiscount: []
+              editItem: [],
+              deleteItem: [],
+              items: [],
+              adding: false
+            }, () => {
+              client.mutate({
+                mutation: gql`
+                    mutation openDrawer($status: Boolean!, $id: String) {
+                        openDrawer(status: $status, id: $id) @client {
+                            Drawer
+                        }
+                    }
+                `,
+                variables: { status: false, id: '' }
+              })
             });
-            client.mutate({
-              mutation: gql`
-                  mutation openDrawer($status: Boolean!, $id: String) {
-                      openDrawer(status: $status, id: $id) @client {
-                          Drawer
-                      }
-                  }
-              `,
-              variables: { status: false, id: '' }
+          })
+            .catch(err => {
+              this.setState({
+                disableBtn: false
+              });
+              const { graphQLErrors } = err;
+              graphQLErrors.forEach(element => {
+                message.error(element.message);
+              });
+              this.setState({
+                loading: false
+              });
             })
-          })
-          .catch(err => {
-            this.setState({
-              disableBtn: false
-            });
-            const { graphQLErrors } = err;
-            graphQLErrors.forEach(element => {
-              message.error(element.message);
-            });
-            this.setState({
-              loading: false
-            });
-          })
         } else {
-          if (dupDiscount.length < 1) {
-            delete transaction.data.discounts
+          if (dupItem.length < 1) {
+            delete transaction.data.items
           }
           createTransaction({
             variables: transaction,
@@ -251,7 +331,7 @@ class MainForm extends Component {
               // Read the data from our cache for this query.
               const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: {} } });
               // Add our comment from the mutation to the end.
-              data.transactions.push(createTransaction);
+              data.transactions.unshift(createTransaction);
               data.transactions = [...data.transactions];
               // Write our data back to the cache.
               proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables: { where: {} } });
@@ -259,12 +339,13 @@ class MainForm extends Component {
           }).then(result => {
             this.setState({
               disableBtn: false,
-              discounts: [
+              items: [
                 {
                   discount: 0,
                   product: ''
                 }
               ],
+              adding: false
             }, () => {
               resetFields();
               message.success('Transaction has been created successfully');
@@ -313,14 +394,48 @@ class MainForm extends Component {
           }
       `,
       variables: { status: false, id: '' }
+    }).then(() => {
+      this.setState({
+        adding: false
+      })
     })
   }
 
+  searchCustomer(searchValue) {
+    this.setState({
+      searchValue
+    });
+  }
+
+  getCustomer(user) {
+    const userDiscount = JSON.parse(user)
+    let balancedPrice = 0;
+    const { items, payment } = this.state;
+    const { discounts } = userDiscount;
+    items.map((value) => {
+      const discountedProduct = discounts ? discounts.find((discountObject) => {
+        return value.product.id === discountObject.product.id
+      }) : null
+      const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+      balancedPrice = balancedPrice + productPrice;
+    })
+
+    this.setState({
+      userUpdateDiscount: userDiscount,
+      payment: {
+        balance: balancedPrice - payment.paid,
+        paid: payment.paid,
+        status: 'UNPAID',
+        method: 'CASH',
+      }
+    })
+
+
+  }
+
   render() {
-    const { form, transaction: { id } = {}, options, loading } = this.props;
-    const { getFieldDecorator } = form;
-    const { discounts, disableBtn } = this.state;
-    const { name, mobile, town, area, block, house } = this.state;
+    const { form: { getFieldDecorator }, transaction: { id } = {}, options, loading } = this.props;
+    const { items, disableBtn, searchValue, user, type, status, payment } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -328,6 +443,10 @@ class MainForm extends Component {
       }
     };
 
+    let where = {};
+    if (searchValue) {
+      where.name_contains = searchValue
+    }
     return (
       <div className="create-main-div">
         <Form layout="horizontal" onSubmit={this.handledSubmit.bind(this)} className="form-create-update">
@@ -337,85 +456,135 @@ class MainForm extends Component {
                 <Row gutter={16}>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                     <h3>General</h3>
-                    <FormItem label={`Mobile Number`} >
-                      {getFieldDecorator('mobile', {
-                        initialValue: mobile,
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(<Input name="mobile" onChange={this.getTransactionDetails.bind(this)} />)}
-                    </FormItem>
-                    <FormItem label={`Name`} >
-                      {getFieldDecorator('name', {
-                        initialValue: name,
-                        rules: [
-                          {
-                            required: true,
-                            message: `The input is not valid phone!`
-                          }
-                        ]
-                      })(<Input name="name" onChange={this.getTransactionDetails.bind(this)} />)}
-                    </FormItem>
+
+                    <Query query={GET_CUSTOMERS} variables={{ where, first: 3 }}>
+                      {({ loading, error, data: { customers = [] } }) => {
+                        if (loading) {
+                          customers = [];
+                        }
+                        if (error) return `Error! ${error.message}`;
+                        return (
+                          <Form.Item label={`Customer`}>
+                            {getFieldDecorator('user', {
+                              initialValue: user ? `${user.name} : ${user.mobile}` : '',
+                              rules: [{ required: true, message: 'Type is Required!' }],
+                            })(
+                              <Select
+                                showSearch={true}
+                                onChange={this.getCustomer.bind(this)}
+                                onSearch={this.searchCustomer.bind(this)}
+                                placeholder="Select customer"
+                                filterOption={false}
+                                disabled={user.name ? true : false}
+                                notFoundContent={loading ? <Spin size="small" /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+                              >
+                                {customers.map(({ id, name, mobile, discounts }) => <Option key={JSON.stringify({ id, discounts })}>{name} : {mobile}</Option>)}
+
+
+                              </Select>,
+                            )}
+                          </Form.Item>
+                        );
+                      }}
+                    </Query>
+                    <Form.Item label={`Type`}>
+                      {getFieldDecorator('type', {
+                        initialValue: type,
+                        rules: [{ message: 'Type is Required!' }],
+                      })(
+                        <Select
+                          onChange={this.handleSelectChange}
+                        >
+                          <Option value="SELL">SELL</Option>
+                          <Option value="PURCHASE">PURCHASE</Option>
+                        </Select>,
+                      )}
+                    </Form.Item>
+                    <Form.Item label={`Status`}>
+                      {getFieldDecorator('status', {
+                        initialValue: status,
+                        rules: [{ message: 'Status is Required!' }],
+                      })(
+                        <Select
+                          placeholder="Select a Option"
+                          onChange={this.handleSelectChange}
+                        >
+                          <Option value="PENDING">PENDING</Option>
+                          <Option value="PROCESSING">PROCESSING</Option>
+                          <Option value="COMPLETED">COMPLETE</Option>
+                        </Select>,
+                      )}
+                    </Form.Item>
+
                   </Col>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
-                    <h3>Address</h3>
-                    <FormItem label={`Town`} >
-                      {getFieldDecorator('town', {
-                        initialValue: town,
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(<Input name="town" onChange={this.getTransactionDetails.bind(this)} />)}
+                    <h3>Payment</h3>
+                    <Form.Item label={`Method`}>
+                      {getFieldDecorator('payment.method', {
+                        initialValue: payment.method,
+                        rules: [{ message: 'Type is Required!' }],
+                      })(
+                        <Select
+                          onChange={this.handleSelectChange}
+                        >
+                          <Option value="CASH">CASH</Option>
+                          <Option value="BANK_TRANSFER">BANK TRANSFER</Option>
+                          <Option value="CHEQUE">CHEQUE</Option>
+                        </Select>,
+                      )}
+                    </Form.Item>
+                    <Form.Item label={`Status`}>
+                      {getFieldDecorator('payment.status', {
+                        initialValue: payment.status,
+                        rules: [{ message: 'Status is Required!' }],
+                      })(
+                        <Select
+                          placeholder="Select a Payment status"
+                          onChange={this.handleSelectChange}
+                        >
+                          <Option value="PAID">PAID</Option>
+                          <Option value="UNPAID">UNPAID</Option>
+                        </Select>,
+                      )}
+                    </Form.Item>
+                    <FormItem label={`Paid`} >
+                      {getFieldDecorator('payment.paid', {
+                        initialValue: payment.paid ? payment.paid : 0,
+                      })(<InputNumber
+                        formatter={value => `Rs${value}`}
+                        parser={value => value.replace('Rs', '')}
+                        onChange={this.getPaidValue}
+                        min={0}
+                        max={payment.balance + payment.paid}
+                      />)}
                     </FormItem>
-                    <FormItem label={`Area`} >
-                      {getFieldDecorator('area', {
-                        initialValue: area,
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(<Input name="area" onChange={this.getTransactionDetails.bind(this)} />)}
-                    </FormItem>
-                    <FormItem label={`Block`} >
-                      {getFieldDecorator('block', {
-                        initialValue: block,
-                        rules: [
-                          {
-                            required: true,
-                            message: `The input is not valid phone!`
-                          }
-                        ]
-                      })(<Input name="block" onChange={this.getTransactionDetails.bind(this)} />)}
-                    </FormItem>
-                    <FormItem label={`House`} >
-                      {getFieldDecorator('house', {
-                        initialValue: house,
-                        rules: [
-                          {
-                            required: true,
-                            message: `The input is not valid Address!`
-                          }
-                        ]
-                      })(<Input name="house" onChange={this.getTransactionDetails.bind(this)} />)}
+                    <FormItem label={`Balance`} >
+                      {getFieldDecorator('payment.balance', {
+                        initialValue: payment.balance ? payment.balance : 0
+                      })(<InputNumber
+                        formatter={value => `Rs${value}`}
+                        parser={value => value.replace('Rs', '')}
+                        disabled={true}
+                      />)}
                     </FormItem>
                   </Col>
                   <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
-                    <h3>Discount</h3>
+                    <h3>Items</h3>
                     <div className="discount-details">
                       {
-                        discounts.map((value, index) => {
-                          const productPrice = value.product.price;
+                        items.map((value, index) => {
+                          const { userUpdateDiscount } = this.state;
+                          const { discounts } = userUpdateDiscount;
+                          const discountedProduct = discounts ? discounts.find((discountObject) => {
+                            return value.product.id === discountObject.product.id
+                          }) : null
+                          const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
                           return (
                             <div className="discounts" key={index}>
                               <Icon
                                 className="dynamic-delete-button removeButtonDiscount"
                                 type="minus-circle-o"
-                                onClick={this.removeDiscount.bind(this, index, value)}
+                                onClick={this.removeItem.bind(this, index, value)}
                               />
                               <Form.Item label={'Select Product'}>
 
@@ -428,29 +597,23 @@ class MainForm extends Component {
                                   dataSource={options}
                                   placeholder="Products"
                                   value={value.product ? value.product.selected ? value.product.name : '' : ''}
-                                  onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}
+                                  onChange={this.onChangeItem.bind(this, 'product', index, value.id)}
                                 >
                                   <Input suffix={<Icon type="search" className="certain-category-icon" />} />
                                 </AutoComplete>
-
                               </Form.Item>
-
-                              <Form.Item label={'Add Discount'}>
+                              <FormItem label={`Quantity`} >
                                 <InputNumber
-                                  value={value.discount ? (100 - (value.discount / productPrice) * 100).toFixed() : 0}
-                                  min={0}
-                                  max={90}
-                                  formatter={value => `${value}%`}
-                                  parser={value => value.replace('%', '')}
-                                  onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
+                                  defaultValue={value.quantity}
+                                  formatter={value => `${value}`}
+                                  onChange={this.onChangeItem.bind(this, 'percentage', index, value.id)}
                                 />
-                              </Form.Item>
-
-                              <FormItem label={`Discounted Price`} >
-                                <InputNumber disabled = {true}
-                                             value={value.discount === 0 ? productPrice : value.discount}
-                                             formatter={value => `PKR ${value}`}
-                                             parser={value => value.replace('PKR', '')}
+                              </FormItem>
+                              <FormItem label={`Total`} >
+                                <InputNumber disabled={true}
+                                  value={productPrice ? productPrice : 0}
+                                  formatter={value => `PKR ${value}`}
+                                  parser={value => value.replace('PKR', '')}
                                 />
                               </FormItem>
                             </div>

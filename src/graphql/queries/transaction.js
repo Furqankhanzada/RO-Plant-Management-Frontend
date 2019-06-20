@@ -30,41 +30,81 @@ export const GET_TRANSACTIONS = gql`
 `;
 
 export const TRANSACTION_SUBSCRIPTION = gql`
-    subscription UserSubscription {
-        userSubscription {
+    subscription TransactionSubscription {
+        transactionSubscription {
             id
             type
             status
             createdAt
+            user {
+                id
+                name
+            }
+            payment {
+                status
+                balance
+                method
+                paid
+            }
+            items {
+                product {
+                    name
+                }
+                quantity
+                discount
+                total
+            }
         }
     }
 `;
 
 export const GET_TRANSACTION = gql`
-query transaction($id: ID){
-    transaction(where: {id: $id}){
-        id
-        type
-        status
-        createdAt
-        user {
+    query transaction($id: ID){
+        transaction(where: {id: $id}){
             id
-            name
-        }
-        payment {
+            type
             status
-            balance
-            method
-            paid
-        }
-        items {
-            product {
+            createdAt
+            user {
+                id
                 name
+                mobile
+                address{
+                    town
+                    area
+                    block
+                    house
+                }
+                bottle {
+                    balance
+                }
+                discounts {
+                    product {
+                        id
+                        price
+                        name
+                    }
+                    discount
+                    id
+                }
             }
-            quantity
-            discount
-            total
+            payment {
+                status
+                balance
+                method
+                paid
+            }
+            items {
+                product {
+                    name
+                    price
+                    id
+                }
+                quantity
+                discount
+                total
+                id
+            }
         }
-      }
-}
+    }
 `;

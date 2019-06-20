@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import { parse } from 'qs'
+import moment from 'moment'
 
 import Transaction from './transactions/index.js'
 
@@ -27,12 +28,11 @@ class TransactionsPage extends Component {
     const { transactionsQuery: { refetch }, location: { search } } = this.props;
     const query = parse(search);
     let where = {};
-    if (query.name) {
-      where.name_contains = query.name
+    if (query.transactionAt) {
+      where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
+      where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
     }
-    if (query.mobile) {
-      where.mobile_contains = query.mobile
-    }
+
     refetch({
       where
     })
@@ -67,16 +67,15 @@ export default graphql(GET_TRANSACTIONS, {
   options: ({ location: { search = {} } }) => {
     const query = parse(search);
     let where = {};
-    if (query.name) {
-      where.name_contains = query.name
+    if (query.transactionAt) {
+      where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
+      where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
     }
-    if (query.mobile) {
-      where.mobile_contains = query.mobile
-    }
+
     return {
       variables: {
         where
-      }
+    }
     }
   },
   props: props => {
@@ -88,7 +87,7 @@ export default graphql(GET_TRANSACTIONS, {
             if (!subscriptionData.data) {
               return prev
             }
-            const newTransaction = subscriptionData.data.userSubscription;
+            const newTransaction = subscriptionData.data.transactionSubscription;
             if (newTransaction) {
               if (prev.transactions.find(transaction => transaction.id === newTransaction.id)) {
                 return prev

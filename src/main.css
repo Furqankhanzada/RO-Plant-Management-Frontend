@@ -129,6 +129,9 @@ img {
 .search-btn {
     margin-right: 18px;
 }
+.anticon {
+    margin-right: 5px;
+}
 
 .ant-table-body::-webkit-scrollbar {
     width: 1em;
@@ -484,6 +487,10 @@ img {
 .space-bottom {
     margin-bottom: 20px;
 }
+.transaction-table .ant-table-fixed-right .ant-table-fixed {
+    z-index: 99;
+    position: relative;
+}
 .ant-tag {
     padding: 0 7px 1px;
 }
@@ -500,6 +507,15 @@ img {
 .product-details h3 span {
     float: right;
     font-weight: 600;
+}
+.ant-descriptions.bordered .ant-descriptions-item-label {
+    font-weight: 500;
+}
+.range-picker {
+    width: 100%;
+}
+.margin-bottom {
+    margin-bottom: 20px;
 }
 
 /*/// extra small media query start here ///*/
@@ -580,7 +596,6 @@ img {
     }
 
 }
-
 @media (min-width: 320px) and (max-width: 430px) {
 
     .new-account .ant-drawer-body .ant-form .ant-form-item {
@@ -670,7 +685,6 @@ img {
     .remove-padding {
         padding: 10px 15px 0 !important;
     }
-
     .create-main-div .ant-form {
         margin-bottom: 20px;
     }
@@ -684,3 +698,7 @@ img {
 /*/// medium media query start here ///*/
 @media (min-width: 992px) and (max-width: 1199px) {}
 /*/// medium media query end here ///*/
+
+.transaction-detail .ant-descriptions-view {
+    background: #fff;
+}
