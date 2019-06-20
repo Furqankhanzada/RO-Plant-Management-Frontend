@@ -517,6 +517,87 @@ img {
 .margin-bottom {
     margin-bottom: 20px;
 }
+.transaction-label {
+    margin: 4px 0 0 0;
+}
+
+.notification-badge {
+    top: 8px;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    border-radius: 50%;
+    position: relative;
+    text-align: center;
+    display: inline-block;
+}
+.notification-badge:hover {
+    background-color: #f9f9fc;
+}
+.notification-badge:hover i {
+    color: #1890ff;
+}
+.notification-badge i {
+    top: -3px;
+    color: #b2b0c7;
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+}
+.notification-badge .ant-badge-dot {
+    margin: 10px 10px 0 0;
+}
+.ant-popover .ant-popover-content {
+    width: 250px;
+    margin: -3px 0 0 0;
+}
+.ant-popover .ant-popover-content .ant-popover-arrow {
+    display: none;
+}
+.ant-popover .ant-popover-content .ant-popover-inner-content {
+    padding: 10px 0;
+}
+.ant-popover-inner {
+    border-radius: 0;
+}
+
+.notification-details {
+    padding: 10px 15px;
+    border-bottom: 1px solid #f3f3f3;
+}
+.notification-details:hover {
+    cursor: pointer;
+    background: #f9f9fc;
+}
+.notification-details:last-child {
+    border-bottom: 0;
+}
+.notification-details p {
+    color: #666666;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+}
+.notification-details p i {
+    float: right;
+    color: #cccccc;
+    font-size: 12px;
+    margin: 18px 0 0 0;
+}
+.notification-details span {
+    color: #979797;
+}
+.clear-notification {
+    text-align: center;
+}
+.clear-notification:hover {
+    background: #f9f9fc;
+}
+.clear-notification a {
+    color: #666666;
+    display: block;
+    font-weight: 500;
+    padding: 10px 15px 10px;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
@@ -593,6 +674,9 @@ img {
     }
     .ant-divider-horizontal {
         margin: 15px 0 24px;
+    }
+    .flex-box {
+        display: block !important;
     }
 
 }
@@ -691,12 +775,19 @@ img {
     .quantity {
         padding: 25px 0 0 0;
     }
+    .flex-box {
+        display: block !important;
+    }
 
 }
 /*/// small media query end here ///*/
 
 /*/// medium media query start here ///*/
-@media (min-width: 992px) and (max-width: 1199px) {}
+@media (min-width: 992px) and (max-width: 1199px) {
+
+
+
+}
 /*/// medium media query end here ///*/
 
 .transaction-detail .ant-descriptions-view {
