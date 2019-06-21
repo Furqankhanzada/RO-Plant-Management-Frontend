@@ -99,8 +99,8 @@ class Filter extends Component {
 
         return (
             <Row gutter={24}>
-                <Col {...ColProps} xl={{ span: 4 }} sm={{ span: 24 }} md={{ span: 10 }}>
-                    <span>Type:</span>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 6 }} sm={{ span: 12 }} md={{ span: 12 }}>
+                    <span className="transactions-label">Type</span>
                     {getFieldDecorator('type', { initialValue: type })(
                         <Select
                             onChange={this.handleChange.bind(this, 'type' )}
@@ -108,11 +108,11 @@ class Filter extends Component {
                             <Option value="">None</Option>
                             <Option value="SELL">SELL</Option>
                             <Option value="PURCHASE">PURCHASE</Option>
-                        </Select>,
+                        </Select>
                     )}
                 </Col>
-                <Col {...ColProps} xl={{ span: 4 }} sm={{ span: 24 }} md={{ span: 10 }}>
-                    <span>Status:</span>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 6 }} sm={{ span: 12 }} md={{ span: 12 }}>
+                    <span className="transactions-label">Status</span>
                     {getFieldDecorator('status', { initialValue: status })(
                         <Select
                             onChange={this.handleChange.bind(this, 'status' )}
@@ -121,11 +121,11 @@ class Filter extends Component {
                             <Option value="PENDING">PENDING</Option>
                             <Option value="PROCESSING">PROCESSING</Option>
                             <Option value="COMPLETED">COMPLETED</Option>
-                        </Select>,
+                        </Select>
                     )}
                 </Col>
-                <Col {...ColProps} xl={{ span: 8 }} sm={{ span: 24 }} md={{ span: 10 }}>
-                    <span>Transaction:</span>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 8 }} lg={{ span: 12 }} sm={{ span: 24 }} md={{ span: 24 }}>
+                    <span className="transactions-label">Transaction</span>
                     {getFieldDecorator('transactionAt', {
                         initialValue: initialtransactionAt,})(
                     < RangePicker onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker"/>
@@ -133,7 +133,7 @@ class Filter extends Component {
                 </Col>
 
                 <Col
-                    {...TwoColProps} xl={{ span: 8 }} md={{ span: 14 }} sm={{ span: 24 }}
+                    {...TwoColProps} xl={{ span: 8 }} lg={{ span: 24 }} md={{ span: 24 }} sm={{ span: 24 }}
                 >
                     <Row type="flex" align="middle" justify="space-between">
                         <div>

@@ -520,6 +520,19 @@ img {
 .margin-bottom {
     margin-bottom: 20px;
 }
+.transactions-box {
+    display: flex;
+}
+.transactions-box .transactions-label {
+    display: flex;
+    margin: 4px 5px 0 0;
+}
+.transactions-box .ant-select {
+    flex: 3;
+}
+.transactions-box .range-picker {
+    flex: 3;
+}
 
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
