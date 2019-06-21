@@ -73,3 +73,12 @@ query customerDetail($id: ID){
       }
 }
 `;
+export const ME_QUERY = gql`
+    query MeQuery {
+        me {
+            id
+            mobile
+            name
+        }
+    }
+`;
