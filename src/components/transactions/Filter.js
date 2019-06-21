@@ -103,6 +103,7 @@ class Filter extends Component {
                         <Select
                             onChange={this.handleChange.bind(this, 'type' )}
                             className="type-field" >
+                            <Option value="">None</Option>
                             <Option value="SELL">SELL</Option>
                             <Option value="PURCHASE">PURCHASE</Option>
                         </Select>,
@@ -113,9 +114,10 @@ class Filter extends Component {
                         <Select
                             onChange={this.handleChange.bind(this, 'status' )}
                             className="type-field" >
+                            <Option value="">None</Option>
                             <Option value="PENDING">PENDING</Option>
                             <Option value="PROCESSING">PROCESSING</Option>
-                            <Option value="COMPLETED">COMPLETE</Option>
+                            <Option value="COMPLETED">COMPLETED</Option>
                         </Select>,
                     )}
                 </Col>
