@@ -99,7 +99,8 @@ class Filter extends Component {
 
         return (
             <Row gutter={24}>
-                <Col {...ColProps} xl={{ span: 3 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                <Col {...ColProps} xl={{ span: 4 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                    <span>Type:</span>
                     {getFieldDecorator('type', { initialValue: type })(
                         <Select
                             onChange={this.handleChange.bind(this, 'type' )}
@@ -110,7 +111,8 @@ class Filter extends Component {
                         </Select>,
                     )}
                 </Col>
-                <Col {...ColProps} xl={{ span: 3 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                <Col {...ColProps} xl={{ span: 4 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                    <span>Status:</span>
                     {getFieldDecorator('status', { initialValue: status })(
                         <Select
                             onChange={this.handleChange.bind(this, 'status' )}
@@ -122,7 +124,8 @@ class Filter extends Component {
                         </Select>,
                     )}
                 </Col>
-                <Col {...ColProps} xl={{ span: 5 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                <Col {...ColProps} xl={{ span: 8 }} sm={{ span: 24 }} md={{ span: 10 }}>
+                    <span>Transaction:</span>
                     {getFieldDecorator('transactionAt', {
                         initialValue: initialtransactionAt,})(
                     < RangePicker onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker"/>
@@ -130,7 +133,7 @@ class Filter extends Component {
                 </Col>
 
                 <Col
-                    {...TwoColProps} xl={{ span: 13 }} md={{ span: 14 }} sm={{ span: 24 }}
+                    {...TwoColProps} xl={{ span: 8 }} md={{ span: 14 }} sm={{ span: 24 }}
                 >
                     <Row type="flex" align="middle" justify="space-between">
                         <div>

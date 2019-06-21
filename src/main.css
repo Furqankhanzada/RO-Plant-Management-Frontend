@@ -511,9 +511,9 @@ img {
 .ant-descriptions.bordered .ant-descriptions-item-label {
     font-weight: 500;
 }
-.range-picker {
-    width: 100%;
-}
+/*.range-picker {*/
+/*    width: 100%;*/
+/*}*/
 .type-field{
     width: 130px;
 }
