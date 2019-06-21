@@ -19,6 +19,7 @@ import { isTokenExpired } from '../helper/jwtHelper'
 import { graphql } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import BreadCrumbs from "./BreadCrumbs";
+import Dashboard from "./Dashboard";
 import Sidebar from './common/Sidebar'
 import { AppBar } from './common/Header'
 
@@ -120,6 +121,7 @@ class RootContainer extends Component {
                   <ProtectedRoute exact path="/transactions/:id" token={this.state.token} component={TransactionsDetail} />
 
                     <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage} />
+                    <ProtectedRoute exact path="/dashboard" token={this.state.token} component={Dashboard} />
                     <ProtectedRoute exact path="/products/create" token={this.state.token} component={CreateProduct} />
                     <UnProtectedRoute exact token={this.state.token} path="/login" component={LoginPage} />
                 </Switch>

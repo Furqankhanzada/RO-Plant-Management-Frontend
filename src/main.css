@@ -599,6 +599,52 @@ img {
     padding: 10px 15px 10px;
 }
 
+/*//// dashboard ////*/
+.dashboard .ant-card-body {
+    padding: 25px 20px;
+}
+.dashboard .ant-card-body i {
+    float: left;
+    font-size: 54px;
+}
+.dashboard .ant-card-body .dashboard-details {
+    width: 100%;
+    padding-left: 75px;
+}
+.dashboard .ant-card-body .dashboard-details h5 {
+    color: #666;
+    font-size: 16px;
+    font-weight: 400;
+    overflow: hidden;
+    line-height: 16px;
+    margin: 2px 0 5px 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.dashboard .ant-card-body .dashboard-details h3 {
+    color: #666;
+    font-size: 24px;
+    font-weight: 400;
+    overflow: hidden;
+    margin-bottom: 0;
+    line-height: 32px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.dashboard .review-icon {
+    color: rgb(100, 234, 145);
+}
+.dashboard .customer-icon {
+    color: rgb(143, 201, 251);
+}
+.dashboard .projects-icon {
+    color: rgb(216, 151, 235);
+}
+.dashboard .referrals-icon {
+    color: rgb(246, 152, 153);
+}
+/*//// dashboard ////*/
+
 /*/// extra small media query start here ///*/
 @media (min-width: 320px) and (max-width: 767px) {
 
