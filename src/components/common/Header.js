@@ -58,7 +58,7 @@ export class AppBar extends Component {
                                 <Query query={ME_QUERY}>
                                     {
                                         ({ data }) => {
-                                            const { me } = data;
+                                            const { me } = data || {};
                                             const { name }  = me || '';
                                             return (
                                                 <span>{name}</span>

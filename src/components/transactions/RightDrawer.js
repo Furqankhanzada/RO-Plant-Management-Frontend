@@ -34,7 +34,7 @@ class RightDrawer extends Component {
         <Drawer
           className="new-account drawer-custom-style"
           title={id ? 'Update Transaction' : 'Create Transaction'}
-          width={720}
+          width={800}
           onClose={this.onClose.bind(this)}
           visible={visible}
         >

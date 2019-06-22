@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Select, Empty } from 'antd';
+import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin, Select, Empty, Checkbox } from 'antd';
 import { graphql, compose, Query } from 'react-apollo';
 import { debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -8,6 +8,10 @@ import { GET_TRANSACTIONS, GET_TRANSACTION } from '../../graphql/queries/transac
 import { CREATE_TRANSACTION_MUTATION, UPDATE_TRANSACTION_MUTATION } from '../../graphql/mutations/transaction';
 import { client } from '../../index'
 import gql from 'graphql-tag';
+import { DatePicker } from 'antd';
+import moment from 'moment';
+const { MonthPicker, RangePicker } = DatePicker;
+const dateFormat = 'YYYY/MM/DD';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -21,7 +25,8 @@ class MainForm extends Component {
         {
           quantity: 0,
           product: '',
-          total: 0
+          total: 0,
+          bottleStatus: false
         }
       ],
       products: [],
@@ -113,7 +118,38 @@ class MainForm extends Component {
         balancedPrice = balancedPrice + productPrice;
       })
 
-    } else {
+    } else if (type === "bottle") {
+      itemsObject.bottleStatus = ev.target.checked;
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+
+        balancedPrice = balancedPrice + productPrice;
+      })
+    } else if (type === "bottlesOut") {
+      itemsObject.bottleOut = ev;
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+
+        balancedPrice = balancedPrice + productPrice;
+      })
+    } else if (type === "transactionAt") {
+      itemsObject.transactionAt = new Date(ev);
+      items.map((value) => {
+        const discountedProduct = discounts ? discounts.find((discountObject) => {
+          return value.product.id === discountObject.product.id
+        }) : null
+        const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
+
+        balancedPrice = balancedPrice + productPrice;
+      })
+    }
+    else {
       const selectedProduct = JSON.parse(ev);
       itemsObject.product = {
         name: selectedProduct.name,
@@ -196,7 +232,7 @@ class MainForm extends Component {
         let { type, user, payment, status } = values;
 
         for (let i = 0; i < items.length; i++) {
-          if (items[i].quantity !== 0 && items[i].product) {
+          if (items[i].quantity !== 0 && items[i].product && items[i].transactionAt) {
             let userDiscount;
             if (id) {
               const { userUpdateDiscount } = this.state;
@@ -212,6 +248,8 @@ class MainForm extends Component {
             }
             let itemsObj = {
               quantity: items[i].quantity,
+              transactionat: items[i].transactionAt,
+              bottleout: items[i].bottleOut ? items[i].bottleOut : 0,
               total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
               product: {
                 connect: {
@@ -322,6 +360,7 @@ class MainForm extends Component {
               });
             })
         } else {
+          console.log(transaction,"=====transcation====")
           if (dupItem.length < 1) {
             delete transaction.data.items
           }
@@ -586,7 +625,14 @@ class MainForm extends Component {
                                 type="minus-circle-o"
                                 onClick={this.removeItem.bind(this, index, value)}
                               />
-                              <Form.Item label={'Select Product'}>
+                              <FormItem label={`Transaction At`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
+                              <DatePicker onChange={this.onChangeItem.bind(this, 'transactionAt', index, value.id)} format={dateFormat} />
+                              </FormItem>
+
+                              <FormItem label={`Bottle Status`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
+                                <Checkbox onChange={this.onChangeItem.bind(this, 'bottle', index, value.id)}/>
+                              </FormItem>
+                              <Form.Item label={'Select Product'} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
 
                                 <AutoComplete
                                   className="certain-category-search"
@@ -602,20 +648,35 @@ class MainForm extends Component {
                                   <Input suffix={<Icon type="search" className="certain-category-icon" />} />
                                 </AutoComplete>
                               </Form.Item>
-                              <FormItem label={`Quantity`} >
+
+
+                              <FormItem label={`Quantity`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                 <InputNumber
                                   defaultValue={value.quantity}
                                   formatter={value => `${value}`}
                                   onChange={this.onChangeItem.bind(this, 'percentage', index, value.id)}
                                 />
                               </FormItem>
-                              <FormItem label={`Total`} >
+                              <FormItem label={`Total`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                 <InputNumber disabled={true}
                                   value={productPrice ? productPrice : 0}
                                   formatter={value => `PKR ${value}`}
                                   parser={value => value.replace('PKR', '')}
                                 />
                               </FormItem>
+                              
+
+                              {
+                                value.bottleStatus ? (
+                                  <FormItem label={`Bottles Out`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
+                                    <InputNumber
+                                      defaultValue={value.bottlesOut}
+                                      formatter={value => `${value}`}
+                                      onChange={this.onChangeItem.bind(this, 'bottlesOut', index, value.id)}
+                                    />
+                                  </FormItem>
+                                ) : null
+                              }
                             </div>
                           )
 
