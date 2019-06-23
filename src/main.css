@@ -525,11 +525,27 @@ img {
 .ant-descriptions.bordered .ant-descriptions-item-label {
     font-weight: 500;
 }
-.range-picker {
-    width: 100%;
+/*.range-picker {*/
+/*    width: 100%;*/
+/*}*/
+.type-field{
+    width: 130px;
 }
 .margin-bottom {
     margin-bottom: 20px;
+}
+.transactions-box {
+    display: flex;
+}
+.transactions-box .transactions-label {
+    display: flex;
+    margin: 4px 5px 0 0;
+}
+.transactions-box .ant-select {
+    flex: 3;
+}
+.transactions-box .range-picker {
+    flex: 3;
 }
 .transaction-label {
     margin: 4px 0 0 0;
@@ -807,6 +823,7 @@ img {
     padding: 10px 16px 10px 16px;
     box-shadow: 0 0 4px 0 #cecece;
 }
+
 
 .form-create-update {
     min-height: 400px;
