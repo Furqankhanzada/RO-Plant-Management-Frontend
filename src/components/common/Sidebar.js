@@ -25,6 +25,10 @@ class Sidebar extends Component {
                                         defaultOpenKeys={defaultOpenKeys ? defaultOpenKeys : []}
                                     >
 
+                                        <Menu.Item key="5" onClick={() => history.push('/dashboard')}>
+                                            <Icon type="appstore" />
+                                            <span>Dashboard</span>
+                                        </Menu.Item>
                                         <Menu.Item key="1" onClick={() => history.push('/customers')}>
                                             <Icon type="team" />
                                             <span>Customers</span>

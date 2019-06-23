@@ -143,7 +143,7 @@ class Detail extends PureComponent {
                   <Descriptions bordered className='transaction-detail'>
                     <Descriptions.Item label="Customer">{name}</Descriptions.Item>
                     <Descriptions.Item label="Mobile">{mobile}</Descriptions.Item>
-                    <Descriptions.Item label="Have Bottles (Count)">{bottle.balance}</Descriptions.Item>
+                    <Descriptions.Item label="Have Bottles (Count)"><Tag color='red'>{bottle.balance}</Tag></Descriptions.Item>
                     <Descriptions.Item label="Order time">2018-04-24 18:00:00</Descriptions.Item>
                     <Descriptions.Item label="Address" span={3}>
                       {`${address.house} ${address.area} ${address.block} ${address.town}`}
@@ -151,11 +151,11 @@ class Detail extends PureComponent {
                     <Descriptions.Item label="Status" span={3}>
                       <Badge status="processing" text={status} />
                     </Descriptions.Item>
-                    <Descriptions.Item label="Payment Method" span={1.5}>{ payment.method}</Descriptions.Item>
-                    <Descriptions.Item label="Payment Status" span={1.5}>{ payment.status}</Descriptions.Item>
-                    <Descriptions.Item label="Total Amount">Rs{ payment.balance + payment.paid || 0}</Descriptions.Item>
-                    <Descriptions.Item label="Paid Amount">Rs{ payment.paid }</Descriptions.Item>
-                    <Descriptions.Item label="Balance Amount">Rs{ payment.balance }</Descriptions.Item>
+                    <Descriptions.Item label="Payment Method" span={1.5}><Tag color='magenta'>{payment.method.replace("_", " ")}</Tag></Descriptions.Item>
+                    <Descriptions.Item label="Payment Status" span={1.5}><Tag color='#87d068'>{payment.status}</Tag></Descriptions.Item>
+                    <Descriptions.Item label="Total Amount"><Tag color='#f5222d'>Rs{ payment.balance + payment.paid || 0}</Tag></Descriptions.Item>
+                    <Descriptions.Item label="Paid Amount"><Tag color='#52c41a'>Rs{ payment.paid }</Tag></Descriptions.Item>
+                    <Descriptions.Item label="Balance Amount"><Tag color='#ffa0a0'>Rs{ payment.balance }</Tag></Descriptions.Item>
                   </Descriptions>
                 </Col>
               </Row>
