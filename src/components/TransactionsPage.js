@@ -28,6 +28,12 @@ class TransactionsPage extends Component {
     const { transactionsQuery: { refetch }, location: { search } } = this.props;
     const query = parse(search);
     let where = {};
+    if (query.type) {
+      where.type = query.type
+    }
+    if (query.status) {
+      where.status = query.status
+    }
     if (query.transactionAt) {
       where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
       where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
@@ -67,6 +73,12 @@ export default graphql(GET_TRANSACTIONS, {
   options: ({ location: { search = {} } }) => {
     const query = parse(search);
     let where = {};
+    if (query.type) {
+      where.type = query.type
+    }
+    if (query.status) {
+      where.status = query.status
+    }
     if (query.transactionAt) {
       where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
       where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
