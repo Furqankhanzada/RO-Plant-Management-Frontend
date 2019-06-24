@@ -71,11 +71,11 @@ class TransactionsPage extends Component {
   }
 }
 
-withRouter(TransactionsPage);
+TransactionsPage = withRouter(TransactionsPage);
 
 export default graphql(GET_TRANSACTIONS, {
   name: 'transactionsQuery', // name of the injected prop: this.props.transactionsQuery...
-  options: ({ location: { search = {} } }) => {
+  options: ({ location: { search = {} } = {} }) => {
     const query = parse(search);
     let where = {payment:{}};
     if (query.type) {
