@@ -73,7 +73,7 @@ query customerDetail($id: ID){
       }
 }
 `;
-export const ME_QUERY = gql`
+export const ME = gql`
     query MeQuery {
         me {
             id

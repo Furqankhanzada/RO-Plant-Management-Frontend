@@ -22,6 +22,8 @@ import BreadCrumbs from "./BreadCrumbs";
 import Dashboard from "./Dashboard";
 import Sidebar from './common/Sidebar'
 import { AppBar } from './common/Header'
+import { ME } from '../graphql/queries/customer'
+
 
 const ProtectedRoute = ({ component: Component, token, ...rest }) => {
     return token ? (
@@ -29,7 +31,7 @@ const ProtectedRoute = ({ component: Component, token, ...rest }) => {
             <Layout>
                 <AppBar />
                 <Layout className="dashboard-main">
-                    <Sidebar/>
+                    <Sidebar />
                     <Layout style={{ padding: '20px 24px 0', height: '100vh' }}>
                         <BreadCrumbs />
                         <Route {...rest} render={matchProps => <Component {...matchProps} />} />
@@ -117,8 +119,8 @@ class RootContainer extends Component {
                     <ProtectedRoute exact path="/customers" token={this.state.token} component={CustomersPage} />
                     <ProtectedRoute exact path="/customers/:id" token={this.state.token} component={CustomersDetail} />
 
-                  <ProtectedRoute exact path="/transactions" token={this.state.token} component={TransactionsPage} />
-                  <ProtectedRoute exact path="/transactions/:id" token={this.state.token} component={TransactionsDetail} />
+                    <ProtectedRoute exact path="/transactions" token={this.state.token} component={TransactionsPage} />
+                    <ProtectedRoute exact path="/transactions/:id" token={this.state.token} component={TransactionsDetail} />
 
                     <ProtectedRoute exact path="/products" token={this.state.token} component={ProductPage} />
                     <ProtectedRoute exact path="/dashboard" token={this.state.token} component={Dashboard} />
@@ -130,18 +132,10 @@ class RootContainer extends Component {
     }
 }
 
-const ME_QUERY = gql`
-    query MeQuery {
-        me {
-            id
-            mobile
-            name
-        }
-    }
-`;
+
 withRouter(RootContainer);
 
-export default graphql(ME_QUERY, {
+export default graphql(ME, {
     options: {
         errorPolicy: 'all'
     }

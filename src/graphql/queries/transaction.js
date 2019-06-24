@@ -53,6 +53,8 @@ export const TRANSACTION_SUBSCRIPTION = gql`
                 quantity
                 discount
                 total
+                transactionAt
+                bottleOut
             }
         }
     }
@@ -104,6 +106,8 @@ export const GET_TRANSACTION = gql`
                 discount
                 total
                 id
+                transactionAt
+                bottleOut
             }
         }
     }

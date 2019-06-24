@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react'
 import { Layout, Menu, Avatar, Icon, Popover, Button } from 'antd';
 import { client } from '../../index'
 import { gql } from "apollo-boost/lib/index";
-import { ME_QUERY } from '../../graphql/queries/customer'
+import { ME } from '../../graphql/queries/customer'
 import { Query } from 'react-apollo'
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -55,7 +55,7 @@ export class AppBar extends Component {
 
                                     <span>Welcome,</span>
                                 </span>
-                                <Query query={ME_QUERY}>
+                                <Query query={ME}>
                                     {
                                         ({ data }) => {
                                             const { me } = data || {};

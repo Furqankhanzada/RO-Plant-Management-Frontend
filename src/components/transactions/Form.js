@@ -26,7 +26,8 @@ class MainForm extends Component {
           quantity: 0,
           product: '',
           total: 0,
-          bottleStatus: false
+          bottleStatus: false,
+          transactionAt: new Date()
         }
       ],
       products: [],
@@ -51,7 +52,8 @@ class MainForm extends Component {
     const itemsObj = {
       quantity: 0,
       product: '',
-      total: 0
+      total: 0,
+      transactionAt: new Date()
     };
     if (id) {
       itemsObj.new = true
@@ -76,6 +78,7 @@ class MainForm extends Component {
         if (!adding) {
           const discountArray = transaction.items.map((value) => {
             value.product.selected = true;
+            value.bottleStatus = value.bottleOut ? true : false
             return value
           });
           // set transaction to state
@@ -119,7 +122,10 @@ class MainForm extends Component {
       })
 
     } else if (type === "bottle") {
-      itemsObject.bottleStatus = ev.target.checked;
+      itemsObject.bottleStatus = ev;
+      if (!ev) {
+        delete itemsObject.bottleOut
+      }
       items.map((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
@@ -248,8 +254,8 @@ class MainForm extends Component {
             }
             let itemsObj = {
               quantity: items[i].quantity,
-              transactionat: items[i].transactionAt,
-              bottleout: items[i].bottleOut ? items[i].bottleOut : 0,
+              transactionAt: items[i].transactionAt,
+              bottleOut: items[i].bottleOut ? items[i].bottleOut : 0,
               total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
               product: {
                 connect: {
@@ -264,6 +270,8 @@ class MainForm extends Component {
                 },
                 data: {
                   quantity: items[i].quantity,
+                  transactionAt: items[i].transactionAt,
+                  bottleOut: items[i].bottleOut ? items[i].bottleOut : 0,
                   total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
                   product: {
                     connect: {
@@ -323,7 +331,6 @@ class MainForm extends Component {
           if (editDup.length > 0) {
             transaction.data.items.update = editDup;
           }
-
           updateTransaction({
             variables: transaction,
             refetchQueries: [{ query: GET_TRANSACTIONS, variables: transaction }, { query: GET_TRANSACTION, variables: { id } }]
@@ -360,7 +367,6 @@ class MainForm extends Component {
               });
             })
         } else {
-          console.log(transaction,"=====transcation====")
           if (dupItem.length < 1) {
             delete transaction.data.items
           }
@@ -620,63 +626,90 @@ class MainForm extends Component {
                           const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
                           return (
                             <div className="discounts" key={index}>
-                              <Icon
-                                className="dynamic-delete-button removeButtonDiscount"
-                                type="minus-circle-o"
-                                onClick={this.removeItem.bind(this, index, value)}
-                              />
-                              <FormItem label={`Transaction At`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
-                              <DatePicker onChange={this.onChangeItem.bind(this, 'transactionAt', index, value.id)} format={dateFormat} />
-                              </FormItem>
-
-                              <FormItem label={`Bottle Status`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
-                                <Checkbox onChange={this.onChangeItem.bind(this, 'bottle', index, value.id)}/>
-                              </FormItem>
-                              <Form.Item label={'Select Product'} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
-
-                                <AutoComplete
-                                  className="certain-category-search"
-                                  dropdownClassName="certain-category-search-dropdown"
-                                  dropdownMatchSelectWidth={false}
-                                  dropdownStyle={{ width: 300 }}
-                                  style={{ width: '100%' }}
-                                  dataSource={options}
-                                  placeholder="Products"
-                                  value={value.product ? value.product.selected ? value.product.name : '' : ''}
-                                  onChange={this.onChangeItem.bind(this, 'product', index, value.id)}
-                                >
-                                  <Input suffix={<Icon type="search" className="certain-category-icon" />} />
-                                </AutoComplete>
-                              </Form.Item>
-
-
-                              <FormItem label={`Quantity`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
-                                <InputNumber
-                                  defaultValue={value.quantity}
-                                  formatter={value => `${value}`}
-                                  onChange={this.onChangeItem.bind(this, 'percentage', index, value.id)}
-                                />
-                              </FormItem>
-                              <FormItem label={`Total`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
-                                <InputNumber disabled={true}
-                                  value={productPrice ? productPrice : 0}
-                                  formatter={value => `PKR ${value}`}
-                                  parser={value => value.replace('PKR', '')}
-                                />
-                              </FormItem>
-                              
-
-                              {
-                                value.bottleStatus ? (
-                                  <FormItem label={`Bottles Out`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
+                              <Row gutter={16}>
+                                <Col span={3}>
+                                  <FormItem label={`Is Returnable?`} colon={false} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
+                                    <Button type="primary" size="medium" onClick={this.onChangeItem.bind(this, 'bottle', index, value.id, !value.bottleStatus)} >
+                                      {value.bottleStatus ? 'No' : 'Yes'}
+                                    </Button>
+                                  </FormItem>
+                                </Col>
+                                <Col span={5}>
+                                  <FormItem label={`Transaction At`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
+                                    <DatePicker defaultValue={moment(value.transactionAt, dateFormat)} onChange={this.onChangeItem.bind(this, 'transactionAt', index, value.id)} format={dateFormat} />
+                                  </FormItem>
+                                </Col>
+                                <Col span={value.bottleStatus ? 5 : 8}>
+                                  <Form.Item label={'Select Product'} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
+                                    <AutoComplete
+                                      className="certain-category-search"
+                                      dropdownClassName="certain-category-search-dropdown"
+                                      dropdownMatchSelectWidth={false}
+                                      dropdownStyle={{ width: 300 }}
+                                      style={{ width: '100%' }}
+                                      dataSource={options}
+                                      placeholder="Products"
+                                      value={value.product ? value.product.selected ? value.product.name : '' : ''}
+                                      onChange={this.onChangeItem.bind(this, 'product', index, value.id)}
+                                    >
+                                      <Input suffix={<Icon type="search" className="certain-category-icon" />} />
+                                    </AutoComplete>
+                                  </Form.Item>
+                                </Col>
+                                <Col span={3}>
+                                  <FormItem label={`Quantity`} className='bottle-status-width'>
                                     <InputNumber
-                                      defaultValue={value.bottlesOut}
+                                      defaultValue={value.quantity}
                                       formatter={value => `${value}`}
-                                      onChange={this.onChangeItem.bind(this, 'bottlesOut', index, value.id)}
+                                      onChange={this.onChangeItem.bind(this, 'percentage', index, value.id)}
                                     />
                                   </FormItem>
-                                ) : null
-                              }
+                                </Col>
+                                <Col span={4}>
+                                  <FormItem label={`Total`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
+                                    <InputNumber disabled={true}
+                                      value={productPrice ? productPrice : 0}
+                                      formatter={value => `PKR ${value}`}
+                                      parser={value => value.replace('PKR', '')}
+                                    />
+                                  </FormItem>
+                                </Col>
+                                {
+                                  value.bottleStatus ? (
+                                    <Col span={3}>
+                                      <FormItem label={`Bottles Out`} className={`${value.bottleStatus ? 'bottle-status-width' : 'full-width'}`}>
+                                        <InputNumber
+                                          value={value.bottleOut}
+                                          formatter={value => `${value}`}
+                                          onChange={this.onChangeItem.bind(this, 'bottlesOut', index, value.id)}
+
+                                        />
+                                      </FormItem>
+                                    </Col>
+                                  ) : null
+                                }
+                                <Col span={1}>
+                                  <Icon
+                                    className="dynamic-delete-button removeButtonDiscount"
+                                    type="minus-circle-o"
+                                    onClick={this.removeItem.bind(this, index, value)}
+                                  />
+                                </Col>
+                              </Row>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
                           )
 
