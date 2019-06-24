@@ -87,7 +87,7 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        const { type = "", status = "", transactionAt } = filter;
+        const { type = "", status = "", payment = "", transactionAt } = filter;
 
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
@@ -99,7 +99,7 @@ class Filter extends Component {
 
         return (
             <Row gutter={24}>
-                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 6 }} sm={{ span: 12 }} md={{ span: 12 }}>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 12 }} sm={{ span: 8 }} md={{ span: 8 }}>
                     <span className="transactions-label">Type</span>
                     {getFieldDecorator('type', { initialValue: type })(
                         <Select
@@ -111,7 +111,7 @@ class Filter extends Component {
                         </Select>
                     )}
                 </Col>
-                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 6 }} sm={{ span: 12 }} md={{ span: 12 }}>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 12 }} sm={{ span: 8 }} md={{ span: 8 }}>
                     <span className="transactions-label">Status</span>
                     {getFieldDecorator('status', { initialValue: status })(
                         <Select
@@ -124,7 +124,19 @@ class Filter extends Component {
                         </Select>
                     )}
                 </Col>
-                <Col className="transactions-box" {...ColProps} xl={{ span: 8 }} lg={{ span: 12 }} sm={{ span: 24 }} md={{ span: 24 }}>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 8 }} sm={{ span: 8 }} md={{ span: 8 }}>
+                    <span className="transactions-label">Payment</span>
+                    {getFieldDecorator('payment', { initialValue: payment })(
+                        <Select
+                            onChange={this.handleChange.bind(this, 'payment' )}
+                            className="type-field" >
+                            <Option value="">None</Option>
+                            <Option value="PAID">PAID</Option>
+                            <Option value="UNPAID">UNPAID</Option>
+                        </Select>
+                    )}
+                </Col>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 12 }} lg={{ span: 16 }} sm={{ span: 24 }} md={{ span: 24 }}>
                     <span className="transactions-label">Transaction</span>
                     {getFieldDecorator('transactionAt', {
                         initialValue: initialtransactionAt,})(
@@ -132,9 +144,7 @@ class Filter extends Component {
                     )}
                 </Col>
 
-                <Col
-                    {...TwoColProps} xl={{ span: 8 }} lg={{ span: 24 }} md={{ span: 24 }} sm={{ span: 24 }}
-                >
+                <Col{...TwoColProps} xl={{ span: 24 }} lg={{ span: 24 }} md={{ span: 24 }} sm={{ span: 24 }}>
                     <Row type="flex" align="middle" justify="space-between">
                         <div>
                             <Button
