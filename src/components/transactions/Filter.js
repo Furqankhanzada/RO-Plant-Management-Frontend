@@ -87,8 +87,7 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        const { type = "", status = "", payment = "", transactionAt } = filter;
-
+        let { type = "", status = "", payment = "" } = filter;
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
             initialtransactionAt[0] = moment(filter.transactionAt[0])
