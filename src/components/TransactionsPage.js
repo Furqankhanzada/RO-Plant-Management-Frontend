@@ -64,7 +64,7 @@ withRouter(TransactionsPage);
 
 export default graphql(GET_TRANSACTIONS, {
   name: 'transactionsQuery', // name of the injected prop: this.props.transactionsQuery...
-  options: ({ location: { search = {} } }) => {
+  options: ({ location: { search = {} } = {} }) => {
     const query = parse(search);
     let where = {};
     if (query.transactionAt) {
