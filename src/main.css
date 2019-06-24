@@ -295,21 +295,21 @@ img {
 
 .discount-details .discounts .full-width {
     margin-right: 14px;
-    width: 19% !important;
+    width: 100% !important;
     display: inline-block;
     float: none !important;
 
 }
 .discount-details .discounts .small-width {
     margin-right: 14px;
-    width: 16% !important;
+    width: 100% !important;
     display: inline-block;
     float: none !important;
 }
 
 .discount-details .discounts .bottle-status-width{
     margin-right: 14px;
-    width: 10% !important;
+    width: 100% !important;
     display: inline-block;
     float: none !important;
 }
