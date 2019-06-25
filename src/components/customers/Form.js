@@ -33,7 +33,8 @@ class MainForm extends Component {
       selectedValue: '',
       deleteDiscount: [],
       editDiscount: [],
-      adding: false
+      adding: false,
+      addressId: ''
     }
   }
 
@@ -51,7 +52,8 @@ class MainForm extends Component {
     // can use data-binding to get
     discounts.push(discountsObj);
     this.setState({
-      discounts
+      discounts,
+      adding: true
     })
   }
   componentWillReceiveProps(nextProps) {
@@ -61,8 +63,8 @@ class MainForm extends Component {
       const { id, name, mobile, address: { town, area, block, house } } = customer;
       const { adding } = this.state;
       // If updating customer
-      if (!adding) {
-        if (id) {
+      if (id) {
+        if (!adding) {
           // make discounts
           const discountArray = customer.discounts.map((value) => {
             value.product.selected = true;
@@ -73,7 +75,7 @@ class MainForm extends Component {
         }
       }
     } else {
-      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: ''})
+      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '' })
     }
   }
 
@@ -125,7 +127,7 @@ class MainForm extends Component {
     const { customer: { id } = {}, form, createCustomer, updateCustomer } = this.props;
     const { validateFields, resetFields } = form;
 
-    let { discounts, deleteDiscount } = this.state;
+    let { discounts, deleteDiscount, addressId } = this.state;
     const dupDiscount = [];
     const editDup = [];
     validateFields(async (err, values) => {
@@ -194,7 +196,15 @@ class MainForm extends Component {
           delete customer.password;
           delete customer.mobile;
           customer.id = id;
-
+          delete customer.data.address;
+          customer.data.address = {
+            update: {
+              town,
+              area,
+              block,
+              house
+            }
+          }
           if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
             delete customer.data.discounts.create;
             customer.data.discounts.delete = deleteDiscount
@@ -208,6 +218,10 @@ class MainForm extends Component {
           if (editDup.length > 0) {
             customer.data.discounts.update = editDup;
           }
+
+
+          console.log(customer, " address id----------")
+
           updateCustomer({
             variables: customer,
             refetchQueries: [{ query: CUSTOMER_QUERY, variables: customer }],
@@ -215,7 +229,8 @@ class MainForm extends Component {
             this.setState({
               disableBtn: false,
               editDiscount: [],
-              deleteDiscount: []
+              deleteDiscount: [],
+              adding: false
             });
             client.mutate({
               mutation: gql`
@@ -264,6 +279,7 @@ class MainForm extends Component {
                   product: ''
                 }
               ],
+              adding: false
             }, () => {
               resetFields();
               message.success('Customer has been created successfully');
@@ -300,19 +316,9 @@ class MainForm extends Component {
     setFieldsValue({
       [ev.target.name]: ev.target.value
     }, () => {
-      const { customer } = this.props;
-      const { address } = customer;
-      if (address) {
-        const { id } = address;
-        this.setState({
-          addressId: id,
-          adding: true
-        })
-      } else {
         this.setState({
           adding: true
         })
-      }
     });
   }
 
@@ -326,6 +332,10 @@ class MainForm extends Component {
           }
       `,
       variables: { status: false, id: '' }
+    }).then(() => {
+      this.setState({
+        adding: false
+      })
     })
   }
 

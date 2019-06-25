@@ -252,11 +252,14 @@ class MainForm extends Component {
                 return value.product.id === items[i].product.id
               })
             }
+
+            console.log( userDiscount.discount," userDiscount.discount")
             let itemsObj = {
               quantity: items[i].quantity,
               transactionAt: items[i].transactionAt,
               bottleOut: items[i].bottleOut ? items[i].bottleOut : 0,
               total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
+              discount: userDiscount ? (items[i].product.price - userDiscount.discount) * items[i].quantity : 0,
               product: {
                 connect: {
                   id: items[i].product.id
@@ -273,6 +276,7 @@ class MainForm extends Component {
                   transactionAt: items[i].transactionAt,
                   bottleOut: items[i].bottleOut ? items[i].bottleOut : 0,
                   total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
+                  discount: userDiscount ? (items[i].product.price - userDiscount.discount) * items[i].quantity : 0,
                   product: {
                     connect: {
                       id: items[i].product.id
