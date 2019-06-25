@@ -20,7 +20,7 @@ const TwoColProps = {
 };
 
 class Filter extends Component {
-    handleFields = fields => {
+    handleFields(fields){
         const { createTime = [] } = fields;
         if (createTime.length) {
             fields.createTime = [
@@ -31,19 +31,17 @@ class Filter extends Component {
         return fields
     };
 
-    handleSubmit = () => {
+    handleSubmit(){
         const { onFilterChange, form } = this.props;
         const { getFieldsValue } = form;
-
         let fields = getFieldsValue();
         fields = this.handleFields(fields);
         onFilterChange(fields)
     };
 
-    handleReset = () => {
+    handleReset(){
         const { form } = this.props;
         const { getFieldsValue, setFieldsValue } = form;
-
         const fields = getFieldsValue();
         for (let item in fields) {
             if ({}.hasOwnProperty.call(fields, item)) {
@@ -57,17 +55,16 @@ class Filter extends Component {
         setFieldsValue(fields);
         this.handleSubmit()
     };
-    handleChange = (key, values) => {
+    handleChange(key, values){
         const { form, onFilterChange } = this.props;
         const { getFieldsValue } = form;
-
         let fields = getFieldsValue();
         fields[key] = values;
         fields = this.handleFields(fields);
         onFilterChange(fields)
     };
 
-    openDrawer = () => {
+    openDrawer(){
         client.mutate({
             mutation: gql`
             mutation openDrawer($status: Boolean!, $id: String) {
@@ -96,7 +93,7 @@ class Filter extends Component {
                     {getFieldDecorator('name', { initialValue: name })(
                         <Search
                             placeholder={`Search Name`}
-                            onSearch={this.handleSubmit}
+                            onSearch={this.handleSubmit.bind(this, 'handleSubmit')}
                         />
                     )}
                 </Col>
@@ -109,7 +106,7 @@ class Filter extends Component {
                     {getFieldDecorator('mobile', { initialValue: mobile })(
                         <Search
                             placeholder={`Search Mobile Number`}
-                            onSearch={this.handleSubmit}
+                            onSearch={this.handleSubmit.bind(this, 'handleSubmit')}
                         />
                     )}
                 </Col>
@@ -125,11 +122,11 @@ class Filter extends Component {
                             <Button
                                 type="primary"
                                 className="margin-right search-btn"
-                                onClick={this.handleSubmit}
+                                onClick={this.handleSubmit.bind(this, 'handleSubmit')}
                             >
                                 <span>Search</span>
                             </Button>
-                            <Button onClick={this.handleReset}>
+                            <Button onClick={this.handleReset.bind(this, 'handleReset')}>
                                 <span>Reset</span>
                             </Button>
                         </div>
@@ -139,7 +136,6 @@ class Filter extends Component {
                         </Button>
                     </Row>
                 </Col>
-
             </Row>
         )
     }
