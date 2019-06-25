@@ -526,7 +526,7 @@ class MainForm extends Component {
                                 {customers.map(({ id, name, mobile, discounts }) => <Option key={JSON.stringify({ id, discounts })}>{name} : {mobile}</Option>)}
 
 
-                              </Select>,
+                              </Select>
                             )}
                           </Form.Item>
                         );
@@ -542,7 +542,7 @@ class MainForm extends Component {
                         >
                           <Option value="SELL">SELL</Option>
                           <Option value="PURCHASE">PURCHASE</Option>
-                        </Select>,
+                        </Select>
                       )}
                     </Form.Item>
                     <Form.Item label={`Status`}>
@@ -557,7 +557,7 @@ class MainForm extends Component {
                           <Option value="PENDING">PENDING</Option>
                           <Option value="PROCESSING">PROCESSING</Option>
                           <Option value="COMPLETED">COMPLETE</Option>
-                        </Select>,
+                        </Select>
                       )}
                     </Form.Item>
 
@@ -575,7 +575,7 @@ class MainForm extends Component {
                           <Option value="CASH">CASH</Option>
                           <Option value="BANK_TRANSFER">BANK TRANSFER</Option>
                           <Option value="CHEQUE">CHEQUE</Option>
-                        </Select>,
+                        </Select>
                       )}
                     </Form.Item>
                     <Form.Item label={`Status`}>
@@ -589,7 +589,7 @@ class MainForm extends Component {
                         >
                           <Option value="PAID">PAID</Option>
                           <Option value="UNPAID">UNPAID</Option>
-                        </Select>,
+                        </Select>
                       )}
                     </Form.Item>
                     <FormItem label={`Paid`} >

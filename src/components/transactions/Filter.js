@@ -97,7 +97,7 @@ class Filter extends Component {
         }
 
         return (
-            <Row gutter={24}>
+            <Row gutter={16}>
                 <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 12 }} sm={{ span: 8 }} md={{ span: 8 }}>
                     <span className="transactions-label">Type</span>
                     {getFieldDecorator('type', { initialValue: type })(
@@ -135,7 +135,7 @@ class Filter extends Component {
                         </Select>
                     )}
                 </Col>
-                <Col className="transactions-box" {...ColProps} xl={{ span: 12 }} lg={{ span: 16 }} sm={{ span: 24 }} md={{ span: 24 }}>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 6 }} lg={{ span: 16 }} sm={{ span: 24 }} md={{ span: 24 }}>
                     <span className="transactions-label">Transaction</span>
                     {getFieldDecorator('transactionAt', {
                         initialValue: initialtransactionAt,})(
@@ -143,7 +143,7 @@ class Filter extends Component {
                     )}
                 </Col>
 
-                <Col{...TwoColProps} xl={{ span: 24 }} lg={{ span: 24 }} md={{ span: 24 }} sm={{ span: 24 }}>
+                <Col{...TwoColProps} xl={{ span: 6 }} lg={{ span: 24 }} md={{ span: 24 }} sm={{ span: 24 }}>
                     <Row type="flex" align="middle" justify="space-between">
                         <div>
                             <Button
