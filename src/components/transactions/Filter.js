@@ -22,7 +22,7 @@ const TwoColProps = {
 };
 
 class Filter extends Component {
-    handleFields = fields => {
+    handleFields(fields) {
         const { transactionAt } = fields;
         if (transactionAt.length) {
             fields.transactionAt = [
@@ -33,7 +33,7 @@ class Filter extends Component {
         return fields
     };
 
-    handleSubmit = () => {
+    handleSubmit(){
         const { onFilterChange, form } = this.props;
         const { getFieldsValue } = form;
 
@@ -42,7 +42,7 @@ class Filter extends Component {
         onFilterChange(fields)
     };
 
-    handleReset = () => {
+    handleReset(){
         const { form } = this.props;
         const { getFieldsValue, setFieldsValue } = form;
         const fields = getFieldsValue();
@@ -58,7 +58,7 @@ class Filter extends Component {
         setFieldsValue(fields);
         this.handleSubmit()
     };
-    handleChange = (key, values) => {
+    handleChange(key, values){
         const { form, onFilterChange } = this.props;
         const { getFieldsValue } = form;
 
@@ -68,7 +68,7 @@ class Filter extends Component {
         onFilterChange(fields)
     };
 
-    openDrawer = () => {
+    openDrawer(){
         client.mutate({
             mutation: gql`
             mutation openDrawer($status: Boolean!, $id: String) {
@@ -145,11 +145,11 @@ class Filter extends Component {
                             <Button
                                 type="primary"
                                 className="margin-right search-btn"
-                                onClick={this.handleSubmit}
+                                onClick={this.handleSubmit.bind(this, 'handleSubmit')}
                             >
                                 <span>Search</span>
                             </Button>
-                            <Button onClick={this.handleReset}>
+                            <Button onClick={this.handleReset.bind(this, 'handleReset')}>
                                 <span>Reset</span>
                             </Button>
                         </div>
