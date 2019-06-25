@@ -137,14 +137,19 @@ class Filter extends Component {
                         initialValue: initialtransactionAt,})(
                     < RangePicker
                         ranges={{
-                            Today: [moment(), moment()],
+                            'This Week': [moment().startOf('week'), moment().endOf('week')],
+                            'Last Week': [moment().day(-7, "monday"), moment().day("sunday")],
                             'This Month': [moment().startOf('month'), moment().endOf('month')],
+                            'Last Month': [moment().subtract(1,'month').date(1),moment().subtract(1,'month').endOf('month')],
+                            'Last 6 Month': [moment().subtract(6,'month').date(1),moment().subtract(6,'month').endOf('month')],
                         }}
                         showTime
-                        format="YYYY/MM/DD HH:mm:ss"
+                        format="YYYY/MM/DD hh:mm A"
                         onChange={this.handleChange.bind(this, 'transactionAt')}
-                        className="range-picker"/>
-                    )}
+                        className="range-picker"
+                    />
+
+                        )}
                 </Col>
 
                 <Col{...TwoColProps} xl={{ span: 24 }} lg={{ span: 24 }} md={{ span: 24 }} sm={{ span: 24 }}>
