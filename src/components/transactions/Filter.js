@@ -22,11 +22,6 @@ const TwoColProps = {
 };
 
 class Filter extends Component {
-    componentDidUpdate(prevProps) {
-        if (Object.keys(prevProps.filter).length === 0) {
-            this.handleReset()
-        }
-    }
     handleFields = fields => {
         const { transactionAt } = fields;
         if (transactionAt.length) {
@@ -88,6 +83,7 @@ class Filter extends Component {
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
         let { type = "", status = "", payment = "" } = filter;
+        type = 'None';
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
             initialtransactionAt[0] = moment(filter.transactionAt[0])

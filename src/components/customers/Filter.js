@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { Button, Form, Input, Row, Icon, Col } from 'antd';
+import {Button, Form, Input, Row, Icon, Col, Select} from 'antd';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
@@ -20,11 +20,6 @@ const TwoColProps = {
 };
 
 class Filter extends Component {
-    componentDidUpdate(prevProps) {
-        if (Object.keys(prevProps.filter).length === 0) {
-            this.handleReset()
-        }
-    }
     handleFields = fields => {
         const { createTime = [] } = fields;
         if (createTime.length) {
