@@ -60,6 +60,7 @@ query customerDetail($id: ID){
           area
           block
           house
+          id
         }
         discounts{
         id

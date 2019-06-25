@@ -32,7 +32,8 @@ class MainForm extends Component {
       disableBtn: false,
       selectedValue: '',
       deleteDiscount: [],
-      editDiscount: []
+      editDiscount: [],
+      adding: false
     }
   }
 
@@ -58,18 +59,21 @@ class MainForm extends Component {
 
       const { customer } = nextProps;
       const { id, name, mobile, address: { town, area, block, house } } = customer;
+      const { adding } = this.state;
       // If updating customer
-      if (id) {
-        // make discounts
-        const discountArray = customer.discounts.map((value) => {
-          value.product.selected = true;
-          return value
-        });
-        // set customer to state
-        this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
+      if (!adding) {
+        if (id) {
+          // make discounts
+          const discountArray = customer.discounts.map((value) => {
+            value.product.selected = true;
+            return value
+          });
+          // set customer to state
+          this.setState({ name, town, area, block, house, mobile, discounts: discountArray })
+        }
       }
     } else {
-      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '', discounts: []})
+      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: ''})
     }
   }
 
@@ -112,10 +116,11 @@ class MainForm extends Component {
     }
     discounts.splice(index, 1);
     this.setState({
-      discounts
+      discounts,
+      adding: true
     })
   }
-  handledSubmit (e) {
+  handledSubmit(e) {
     e.preventDefault();
     const { customer: { id } = {}, form, createCustomer, updateCustomer } = this.props;
     const { validateFields, resetFields } = form;
@@ -150,9 +155,8 @@ class MainForm extends Component {
                 data: {
                   discount: discounts[i].discount,
                   product: {
-                    create: {
-                      name: discounts[i].product.name,
-                      price: discounts[i].product.price
+                    connect: {
+                      id: discounts[i].product.id
                     }
                   }
                 }
@@ -224,18 +228,18 @@ class MainForm extends Component {
               variables: { status: false, id: '' }
             })
           })
-          .catch(err => {
-            this.setState({
-              disableBtn: false
-            });
-            const { graphQLErrors } = err;
-            graphQLErrors.forEach(element => {
-              message.error(element.message);
-            });
-            this.setState({
-              loading: false
-            });
-          })
+            .catch(err => {
+              this.setState({
+                disableBtn: false
+              });
+              const { graphQLErrors } = err;
+              graphQLErrors.forEach(element => {
+                message.error(element.message);
+              });
+              this.setState({
+                loading: false
+              });
+            })
         } else {
           if (dupDiscount.length < 1) {
             delete customer.data.discounts
@@ -295,6 +299,20 @@ class MainForm extends Component {
     const { setFieldsValue } = this.props.form;
     setFieldsValue({
       [ev.target.name]: ev.target.value
+    }, () => {
+      const { customer } = this.props;
+      const { address } = customer;
+      if (address) {
+        const { id } = address;
+        this.setState({
+          addressId: id,
+          adding: true
+        })
+      } else {
+        this.setState({
+          adding: true
+        })
+      }
     });
   }
 
@@ -442,10 +460,10 @@ class MainForm extends Component {
                               </Form.Item>
 
                               <FormItem label={`Discounted Price`} >
-                                <InputNumber disabled = {true}
-                                             value={value.discount === 0 ? productPrice : value.discount}
-                                             formatter={value => `PKR ${value}`}
-                                             parser={value => value.replace('PKR', '')}
+                                <InputNumber disabled={true}
+                                  value={value.discount === 0 ? productPrice : value.discount}
+                                  formatter={value => `PKR ${value}`}
+                                  parser={value => value.replace('PKR', '')}
                                 />
                               </FormItem>
                             </div>
