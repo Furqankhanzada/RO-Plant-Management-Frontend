@@ -1,8 +1,8 @@
 import { gql } from 'apollo-boost';
 
 export const CREATE_TRANSACTION_MUTATION = gql`
-mutation createTransaction($data: TransactionCreateInput!) {
-    createTransaction(data: $data){
+mutation createTransaction($data: TransactionCreateInput!, $bottleBalance: Int) {
+    createTransaction(data: $data, bottleBalance: $bottleBalance){
                         id
                 }
                 }
@@ -10,8 +10,8 @@ mutation createTransaction($data: TransactionCreateInput!) {
 
 
 export const UPDATE_TRANSACTION_MUTATION = gql`
-mutation updateTransaction($data: TransactionUpdateInput!, $where: TransactionWhereUniqueInput!) {
-    updateTransaction(data: $data, where:$where){
+mutation updateTransaction($data: TransactionUpdateInput!, $where: TransactionWhereUniqueInput!, $userID: ID,  $bottleBalance: Int) {
+    updateTransaction(data: $data, where:$where, userID: $userID,  bottleBalance: $bottleBalance){
         id
                 }
                 }

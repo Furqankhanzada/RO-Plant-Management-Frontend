@@ -218,10 +218,6 @@ class MainForm extends Component {
           if (editDup.length > 0) {
             customer.data.discounts.update = editDup;
           }
-
-
-          console.log(customer, " address id----------")
-
           updateCustomer({
             variables: customer,
             refetchQueries: [{ query: CUSTOMER_QUERY, variables: customer }],

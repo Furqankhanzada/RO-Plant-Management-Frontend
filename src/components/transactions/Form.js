@@ -226,8 +226,10 @@ class MainForm extends Component {
     const { validateFields, resetFields } = form;
     const id = this.props.updateStatus;
     let { items, deleteItem } = this.state;
+    const userID = this.state.user;
     const dupItem = [];
     const editDup = [];
+    let userBottleBalance = 0;
     validateFields(async (err, values) => {
 
       if (!err) {
@@ -252,8 +254,7 @@ class MainForm extends Component {
                 return value.product.id === items[i].product.id
               })
             }
-
-            console.log( userDiscount.discount," userDiscount.discount")
+            userBottleBalance = items[i].bottleOut ? items[i].bottleOut + userBottleBalance : userBottleBalance
             let itemsObj = {
               quantity: items[i].quantity,
               transactionAt: items[i].transactionAt,
@@ -313,12 +314,15 @@ class MainForm extends Component {
             status,
             items: {
               create: dupItem
-            }
-          }
+            },
+
+          },
+          bottleBalance: userBottleBalance
         };
 
         if (id) {
           delete transaction.data.user;
+          transaction.userID = userID.id
           transaction.where = { id };
 
 
