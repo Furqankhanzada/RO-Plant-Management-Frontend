@@ -1,16 +1,19 @@
 import React, { PureComponent } from 'react'
 import { Query } from 'react-apollo';
+import moment from 'moment';
 import { Layout, Row, Col, Statistic, Spin, Table, Tag, Descriptions, Badge } from 'antd';
 import { GET_TRANSACTION } from '../../graphql/queries/transaction'
 
 const columns = [
   {
     title: 'Date',
-    dataIndex: 'date',
+    dataIndex: 'transactionAt',
     key: 'date',
-    render: (text, record) => (
-         <span>Jun 19 2019</span>
+    render: (text, record) =>{
+      return(
+          <span>{moment(text).format("DD/MM/YYYY")}</span>
       )
+    }
   },
   {
     title: 'Name',
@@ -20,22 +23,34 @@ const columns = [
   {
     title: 'Price',
     dataIndex: 'product.price',
-    key: 'price'
+    key: 'price',
+    render: (method) => {
+      return <Tag color='green'>{method}</Tag>
+    }
   },
   {
     title: 'Discount',
     dataIndex: 'discount',
-    key: 'discount'
+    key: 'discount',
+    render: (method) => {
+      return <Tag color='orange'>{method}</Tag>
+    }
   },
   {
     title: 'Quantity',
     dataIndex: 'quantity',
-    key: 'quantity'
+    key: 'quantity',
+    render: (method) => {
+      return <Tag color='magenta'>{method}</Tag>
+    }
   },
   {
     title: 'Total',
     dataIndex: 'total',
-    key: 'total'
+    key: 'total',
+    render: (method) => {
+      return <Tag color='red'>{method}</Tag>
+    }
   }
 ];
 
