@@ -407,47 +407,55 @@ class MainForm extends Component {
                           const productPrice = value.product.price;
                           return (
                             <div className="discounts" key={index}>
-                              <Icon
-                                className="dynamic-delete-button removeButtonDiscount"
-                                type="minus-circle-o"
-                                onClick={this.removeDiscount.bind(this, index, value)}
-                              />
-                              <Form.Item label={'Select Product'}>
+                              <Row gutter={16}>
+                                <Col xl={{ span: 8 }} lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 12 }}>
+                                  <Form.Item label={'Select Product'}>
 
-                                <AutoComplete
-                                  className="certain-category-search"
-                                  dropdownClassName="certain-category-search-dropdown"
-                                  dropdownMatchSelectWidth={false}
-                                  dropdownStyle={{ width: 300 }}
-                                  style={{ width: '100%' }}
-                                  dataSource={options}
-                                  placeholder="Products"
-                                  value={value.product ? value.product.selected ? value.product.name : '' : ''}
-                                  onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}
-                                >
-                                  <Input suffix={<Icon type="search" className="certain-category-icon" />} />
-                                </AutoComplete>
+                                    <AutoComplete
+                                        className="certain-category-search"
+                                        dropdownClassName="certain-category-search-dropdown"
+                                        dropdownMatchSelectWidth={false}
+                                        dropdownStyle={{ width: 300 }}
+                                        style={{ width: '100%' }}
+                                        dataSource={options}
+                                        placeholder="Products"
+                                        value={value.product ? value.product.selected ? value.product.name : '' : ''}
+                                        onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}
+                                        >
+                                      <Input suffix={<Icon type="search" className="certain-category-icon" />} />
+                                    </AutoComplete>
 
-                              </Form.Item>
-
-                              <Form.Item label={'Add Discount'}>
-                                <InputNumber
-                                  value={value.discount ? (100 - (value.discount / productPrice) * 100).toFixed() : 0}
-                                  min={0}
-                                  max={90}
-                                  formatter={value => `${value}%`}
-                                  parser={value => value.replace('%', '')}
-                                  onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
-                                />
-                              </Form.Item>
-
-                              <FormItem label={`Discounted Price`} >
-                                <InputNumber disabled = {true}
-                                             value={value.discount === 0 ? productPrice : value.discount}
-                                             formatter={value => `PKR ${value}`}
-                                             parser={value => value.replace('PKR', '')}
-                                />
-                              </FormItem>
+                                  </Form.Item>
+                                </Col>
+                                <Col xl={{ span: 8 }} lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 12 }}>
+                                  <Form.Item label={'Add Discount'}>
+                                    <InputNumber
+                                        value={value.discount ? (100 - (value.discount / productPrice) * 100).toFixed() : 0}
+                                        min={0}
+                                        max={90}
+                                        formatter={value => `${value}%`}
+                                        parser={value => value.replace('%', '')}
+                                        onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
+                                        />
+                                  </Form.Item>
+                                </Col>
+                                <Col xl={{ span: 7 }} lg={{ span: 7 }} md={{ span: 6 }} sm={{ span: 10 }}>
+                                  <FormItem label={`Discounted Price`} >
+                                    <InputNumber disabled = {true}
+                                                 value={value.discount === 0 ? productPrice : value.discount}
+                                                 formatter={value => `PKR ${value}`}
+                                                 parser={value => value.replace('PKR', '')}
+                                        />
+                                  </FormItem>
+                                </Col>
+                                <Col xl={{ span: 1 }} lg={{ span: 1 }} md={{ span: 2 }} sm={{ span: 2 }}>
+                                  <Icon
+                                      className="dynamic-delete-button removeButtonDiscount"
+                                      type="minus-circle-o"
+                                      onClick={this.removeDiscount.bind(this, index, value)}
+                                      />
+                                </Col>
+                              </Row>
                             </div>
                           )
 
