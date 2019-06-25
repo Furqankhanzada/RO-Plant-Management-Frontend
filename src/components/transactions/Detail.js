@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
-import { Table, Divider, Tag, Descriptions, Badge } from 'antd';
 import { Query } from 'react-apollo';
-import { Layout, Card, Icon, Empty, Row, Col, Statistic, Spin } from 'antd';
+import { Layout, Row, Col, Statistic, Spin, Table, Tag, Descriptions, Badge } from 'antd';
 import { GET_TRANSACTION } from '../../graphql/queries/transaction'
 
 const columns = [
@@ -33,101 +32,17 @@ const columns = [
     dataIndex: 'quantity',
     key: 'quantity'
   },
-  //{
-  //  title: 'Bottle In',
-  //  dataIndex: 'bottleIn',
-  //  key: 'bottleIn'
-  //},
-  //{
-  //  title: 'Bottle Out',
-  //  dataIndex: 'bottleOut',
-  //  key: 'bottleOut'
-  //},
-  //{
-  //  title: 'Bottle Balance',
-  //  dataIndex: 'bottleBalance',
-  //  key: 'bottleBalance'
-  //},
-  //{
-  //  title: 'Payment Status',
-  //  key: 'paymentStatus',
-  //  dataIndex: 'paymentStatus',
-  //  render: tags => (
-  //    <span>
-  //      {tags.map(tag => {
-  //        let color = tag.length > 5 ? 'geekblue' : 'green';
-  //        if (tag === 'Unpaid') {
-  //          color = 'volcano';
-  //        }
-  //        return (
-  //          <Tag color={color} key={tag}>
-  //            {tag.toUpperCase()}
-  //          </Tag>
-  //        );
-  //      })}
-  //    </span>
-  //  )
-  //},
   {
     title: 'Total',
     dataIndex: 'total',
     key: 'total'
-  },
-  //{
-  //  title: 'Amount Received',
-  //  dataIndex: 'amountReceived',
-  //  key: 'amountReceived'
-  //}
-  //{
-  //  title: 'Action',
-  //  key: 'action',
-  //  render: (text, record) => (
-  //    <span>
-  //      <p>Invite {record.name}</p>
-  //      <Divider type="vertical" />
-  //      <p>Delete</p>
-  //    </span>
-  //  )
-  //}
-];
-
-const data = [
-  {
-    key: '1',
-    date: '10/02/2019',
-    bottleIn: 5,
-    bottleOut: 0,
-    bottleBalance: 5,
-    paymentStatus: ['Paid'],
-    amount: 300,
-    amountReceived: 0
-  },
-  {
-    key: '2',
-    date: '10/02/2019',
-    bottleIn: 5,
-    bottleOut: 5,
-    bottleBalance: 5,
-    paymentStatus: ['Unpaid'],
-    amount: 300,
-    amountReceived: 0
-  },
-  {
-    key: '3',
-    date: '10/02/2019',
-    bottleIn: 5,
-    bottleOut: 4,
-    bottleBalance: 6,
-    paymentStatus: ['Paid'],
-    amount: 300,
-    amountReceived: 600
   }
 ];
 
 class Detail extends PureComponent {
   render() {
 
-    const { history, match } = this.props;
+    const { match } = this.props;
     const { params } = match;
     const { id } = params;
 
@@ -152,10 +67,10 @@ class Detail extends PureComponent {
                       <Badge status="processing" text={status} />
                     </Descriptions.Item>
                     <Descriptions.Item label="Payment Method" span={1.5}><Tag color='magenta'>{payment.method.replace("_", " ")}</Tag></Descriptions.Item>
-                    <Descriptions.Item label="Payment Status" span={1.5}><Tag color='#87d068'>{payment.status}</Tag></Descriptions.Item>
-                    <Descriptions.Item label="Total Amount"><Tag color='#f5222d'>Rs{ payment.balance + payment.paid || 0}</Tag></Descriptions.Item>
-                    <Descriptions.Item label="Paid Amount"><Tag color='#52c41a'>Rs{ payment.paid }</Tag></Descriptions.Item>
-                    <Descriptions.Item label="Balance Amount"><Tag color='#ffa0a0'>Rs{ payment.balance }</Tag></Descriptions.Item>
+                    <Descriptions.Item label="Payment Status" span={1.5}><Tag color='green'>{payment.status}</Tag></Descriptions.Item>
+                    <Descriptions.Item label="Total Amount"><Tag color='green'>Rs</Tag><Statistic value={payment.balance + payment.paid || 0} precision={2} /></Descriptions.Item>
+                    <Descriptions.Item label="Paid Amount"><Tag color='lightgrey'>Rs</Tag><Statistic value={ payment.paid } precision={2} /></Descriptions.Item>
+                    <Descriptions.Item label="Balance Amount"><Tag color='red'>Rs</Tag><Statistic value={ payment.balance } precision={2} /></Descriptions.Item>
                   </Descriptions>
                 </Col>
               </Row>
