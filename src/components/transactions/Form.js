@@ -72,6 +72,7 @@ class MainForm extends Component {
       const { transaction, open } = nextProps;
       const { items, adding } = this.state;
       const { id, type, user, status, payment } = transaction;
+      console.log(transaction,"trans=====")
       // // If updating transaction
       if (id) {
         // make items
@@ -667,7 +668,7 @@ class MainForm extends Component {
                                 <Col span={3}>
                                   <FormItem label={`Quantity`} className='bottle-status-width'>
                                     <InputNumber
-                                      defaultValue={value.quantity}
+                                      value={value.quantity}
                                       formatter={value => `${value}`}
                                       onChange={this.onChangeItem.bind(this, 'percentage', index, value.id)}
                                     />
