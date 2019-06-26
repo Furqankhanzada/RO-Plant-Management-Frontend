@@ -3,15 +3,17 @@ import { Table, Divider, Tag } from 'antd';
 import { Query } from 'react-apollo';
 import { Layout, Card, Icon, Empty, Row, Col, Statistic, Spin } from 'antd';
 import { CUSTOMER_QUERY } from '../../graphql/queries/customer'
-import TransactionTable from '../TransactionsPage'
+import { GET_TRANSACTIONS } from '../../graphql/queries/transaction'
+import Transaction from '../transactions/index.js'
+
+
 
 class Detail extends PureComponent {
-     render() {
+    render() {
 
         const { history, match } = this.props;
         const { params } = match;
         const { id } = params;
-
         return (
             <Layout className="user-main-div">
                 <Row className="flex-box">
@@ -31,25 +33,23 @@ class Detail extends PureComponent {
                                                 />
                                             }
                                             actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
-                                            >
+                                        >
                                             <h3>{customer.name}</h3>
                                             <p
                                                 style={{ fontWeight:600 }}
-                                                >{customer.mobile}</p>
+                                            >{customer.mobile}</p>
                                             <p>{`${customer.address.house} ${customer.address.area} ${customer.address.block} ${customer.address.town}`}</p>
                                             {
                                                 customer.discounts.map((value, index) => {
                                                     return(
-                                                    <div className="product-details">
-                                                        <h3>Discount : <span>{value.discount ? (100 - (value.discount / value.product.price) * 100).toFixed() : 0}%</span></h3>
-                                                        <h3>Product : <span>{value.product.name}</span></h3>
-                                                        <h3>Price : <span>{value.product.price}</span></h3>
-                                                    </div>
+                                                        <div className="product-details">
+                                                            <h3>Discount : <span>{value.discount ? (100 - (value.discount / value.product.price) * 100).toFixed() : 0}%</span></h3>
+                                                            <h3>Product : <span>{value.product.name}</span></h3>
+                                                            <h3>Price : <span>{value.product.price}</span></h3>
+                                                        </div>
                                                     )
-                                            })
+                                                })
                                             }
-
-
                                             <Tag color="#87d068">Cash</Tag>
                                             <Tag color="#2db7f5">Monthly</Tag>
                                         </Card>
@@ -84,14 +84,21 @@ class Detail extends PureComponent {
                                            Chart Will be here
                                         </span>
                                     }
-                                    >
+                                >
                                 </Empty>
                             </div>
                         </div>
                     </Col>
                 </Row>
                 <div className="card padding-none space-bottom">
-                    <TransactionTable />
+                    <Query query={GET_TRANSACTIONS} variables={{where:{user:{id}}}}>
+                        { ({ data, loading }) => {
+                            const {transactions} = data;
+                            return(
+                                <Transaction transactions={transactions} loading={loading} history={history} />
+                            )
+                        }}
+                    </Query>
                 </div>
             </Layout>
         )
@@ -100,3 +107,4 @@ class Detail extends PureComponent {
 
 
 export default Detail
+
