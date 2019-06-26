@@ -22,12 +22,7 @@ const TwoColProps = {
 };
 
 class Filter extends Component {
-    componentDidUpdate(prevProps) {
-        if (Object.keys(prevProps.filter).length === 0) {
-            this.handleReset()
-        }
-    }
-    handleFields = fields => {
+    handleFields(fields) {
         const { transactionAt } = fields;
         if (transactionAt.length) {
             fields.transactionAt = [
@@ -38,7 +33,7 @@ class Filter extends Component {
         return fields
     };
 
-    handleSubmit = () => {
+    handleSubmit(){
         const { onFilterChange, form } = this.props;
         const { getFieldsValue } = form;
 
@@ -47,7 +42,7 @@ class Filter extends Component {
         onFilterChange(fields)
     };
 
-    handleReset = () => {
+    handleReset(){
         const { form } = this.props;
         const { getFieldsValue, setFieldsValue } = form;
         const fields = getFieldsValue();
@@ -63,7 +58,7 @@ class Filter extends Component {
         setFieldsValue(fields);
         this.handleSubmit()
     };
-    handleChange = (key, values) => {
+    handleChange(key, values){
         const { form, onFilterChange } = this.props;
         const { getFieldsValue } = form;
 
@@ -73,7 +68,7 @@ class Filter extends Component {
         onFilterChange(fields)
     };
 
-    openDrawer = () => {
+    openDrawer(){
         client.mutate({
             mutation: gql`
             mutation openDrawer($status: Boolean!, $id: String) {
@@ -87,8 +82,8 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        const { type = "", status = "", transactionAt } = filter;
-
+        let { type = "", status = "", payment = "" } = filter;
+        type = 'None';
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
             initialtransactionAt[0] = moment(filter.transactionAt[0])
@@ -98,8 +93,8 @@ class Filter extends Component {
         }
 
         return (
-            <Row gutter={24}>
-                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 6 }} sm={{ span: 12 }} md={{ span: 12 }}>
+            <Row gutter={16}>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 12 }} sm={{ span: 8 }} md={{ span: 8 }}>
                     <span className="transactions-label">Type</span>
                     {getFieldDecorator('type', { initialValue: type })(
                         <Select
@@ -111,7 +106,7 @@ class Filter extends Component {
                         </Select>
                     )}
                 </Col>
-                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 6 }} sm={{ span: 12 }} md={{ span: 12 }}>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 12 }} sm={{ span: 8 }} md={{ span: 8 }}>
                     <span className="transactions-label">Status</span>
                     {getFieldDecorator('status', { initialValue: status })(
                         <Select
@@ -124,27 +119,50 @@ class Filter extends Component {
                         </Select>
                     )}
                 </Col>
-                <Col className="transactions-box" {...ColProps} xl={{ span: 8 }} lg={{ span: 12 }} sm={{ span: 24 }} md={{ span: 24 }}>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 4 }} lg={{ span: 8 }} sm={{ span: 8 }} md={{ span: 8 }}>
+                    <span className="transactions-label">Payment</span>
+                    {getFieldDecorator('payment', { initialValue: payment })(
+                        <Select
+                            onChange={this.handleChange.bind(this, 'payment' )}
+                            className="type-field" >
+                            <Option value="">None</Option>
+                            <Option value="PAID">PAID</Option>
+                            <Option value="UNPAID">UNPAID</Option>
+                        </Select>
+                    )}
+                </Col>
+                <Col className="transactions-box" {...ColProps} xl={{ span: 6 }} lg={{ span: 16 }} sm={{ span: 24 }} md={{ span: 24 }}>
                     <span className="transactions-label">Transaction</span>
                     {getFieldDecorator('transactionAt', {
                         initialValue: initialtransactionAt,})(
-                    < RangePicker onChange={this.handleChange.bind(this, 'transactionAt')} className="range-picker"/>
-                    )}
+                    < RangePicker
+                        ranges={{
+                            'This Week': [moment().startOf('week'), moment().endOf('week')],
+                            'Last Week': [moment().day(-7, "monday"), moment().day("sunday")],
+                            'This Month': [moment().startOf('month'), moment().endOf('month')],
+                            'Last Month': [moment().subtract(1,'month').date(1),moment().subtract(1,'month').endOf('month')],
+                            'Last 6 Month': [moment().subtract(6,'month').date(1),moment().subtract(6,'month').endOf('month')],
+                        }}
+                        showTime
+                        format="YYYY/MM/DD hh:mm A"
+                        onChange={this.handleChange.bind(this, 'transactionAt')}
+                        className="range-picker"
+                    />
+
+                        )}
                 </Col>
 
-                <Col
-                    {...TwoColProps} xl={{ span: 8 }} lg={{ span: 24 }} md={{ span: 24 }} sm={{ span: 24 }}
-                >
+                <Col{...TwoColProps} xl={{ span: 6 }} lg={{ span: 24 }} md={{ span: 24 }} sm={{ span: 24 }}>
                     <Row type="flex" align="middle" justify="space-between">
                         <div>
                             <Button
                                 type="primary"
                                 className="margin-right search-btn"
-                                onClick={this.handleSubmit}
+                                onClick={this.handleSubmit.bind(this, 'handleSubmit')}
                             >
                                 <span>Search</span>
                             </Button>
-                            <Button onClick={this.handleReset}>
+                            <Button onClick={this.handleReset.bind(this, 'handleReset')}>
                                 <span>Reset</span>
                             </Button>
                         </div>

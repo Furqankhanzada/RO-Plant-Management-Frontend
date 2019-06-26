@@ -27,13 +27,18 @@ class TransactionsPage extends Component {
   onRouteChanged() {
     const { transactionsQuery: { refetch }, location: { search } } = this.props;
     const query = parse(search);
-    let where = {};
+    let where = {payment:{}};
     if (query.type) {
       where.type = query.type
     }
     if (query.status) {
       where.status = query.status
     }
+
+    if (query.payment ) {
+      where.payment.status = query.payment
+    }
+
     if (query.transactionAt) {
       where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
       where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
@@ -61,23 +66,27 @@ class TransactionsPage extends Component {
   render() {
     const { transactions, loading } = this.props.transactionsQuery;
     return (
-      <Transaction transactions={transactions} loading={loading} history={this.props.history} />
+        <Transaction transactions={transactions} loading={loading} history={this.props.history} />
     )
   }
 }
 
-withRouter(TransactionsPage);
+TransactionsPage = withRouter(TransactionsPage);
 
 export default graphql(GET_TRANSACTIONS, {
   name: 'transactionsQuery', // name of the injected prop: this.props.transactionsQuery...
-  options: ({ location: { search = {} } }) => {
+  options: ({ location: { search = {} } = {} }) => {
     const query = parse(search);
-    let where = {};
+    let where = {payment:{}};
     if (query.type) {
       where.type = query.type
     }
     if (query.status) {
       where.status = query.status
+    }
+
+    if (query.payment  ) {
+      where.payment.status  = query.payment
     }
     if (query.transactionAt) {
       where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
@@ -87,7 +96,7 @@ export default graphql(GET_TRANSACTIONS, {
     return {
       variables: {
         where
-    }
+      }
     }
   },
   props: props => {
