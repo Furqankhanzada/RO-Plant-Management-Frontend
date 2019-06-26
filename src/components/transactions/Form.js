@@ -72,6 +72,7 @@ class MainForm extends Component {
       const { transaction, open } = nextProps;
       const { items, adding } = this.state;
       const { id, type, user, status, payment } = transaction;
+      console.log(transaction,"trans=====")
       // // If updating transaction
       if (id) {
         // make items
@@ -226,8 +227,10 @@ class MainForm extends Component {
     const { validateFields, resetFields } = form;
     const id = this.props.updateStatus;
     let { items, deleteItem } = this.state;
+    const userID = this.state.user;
     const dupItem = [];
     const editDup = [];
+    let userBottleBalance = 0;
     validateFields(async (err, values) => {
 
       if (!err) {
@@ -252,11 +255,13 @@ class MainForm extends Component {
                 return value.product.id === items[i].product.id
               })
             }
+            userBottleBalance = items[i].bottleOut ? items[i].bottleOut + userBottleBalance : userBottleBalance
             let itemsObj = {
               quantity: items[i].quantity,
               transactionAt: items[i].transactionAt,
               bottleOut: items[i].bottleOut ? items[i].bottleOut : 0,
               total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
+              discount: userDiscount ? (items[i].product.price - userDiscount.discount) * items[i].quantity : 0,
               product: {
                 connect: {
                   id: items[i].product.id
@@ -273,6 +278,7 @@ class MainForm extends Component {
                   transactionAt: items[i].transactionAt,
                   bottleOut: items[i].bottleOut ? items[i].bottleOut : 0,
                   total: userDiscount ? items[i].quantity * userDiscount.discount : items[i].quantity * items[i].product.price,
+                  discount: userDiscount ? (items[i].product.price - userDiscount.discount) * items[i].quantity : 0,
                   product: {
                     connect: {
                       id: items[i].product.id
@@ -309,12 +315,15 @@ class MainForm extends Component {
             status,
             items: {
               create: dupItem
-            }
-          }
+            },
+
+          },
+          bottleBalance: userBottleBalance
         };
 
         if (id) {
           delete transaction.data.user;
+          transaction.userID = userID.id
           transaction.where = { id };
 
 
@@ -659,7 +668,7 @@ class MainForm extends Component {
                                 <Col span={3}>
                                   <FormItem label={`Quantity`} className='bottle-status-width'>
                                     <InputNumber
-                                      defaultValue={value.quantity}
+                                      value={value.quantity}
                                       formatter={value => `${value}`}
                                       onChange={this.onChangeItem.bind(this, 'percentage', index, value.id)}
                                     />

@@ -32,7 +32,9 @@ class MainForm extends Component {
       disableBtn: false,
       selectedValue: '',
       deleteDiscount: [],
-      editDiscount: []
+      editDiscount: [],
+      adding: false,
+      addressId: ''
     }
   }
 
@@ -50,7 +52,8 @@ class MainForm extends Component {
     // can use data-binding to get
     discounts.push(discountsObj);
     this.setState({
-      discounts
+      discounts,
+      adding: true
     })
   }
   componentWillReceiveProps(nextProps) {
@@ -58,18 +61,21 @@ class MainForm extends Component {
 
       const { customer } = nextProps;
       const { id, name, mobile, address: { town, area, block, house } } = customer;
+      const { adding } = this.state;
       // If updating customer
       if (id) {
-        // make discounts
-        const discountArray = customer.discounts.map((value) => {
-          value.product.selected = true;
-          return value
-        });
-        // set customer to state
-        this.setState({ name, town, area, block, house, mobile, discounts: discountArray})
+        if (!adding) {
+          // make discounts
+          const discountArray = customer.discounts.map((value) => {
+            value.product.selected = true;
+            return value
+          });
+          // set customer to state
+          this.setState({ name, town, area, block, house, mobile, discounts: discountArray })
+        }
       }
     } else {
-      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '', discounts: []})
+      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '' })
     }
   }
 
@@ -112,15 +118,16 @@ class MainForm extends Component {
     }
     discounts.splice(index, 1);
     this.setState({
-      discounts
+      discounts,
+      adding: true
     })
   }
-  handledSubmit (e) {
+  handledSubmit(e) {
     e.preventDefault();
     const { customer: { id } = {}, form, createCustomer, updateCustomer } = this.props;
     const { validateFields, resetFields } = form;
 
-    let { discounts, deleteDiscount } = this.state;
+    let { discounts, deleteDiscount, addressId } = this.state;
     const dupDiscount = [];
     const editDup = [];
     validateFields(async (err, values) => {
@@ -150,9 +157,8 @@ class MainForm extends Component {
                 data: {
                   discount: discounts[i].discount,
                   product: {
-                    create: {
-                      name: discounts[i].product.name,
-                      price: discounts[i].product.price
+                    connect: {
+                      id: discounts[i].product.id
                     }
                   }
                 }
@@ -190,7 +196,15 @@ class MainForm extends Component {
           delete customer.password;
           delete customer.mobile;
           customer.id = id;
-
+          delete customer.data.address;
+          customer.data.address = {
+            update: {
+              town,
+              area,
+              block,
+              house
+            }
+          }
           if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
             delete customer.data.discounts.create;
             customer.data.discounts.delete = deleteDiscount
@@ -211,7 +225,8 @@ class MainForm extends Component {
             this.setState({
               disableBtn: false,
               editDiscount: [],
-              deleteDiscount: []
+              deleteDiscount: [],
+              adding: false
             });
             client.mutate({
               mutation: gql`
@@ -224,18 +239,18 @@ class MainForm extends Component {
               variables: { status: false, id: '' }
             })
           })
-          .catch(err => {
-            this.setState({
-              disableBtn: false
-            });
-            const { graphQLErrors } = err;
-            graphQLErrors.forEach(element => {
-              message.error(element.message);
-            });
-            this.setState({
-              loading: false
-            });
-          })
+            .catch(err => {
+              this.setState({
+                disableBtn: false
+              });
+              const { graphQLErrors } = err;
+              graphQLErrors.forEach(element => {
+                message.error(element.message);
+              });
+              this.setState({
+                loading: false
+              });
+            })
         } else {
           if (dupDiscount.length < 1) {
             delete customer.data.discounts
@@ -260,6 +275,7 @@ class MainForm extends Component {
                   product: ''
                 }
               ],
+              adding: false
             }, () => {
               resetFields();
               message.success('Customer has been created successfully');
@@ -295,6 +311,10 @@ class MainForm extends Component {
     const { setFieldsValue } = this.props.form;
     setFieldsValue({
       [ev.target.name]: ev.target.value
+    }, () => {
+        this.setState({
+          adding: true
+        })
     });
   }
 
@@ -308,6 +328,10 @@ class MainForm extends Component {
           }
       `,
       variables: { status: false, id: '' }
+    }).then(() => {
+      this.setState({
+        adding: false
+      })
     })
   }
 
