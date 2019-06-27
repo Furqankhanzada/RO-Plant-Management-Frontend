@@ -760,6 +760,9 @@ img {
     .flex-box {
         display: block !important;
     }
+    .dashboard .ant-card {
+        margin-bottom: 12px;
+    }
 
 }
 @media (min-width: 320px) and (max-width: 430px) {
@@ -793,6 +796,9 @@ img {
     }
     .card .ant-card-body {
         padding: 15px;
+    }
+    .nav-logo img {
+        display: none;
     }
 
 }
@@ -860,6 +866,9 @@ img {
     }
     .flex-box {
         display: block !important;
+    }
+    .dashboard .ant-card {
+        margin-bottom: 12px;
     }
 
 }

@@ -15,7 +15,7 @@ class Dashboard extends Component {
             <Fragment>
                 <div className="dashboard">
                     <Row gutter={16}>
-                        <Col className="" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                        <Col className="" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                             <Card style={{ width: '100%' }}>
                                 <Icon className="review-icon" type="pay-circle" />
                                 <div className="dashboard-details">
@@ -24,7 +24,7 @@ class Dashboard extends Component {
                                 </div>
                             </Card>
                         </Col>
-                        <Col className="" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                        <Col className="" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                             <Card style={{ width: '100%' }}>
                                 <Icon className="customer-icon" type="team" />
                                 <div className="dashboard-details">
@@ -33,7 +33,7 @@ class Dashboard extends Component {
                                 </div>
                             </Card>
                         </Col>
-                        <Col className="" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                        <Col className="" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                             <Card style={{ width: '100%' }}>
                                 <Icon className="projects-icon" type="message" />
                                 <div className="dashboard-details">
@@ -42,7 +42,7 @@ class Dashboard extends Component {
                                 </div>
                             </Card>
                         </Col>
-                        <Col className="" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                        <Col className="" xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                             <Card style={{ width: '100%' }}>
                                 <Icon className="referrals-icon" type="shopping-cart" />
                                 <div className="dashboard-details">
