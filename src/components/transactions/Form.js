@@ -639,7 +639,7 @@ class MainForm extends Component {
                                 <Col span={3}>
                                   <FormItem label={`Is Returnable?`} colon={false} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <Button type="primary" size="medium" onClick={this.onChangeItem.bind(this, 'bottle', index, value.id, !value.bottleStatus)} >
-                                      {value.bottleStatus ? 'No' : 'Yes'}
+                                      {value.bottleStatus ? 'Yes' : 'No'}
                                     </Button>
                                   </FormItem>
                                 </Col>
@@ -674,6 +674,20 @@ class MainForm extends Component {
                                     />
                                   </FormItem>
                                 </Col>
+                                  {
+                                    value.bottleStatus ? (
+                                      <Col span={3}>
+                                        <FormItem label={`Bottles Out`} className={`${value.bottleStatus ? 'bottle-status-width' : 'full-width'}`}>
+                                          <InputNumber
+                                            value={value.bottleOut}
+                                            formatter={value => `${value}`}
+                                            onChange={this.onChangeItem.bind(this, 'bottlesOut', index, value.id)}
+  
+                                          />
+                                        </FormItem>
+                                      </Col>
+                                    ) : null
+                                  }
                                 <Col span={4}>
                                   <FormItem label={`Total`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <InputNumber disabled={true}
@@ -683,20 +697,6 @@ class MainForm extends Component {
                                     />
                                   </FormItem>
                                 </Col>
-                                {
-                                  value.bottleStatus ? (
-                                    <Col span={3}>
-                                      <FormItem label={`Bottles Out`} className={`${value.bottleStatus ? 'bottle-status-width' : 'full-width'}`}>
-                                        <InputNumber
-                                          value={value.bottleOut}
-                                          formatter={value => `${value}`}
-                                          onChange={this.onChangeItem.bind(this, 'bottlesOut', index, value.id)}
-
-                                        />
-                                      </FormItem>
-                                    </Col>
-                                  ) : null
-                                }
                                 <Col span={1}>
                                   <Icon
                                     className="dynamic-delete-button removeButtonDiscount"
