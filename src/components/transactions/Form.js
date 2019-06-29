@@ -79,7 +79,7 @@ class MainForm extends Component {
         if (!adding) {
           const discountArray = transaction.items.map((value) => {
             value.product.selected = true;
-            value.bottleStatus = value.bottleOut ? true : false
+            value.bottleStatus = value.bottleOut || value.bottleOut === 0 ? true : false
             return value
           });
           // set transaction to state
@@ -113,7 +113,7 @@ class MainForm extends Component {
     const { discounts } = userUpdateDiscount;
     let balancedPrice = 0;
     if (type === "percentage") {
-      itemsObject.quantity = ev
+      itemsObject.quantity = ev;
       items.map((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
@@ -228,9 +228,12 @@ class MainForm extends Component {
     const id = this.props.updateStatus;
     let { items, deleteItem } = this.state;
     const userID = this.state.user;
+    console.log()
+    const { bottle } = userID;
+    let { balance } = bottle || 0;
     const dupItem = [];
     const editDup = [];
-    let userBottleBalance = 0;
+    let userBottleBalance =  0;
     validateFields(async (err, values) => {
 
       if (!err) {
@@ -255,7 +258,6 @@ class MainForm extends Component {
                 return value.product.id === items[i].product.id
               })
             }
-            userBottleBalance = items[i].bottleOut ? items[i].bottleOut + userBottleBalance : userBottleBalance
             let itemsObj = {
               quantity: items[i].quantity,
               transactionAt: items[i].transactionAt,
@@ -286,17 +288,22 @@ class MainForm extends Component {
                   }
                 }
               };
+              
               editDup.push(editObj)
             }
             if (id && items[i].new === true) {
+              userBottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + userBottleBalance : items[i].quantity
               dupItem.push(itemsObj)
             } else if (!id) {
+              userBottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + userBottleBalance : items[i].quantity
               dupItem.push(itemsObj)
             }
           }
         }
         // create transaction object
         if (!id) {
+          balance = JSON.parse(user).bottle.balance
+          console.log(balance,"balance", userBottleBalance)
           user = JSON.parse(user).id
         }
         let transaction = {
@@ -318,7 +325,7 @@ class MainForm extends Component {
             },
 
           },
-          bottleBalance: userBottleBalance
+          bottleBalance: balance ? balance + userBottleBalance : userBottleBalance
         };
 
         if (id) {
@@ -339,6 +346,7 @@ class MainForm extends Component {
           }
           if (editDup.length > 0) {
             transaction.data.items.update = editDup;
+            transaction.edit = true;
           }
           updateTransaction({
             variables: transaction,
@@ -381,6 +389,7 @@ class MainForm extends Component {
           }
           createTransaction({
             variables: transaction,
+            refetchQueries: [{ query: GET_CUSTOMERS, variables: {where: {name_contains: this.state.searchValue}, first: 3} }],
             update: (proxy, { data: { createTransaction } }) => {
               // Read the data from our cache for this query.
               const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: {} } });
@@ -395,8 +404,11 @@ class MainForm extends Component {
               disableBtn: false,
               items: [
                 {
-                  discount: 0,
-                  product: ''
+                  quantity: 0,
+                  product: '',
+                  total: 0,
+                  bottleStatus: false,
+                  transactionAt: new Date()
                 }
               ],
               adding: false
@@ -532,7 +544,7 @@ class MainForm extends Component {
                                 disabled={user.name ? true : false}
                                 notFoundContent={loading ? <Spin size="small" /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
                               >
-                                {customers.map(({ id, name, mobile, discounts }) => <Option key={JSON.stringify({ id, discounts })}>{name} : {mobile}</Option>)}
+                                {customers.map(({ id, name, mobile, discounts, bottle }) => <Option key={JSON.stringify({ id, discounts, bottle })}>{name} : {mobile}</Option>)}
 
 
                               </Select>,
@@ -666,7 +678,7 @@ class MainForm extends Component {
                                   </Form.Item>
                                 </Col>
                                 <Col span={3}>
-                                  <FormItem label={`Quantity`} className='bottle-status-width'>
+                                  <FormItem label={`Quantity / In`} className='bottle-status-width'>
                                     <InputNumber
                                       value={value.quantity}
                                       formatter={value => `${value}`}
