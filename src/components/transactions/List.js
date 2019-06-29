@@ -209,4 +209,4 @@ const DELETE_TRANSACTION_MUTATION = gql`
     }
 `;
 
-export default graphql(DELETE_TRANSACTION_MUTATION, { name: 'deleteTransaction' })(List)
+export default  graphql(DELETE_TRANSACTION_MUTATION, { name: 'deleteTransaction' })(List)

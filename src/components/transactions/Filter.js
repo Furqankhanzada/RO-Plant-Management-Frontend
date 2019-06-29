@@ -61,7 +61,6 @@ class Filter extends Component {
     handleChange(key, values){
         const { form, onFilterChange } = this.props;
         const { getFieldsValue } = form;
-
         let fields = getFieldsValue();
         fields[key] = values;
         fields = this.handleFields(fields);
@@ -82,8 +81,8 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
+        console.log(this.props,"====fikly")
         let { type = "", status = "", payment = "" } = filter;
-        type = 'None';
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {
             initialtransactionAt[0] = moment(filter.transactionAt[0])
