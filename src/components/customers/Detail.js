@@ -1,23 +1,59 @@
 import React, { PureComponent } from 'react'
 import { Table, Divider, Tag } from 'antd';
-import { Query } from 'react-apollo';
+import {graphql, Query} from 'react-apollo';
 import { Layout, Card, Icon, Empty, Row, Col, Statistic, Spin } from 'antd';
 import { CUSTOMER_QUERY } from '../../graphql/queries/customer'
-import { GET_TRANSACTIONS } from '../../graphql/queries/transaction'
+import {GET_TRANSACTIONS, TRANSACTION_SUBSCRIPTION} from '../../graphql/queries/transaction'
 import Transaction from '../transactions/index.js'
+import moment from "../TransactionsPage";
+import { parse } from 'qs'
 
 
 
 class Detail extends PureComponent {
+    componentDidUpdate(prevProps) {
+        if (this.props.location !== prevProps.location) {
+            this.onRouteChanged();
+        }
+    }
+    onRouteChanged() {
+        let { transactionsQuery: { refetch }, location: { search, pathname } } = this.props;
+        pathname = pathname.split("/")[2]
+        const query = parse(search);
+        let where = {payment:{}};
+        where.user = {
+            id: pathname
+        }
+        if (query.type) {
+            where.type = query.type
+        }
+        if (query.status) {
+            where.status = query.status
+        }
+
+        if (query.payment ) {
+            where.payment.status = query.payment
+        }
+
+        if (query.transactionAt) {
+            where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
+            where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
+        }
+
+        refetch({
+            where
+        })
+    }
     render() {
 
-        const { history, match } = this.props;
+        const { history, match, transactionsQuery } = this.props;
+        const { transactions } = transactionsQuery;
+        console.log(transactions,"transactionstransactions")
         const { params } = match;
         const { id } = params;
         return (
             <Layout className="user-main-div">
                 <Row className="flex-box">
-
                     <Col className="flex-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }} xl={{ span: 6 }}>
                         <div className="card padding-none loading-center">
                             <Query query={CUSTOMER_QUERY} variables={{ id }}>
@@ -91,20 +127,74 @@ class Detail extends PureComponent {
                     </Col>
                 </Row>
                 <div className="card padding-none space-bottom">
-                    <Query query={GET_TRANSACTIONS} variables={{where:{user:{id}}}}>
-                        { ({ data, loading }) => {
-                            const {transactions} = data;
-                            return(
-                                <Transaction transactions={transactions} loading={loading} history={history} />
-                            )
-                        }}
-                    </Query>
+
+                                <Transaction transactions={transactions} loading={transactions ? false : true} history={history} />
+
                 </div>
             </Layout>
         )
     }
 }
 
+export default graphql(GET_TRANSACTIONS, {
+    name: 'transactionsQuery', // name of the injected prop: this.props.transactionsQuery...
+    options: ({ location: { search = {}, pathname } = {} }) => {
+        pathname = pathname.split("/")[2]
+        console.log(pathname,"===location")
+        const query = parse(search);
+        let where = {payment:{}};
+        where.user = {
+            id: pathname
+        }
+        if (query.type) {
+            where.type = query.type
+        }
+        if (query.status) {
+            where.status = query.status
+        }
 
-export default Detail
+        if (query.payment  ) {
+            where.payment.status  = query.payment
+        }
+        if (query.transactionAt) {
+            where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
+            where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
+        }
+
+        return {
+            variables: {
+                where
+            }
+        }
+    },
+    props: props => {
+        return Object.assign({}, props, {
+            subscribeToTransaction: params => {
+                return props.transactionsQuery.subscribeToMore({
+                    document: TRANSACTION_SUBSCRIPTION,
+                    updateQuery: (prev, { subscriptionData }) => {
+                        if (!subscriptionData.data) {
+                            return prev
+                        }
+                        const newTransaction = subscriptionData.data.transactionSubscription;
+                        if (newTransaction) {
+                            if (prev.transactions.find(transaction => transaction.id === newTransaction.id)) {
+                                return prev
+                            }
+                            return Object.assign({}, prev, {
+                                transactions: [...prev.transactions, newTransaction]
+                            })
+                        }
+                        // Execute when delete item
+                        return Object.assign({}, prev, {
+                            transactions: [...prev.transactions]
+                        })
+                    }
+                })
+            }
+        })
+    }
+})(Detail)
+
+
 

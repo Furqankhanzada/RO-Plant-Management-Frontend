@@ -12,13 +12,16 @@ class User extends PureComponent {
   }
   render() {
     const { loading, history, transactions } = this.props;
+    const {location: {pathname}} = history;
+    // const {user} = transactions;
     // Fill filters input by url query params
     const { location: { search } } = history;
     const query = parse(search.replace('?', ''));
 
     const handleRefresh = newQuery => {
+      console.log(newQuery,"newawu======")
       this.props.history.push({
-        pathname: '/transactions',
+        pathname: pathname === "/transactions" ? "/transactions" : pathname,
         search: stringify(
           {
             ...query,
@@ -51,11 +54,10 @@ class User extends PureComponent {
         })
       }
     };
-
     return (
       <div className="contents">
         <Filter {...filterProps} history={history} />
-        <List history={history} {...listProps} />
+        <List  {...listProps} history={history} />
         <Query query={GET_DRAWER_STATUS}>
           {
             ({ data: { Drawer } }) => {
