@@ -10,7 +10,6 @@ import { client } from '../../index'
 import gql from 'graphql-tag';
 import { DatePicker } from 'antd';
 import moment from 'moment';
-const { MonthPicker, RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 
 const { Option } = Select;
@@ -69,17 +68,16 @@ class MainForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.updateStatus) {
-      const { transaction, open } = nextProps;
-      const { items, adding } = this.state;
+      const { transaction } = nextProps;
+      const { adding } = this.state;
       const { id, type, user, status, payment } = transaction;
-      console.log(transaction,"trans=====")
       // // If updating transaction
       if (id) {
         // make items
         if (!adding) {
           const discountArray = transaction.items.map((value) => {
             value.product.selected = true;
-            value.bottleStatus = value.bottleOut || value.bottleOut === 0 ? true : false
+            value.bottleStatus = !!(value.bottleOut || value.bottleOut === 0);
             return value
           });
           // set transaction to state
@@ -114,10 +112,10 @@ class MainForm extends Component {
     let balancedPrice = 0;
     if (type === "percentage") {
       itemsObject.quantity = ev;
-      items.map((value) => {
+      items.forEach((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
-        }) : null
+        }) : null;
         const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
         balancedPrice = balancedPrice + productPrice;
       })
@@ -227,13 +225,9 @@ class MainForm extends Component {
     const { validateFields, resetFields } = form;
     const id = this.props.updateStatus;
     let { items, deleteItem } = this.state;
-    const userID = this.state.user;
-    console.log()
-    const { bottle } = userID;
-    let { balance } = bottle || 0;
+    let { bottleBalance, id: userId } = this.state.user;
     const dupItem = [];
     const editDup = [];
-    let userBottleBalance =  0;
     validateFields(async (err, values) => {
 
       if (!err) {
@@ -288,22 +282,22 @@ class MainForm extends Component {
                   }
                 }
               };
-              
+
               editDup.push(editObj)
             }
             if (id && items[i].new === true) {
-              userBottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + userBottleBalance : items[i].quantity
+              bottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + bottleBalance : items[i].quantity
               dupItem.push(itemsObj)
             } else if (!id) {
-              userBottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + userBottleBalance : items[i].quantity
+              bottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + bottleBalance : items[i].quantity
               dupItem.push(itemsObj)
             }
           }
         }
         // create transaction object
+        let balance;
         if (!id) {
-          balance = JSON.parse(user).bottle.balance
-          console.log(balance,"balance", userBottleBalance)
+          balance = JSON.parse(user).bottleBalance
           user = JSON.parse(user).id
         }
         let transaction = {
@@ -322,15 +316,21 @@ class MainForm extends Component {
             status,
             items: {
               create: dupItem
-            },
-
+            }
           },
-          bottleBalance: balance ? balance + userBottleBalance : userBottleBalance
+          bottleBalance: balance ? balance + bottleBalance : bottleBalance
         };
 
         if (id) {
+
+          transaction.data.payment = {
+            update: {
+            ...payment
+            }
+          };
+
           delete transaction.data.user;
-          transaction.userID = userID.id
+          transaction.userID = userId;
           transaction.where = { id };
 
 
@@ -524,7 +524,7 @@ class MainForm extends Component {
                     <h3>General</h3>
 
                     <Query query={GET_CUSTOMERS} variables={{ where, first: 3 }}>
-                      {({ loading, error, data: { customers = [] } }) => {
+                      {({ loading, error, data: { customers = [] } = {} }) => {
                         if (loading) {
                           customers = [];
                         }
@@ -694,7 +694,7 @@ class MainForm extends Component {
                                             value={value.bottleOut}
                                             formatter={value => `${value}`}
                                             onChange={this.onChangeItem.bind(this, 'bottlesOut', index, value.id)}
-  
+
                                           />
                                         </FormItem>
                                       </Col>

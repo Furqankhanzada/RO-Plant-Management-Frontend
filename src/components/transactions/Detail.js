@@ -65,7 +65,7 @@ class Detail extends PureComponent {
       <Query query={GET_TRANSACTION} variables={{ id }}>
         {({ data: { transaction }, loading }) => {
           if(loading) return <Spin />;
-          let { status, user: { name, mobile, address, bottle }, payment, items }  = transaction;
+          let { status, user: { name, mobile, address, bottleBalance }, payment, items }  = transaction;
           return (
             <Layout className="user-main-div">
               <Row className="margin-bottom">
@@ -73,7 +73,7 @@ class Detail extends PureComponent {
                   <Descriptions bordered className='transaction-detail'>
                     <Descriptions.Item label="Customer">{name}</Descriptions.Item>
                     <Descriptions.Item label="Mobile">{mobile}</Descriptions.Item>
-                    <Descriptions.Item label="Have Bottles (Count)"><Tag color='red'>{bottle.balance}</Tag></Descriptions.Item>
+                    <Descriptions.Item label="Have Bottles (Count)"><Tag color='red'>{bottleBalance}</Tag></Descriptions.Item>
                     <Descriptions.Item label="Order time">2018-04-24 18:00:00</Descriptions.Item>
                     <Descriptions.Item label="Address" span={3}>
                       {`${address.house} ${address.area} ${address.block} ${address.town}`}
