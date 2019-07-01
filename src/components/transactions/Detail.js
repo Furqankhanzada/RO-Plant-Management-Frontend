@@ -23,22 +23,16 @@ const columns = [
 
   {
     title: 'Price',
-    // colSpan: 2,
     dataIndex: 'product.price',
     key: 'price',
     render: (method, price) => {
       const {discount,quantity} = price
-      return <span><Tag color='green'>{method}</Tag> <Tag color='orange'>{method-(discount/quantity)}</Tag></span>
+      if (discount === method){
+        return <Tag color='green'><span className="discount-price">{method}</span> <span>{method-(discount/quantity)}</span></Tag>
+      }
+      return <Tag color='green'><span>{method}</span></Tag>
     }
   },
-  // {
-  //   title: 'Discount',
-  //   dataIndex: 'discount',
-  //   key: 'discount',
-  //   render: (method) => {
-  //     return <Tag color='orange'>{method}</Tag>
-  //   }
-  // },
   {
     title: 'Quantity',
     dataIndex: 'quantity',
