@@ -885,3 +885,8 @@ img {
 .transaction-detail .ant-descriptions-view {
     background: #fff;
 }
+
+.discount-price {
+    margin-right: 5px;
+    text-decoration: line-through;
+}
