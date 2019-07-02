@@ -16,9 +16,9 @@ export const GET_CUSTOMERS = gql`
             bottleBalance
             discounts{
                 product{
-                  id
-                  price
-                  name
+                    id
+                    price
+                    name
                 }
                 discount
                 id
@@ -45,29 +45,29 @@ export const CUSTOMER_SUBSCRIPTION = gql`
 `;
 
 export const CUSTOMER_QUERY = gql`
-query customerDetail($id: ID){
-    customer(where:{id: $id}) {
-        id
-        name
-        mobile
-        address{
-          town
-          area
-          block
-          house
-          id
-        }
-        discounts{
-        id
-        product{
+    query customerDetail($id: ID){
+        customer(where:{id: $id}) {
             id
-            price
             name
+            mobile
+            address{
+                town
+                area
+                block
+                house
+                id
+            }
+            discounts{
+                id
+                product{
+                    id
+                    price
+                    name
+                }
+                discount
+            }
         }
-          discount
-        }
-      }
-}
+    }
 `;
 export const ME = gql`
     query MeQuery {
