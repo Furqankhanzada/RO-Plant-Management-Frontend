@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react'
 import { Table, Divider, Tag } from 'antd';
 import {graphql, Query} from 'react-apollo';
 import { Layout, Card, Icon, Empty, Row, Col, Statistic, Spin } from 'antd';
-import { CUSTOMER_QUERY } from '../../graphql/queries/customer'
-import {GET_TRANSACTIONS, TRANSACTION_SUBSCRIPTION} from '../../graphql/queries/transaction'
+import {CUSTOMER_QUERY, GET_CUSTOMERS} from '../../graphql/queries/customer'
+import {GET_TRANSACTION, GET_TRANSACTIONS, TRANSACTION_SUBSCRIPTION} from '../../graphql/queries/transaction'
 import Transaction from '../transactions/index.js'
 import moment from "../TransactionsPage";
 import { parse } from 'qs'
@@ -47,8 +47,24 @@ class Detail extends PureComponent {
     render() {
 
         const { history, match, transactionsQuery } = this.props;
-        const { transactions } = transactionsQuery;
-        console.log(transactions,"transactionstransactions")
+        let { transactions } = transactionsQuery;
+        let paymentTransaction = [];
+        let paid = 0;
+        let due = 0;
+        let quantity = 0;
+        paymentTransaction = transactions ? transactions.map((value)=>{
+            paid = paid + value.payment.paid
+            due = due + value.payment.balance
+            console.log(value, 'items')
+
+
+            value.items.map((item)=>{
+            quantity = quantity + item.quantity
+            })
+
+        }) :[]
+
+
         const { params } = match;
         const { id } = params;
         return (
@@ -96,39 +112,43 @@ class Detail extends PureComponent {
                     </Col>
 
                     <Col className="flex-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }} xl={{ span: 18 }}>
-                        <div className="quantity">
-                            <div className="card">
-                                <Row gutter={16}>
-                                    <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
-                                        <Statistic title="Total Amount" value={1250} precision={2} />
-                                    </Col>
-                                    <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
-                                        <Statistic title="Amount Recived" value={1000} precision={2} />
-                                    </Col>
-                                    <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
-                                        <Statistic title="Due Amount" value={250} precision={2} />
-                                    </Col>
-                                    <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
-                                        <Statistic title="Bottles Deliver" value={17} />
-                                    </Col>
-                                </Row>
-                                <Divider />
-                                <Empty
-                                    style={{ marginTop: 60 }}
-                                    description={
-                                        <span>
+
+                                    <div className="quantity">
+                                        <div className="card">
+
+                                                        <Row gutter={16}>
+                                                            <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                                                <Statistic title="Total Amount" value={paid+due} precision={2} />
+                                                            </Col>
+                                                            <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                                                <Statistic title="Amount Recived" value={ paid } precision={2} />
+                                                            </Col>
+                                                            <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                                                <Statistic title="Due Amount" value={due} precision={2} />
+                                                            </Col>
+                                                            <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                                                <Statistic title="Bottles Deliver" value={quantity} />
+                                                            </Col>
+                                                        </Row>
+
+
+                                            <Divider />
+                                            <Empty
+                                                style={{ marginTop: 60 }}
+                                                description={
+                                                    <span>
                                            Chart Will be here
                                         </span>
-                                    }
-                                >
-                                </Empty>
-                            </div>
-                        </div>
+                                                }
+                                            >
+                                            </Empty>
+                                        </div>
+                                    </div>
                     </Col>
                 </Row>
                 <div className="card padding-none space-bottom">
 
-                                <Transaction transactions={transactions} loading={transactions ? false : true} history={history} />
+                    <Transaction transactions={transactions} loading={transactions ? false : true} history={history} />
 
                 </div>
             </Layout>
@@ -140,7 +160,6 @@ export default graphql(GET_TRANSACTIONS, {
     name: 'transactionsQuery', // name of the injected prop: this.props.transactionsQuery...
     options: ({ location: { search = {}, pathname } = {} }) => {
         pathname = pathname.split("/")[2]
-        console.log(pathname,"===location")
         const query = parse(search);
         let where = {payment:{}};
         where.user = {

@@ -12,7 +12,7 @@ mutation createCustomer($data: UserCreateInput!) {
                             block
                         }
                         createdAt
-                        
+                   
                 }
                 }
                 `;
