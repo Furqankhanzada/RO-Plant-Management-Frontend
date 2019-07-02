@@ -81,7 +81,6 @@ class Filter extends Component {
     }
     render() {
         const { filter, form: { getFieldDecorator } } = this.props;
-        console.log(this.props,"====fikly")
         let { type = "", status = "", payment = "" } = filter;
         let initialtransactionAt = [];
         if (filter.transactionAt && filter.transactionAt[0]) {

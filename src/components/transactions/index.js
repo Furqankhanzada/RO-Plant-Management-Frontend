@@ -19,7 +19,6 @@ class User extends PureComponent {
     const query = parse(search.replace('?', ''));
 
     const handleRefresh = newQuery => {
-      console.log(newQuery,"newawu======")
       this.props.history.push({
         pathname: pathname === "/transactions" ? "/transactions" : pathname,
         search: stringify(
