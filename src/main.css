@@ -763,6 +763,10 @@ img {
     .dashboard .ant-card {
         margin-bottom: 12px;
     }
+    .transaction-detail .ant-descriptions-row td {
+        display: flex;
+        flex: 1;
+    }
 
 }
 @media (min-width: 320px) and (max-width: 430px) {
