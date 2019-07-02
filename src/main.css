@@ -870,6 +870,10 @@ img {
     .dashboard .ant-card {
         margin-bottom: 12px;
     }
+    .transaction-detail .ant-descriptions-row td {
+        display: flex;
+        flex: 1;
+    }
 
 }
 /*/// small media query end here ///*/
@@ -877,7 +881,9 @@ img {
 /*/// medium media query start here ///*/
 @media (min-width: 992px) and (max-width: 1199px) {
 
-
+    .transaction-detail .ant-descriptions-view {
+        overflow: auto;
+    }
 
 }
 /*/// medium media query end here ///*/
