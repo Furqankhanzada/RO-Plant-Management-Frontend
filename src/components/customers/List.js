@@ -114,8 +114,8 @@ class List extends PureComponent {
       },
       {
         title: <span>Bottles balance</span>,
-        dataIndex: 'bottle.balance',
-        key: 'bottle.balance',
+        dataIndex: 'bottleBalance',
+        key: 'bottleBalance',
       },
       {
         title: <span>Operation</span>,

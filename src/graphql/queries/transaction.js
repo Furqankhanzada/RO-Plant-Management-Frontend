@@ -77,9 +77,7 @@ export const GET_TRANSACTION = gql`
                     block
                     house
                 }
-                bottle {
-                    balance
-                }
+                bottleBalance
                 discounts {
                     product {
                         id

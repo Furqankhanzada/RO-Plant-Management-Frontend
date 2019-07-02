@@ -13,9 +13,7 @@ export const GET_CUSTOMERS = gql`
                 area
             }
             createdAt
-            bottle{
-                balance
-            }
+            bottleBalance
             discounts{
                 product{
                   id
@@ -42,9 +40,6 @@ export const CUSTOMER_SUBSCRIPTION = gql`
                 area
             }
             createdAt
-            bottle{
-                balance
-            }
         }
     }
 `;

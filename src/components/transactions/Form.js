@@ -10,7 +10,6 @@ import { client } from '../../index'
 import gql from 'graphql-tag';
 import { DatePicker } from 'antd';
 import moment from 'moment';
-const { MonthPicker, RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 
 const { Option } = Select;
@@ -69,17 +68,16 @@ class MainForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.updateStatus) {
-      const { transaction, open } = nextProps;
-      const { items, adding } = this.state;
+      const { transaction } = nextProps;
+      const { adding } = this.state;
       const { id, type, user, status, payment } = transaction;
-      console.log(transaction,"trans=====")
       // // If updating transaction
       if (id) {
         // make items
         if (!adding) {
           const discountArray = transaction.items.map((value) => {
             value.product.selected = true;
-            value.bottleStatus = value.bottleOut ? true : false
+            value.bottleStatus = !!(value.bottleOut || value.bottleOut === 0);
             return value
           });
           // set transaction to state
@@ -113,11 +111,11 @@ class MainForm extends Component {
     const { discounts } = userUpdateDiscount;
     let balancedPrice = 0;
     if (type === "percentage") {
-      itemsObject.quantity = ev
-      items.map((value) => {
+      itemsObject.quantity = ev;
+      items.forEach((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
-        }) : null
+        }) : null;
         const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
         balancedPrice = balancedPrice + productPrice;
       })
@@ -227,10 +225,9 @@ class MainForm extends Component {
     const { validateFields, resetFields } = form;
     const id = this.props.updateStatus;
     let { items, deleteItem } = this.state;
-    const userID = this.state.user;
+    let { bottleBalance, id: userId } = this.state.user;
     const dupItem = [];
     const editDup = [];
-    let userBottleBalance = 0;
     validateFields(async (err, values) => {
 
       if (!err) {
@@ -255,7 +252,6 @@ class MainForm extends Component {
                 return value.product.id === items[i].product.id
               })
             }
-            userBottleBalance = items[i].bottleOut ? items[i].bottleOut + userBottleBalance : userBottleBalance
             let itemsObj = {
               quantity: items[i].quantity,
               transactionAt: items[i].transactionAt,
@@ -286,17 +282,22 @@ class MainForm extends Component {
                   }
                 }
               };
+
               editDup.push(editObj)
             }
             if (id && items[i].new === true) {
+              bottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + bottleBalance : items[i].quantity
               dupItem.push(itemsObj)
             } else if (!id) {
+              bottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + bottleBalance : items[i].quantity
               dupItem.push(itemsObj)
             }
           }
         }
         // create transaction object
+        let balance;
         if (!id) {
+          balance = JSON.parse(user).bottleBalance
           user = JSON.parse(user).id
         }
         let transaction = {
@@ -315,15 +316,21 @@ class MainForm extends Component {
             status,
             items: {
               create: dupItem
-            },
-
+            }
           },
-          bottleBalance: userBottleBalance
+          bottleBalance: balance ? balance + bottleBalance : bottleBalance
         };
 
         if (id) {
+
+          transaction.data.payment = {
+            update: {
+            ...payment
+            }
+          };
+
           delete transaction.data.user;
-          transaction.userID = userID.id
+          transaction.userID = userId;
           transaction.where = { id };
 
 
@@ -339,6 +346,7 @@ class MainForm extends Component {
           }
           if (editDup.length > 0) {
             transaction.data.items.update = editDup;
+            transaction.edit = true;
           }
           updateTransaction({
             variables: transaction,
@@ -381,6 +389,7 @@ class MainForm extends Component {
           }
           createTransaction({
             variables: transaction,
+            refetchQueries: [{ query: GET_CUSTOMERS, variables: {where: {name_contains: this.state.searchValue}, first: 3} }],
             update: (proxy, { data: { createTransaction } }) => {
               // Read the data from our cache for this query.
               const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: {} } });
@@ -395,8 +404,11 @@ class MainForm extends Component {
               disableBtn: false,
               items: [
                 {
-                  discount: 0,
-                  product: ''
+                  quantity: 0,
+                  product: '',
+                  total: 0,
+                  bottleStatus: false,
+                  transactionAt: new Date()
                 }
               ],
               adding: false
@@ -512,7 +524,7 @@ class MainForm extends Component {
                     <h3>General</h3>
 
                     <Query query={GET_CUSTOMERS} variables={{ where, first: 3 }}>
-                      {({ loading, error, data: { customers = [] } }) => {
+                      {({ loading, error, data: { customers = [] } = {} }) => {
                         if (loading) {
                           customers = [];
                         }
@@ -532,7 +544,7 @@ class MainForm extends Component {
                                 disabled={user.name ? true : false}
                                 notFoundContent={loading ? <Spin size="small" /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
                               >
-                                {customers.map(({ id, name, mobile, discounts }) => <Option key={JSON.stringify({ id, discounts })}>{name} : {mobile}</Option>)}
+                                {customers.map(({ id, name, mobile, discounts, bottle }) => <Option key={JSON.stringify({ id, discounts, bottle })}>{name} : {mobile}</Option>)}
 
 
                               </Select>
@@ -639,7 +651,7 @@ class MainForm extends Component {
                                 <Col span={3}>
                                   <FormItem label={`Is Returnable?`} colon={false} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <Button type="primary" size="medium" onClick={this.onChangeItem.bind(this, 'bottle', index, value.id, !value.bottleStatus)} >
-                                      {value.bottleStatus ? 'No' : 'Yes'}
+                                      {value.bottleStatus ? 'Yes' : 'No'}
                                     </Button>
                                   </FormItem>
                                 </Col>
@@ -666,7 +678,7 @@ class MainForm extends Component {
                                   </Form.Item>
                                 </Col>
                                 <Col span={3}>
-                                  <FormItem label={`Quantity`} className='bottle-status-width'>
+                                  <FormItem label={`Quantity / In`} className='bottle-status-width'>
                                     <InputNumber
                                       value={value.quantity}
                                       formatter={value => `${value}`}
@@ -674,6 +686,20 @@ class MainForm extends Component {
                                     />
                                   </FormItem>
                                 </Col>
+                                  {
+                                    value.bottleStatus ? (
+                                      <Col span={3}>
+                                        <FormItem label={`Bottles Out`} className={`${value.bottleStatus ? 'bottle-status-width' : 'full-width'}`}>
+                                          <InputNumber
+                                            value={value.bottleOut}
+                                            formatter={value => `${value}`}
+                                            onChange={this.onChangeItem.bind(this, 'bottlesOut', index, value.id)}
+
+                                          />
+                                        </FormItem>
+                                      </Col>
+                                    ) : null
+                                  }
                                 <Col span={4}>
                                   <FormItem label={`Total`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <InputNumber disabled={true}
@@ -683,20 +709,6 @@ class MainForm extends Component {
                                     />
                                   </FormItem>
                                 </Col>
-                                {
-                                  value.bottleStatus ? (
-                                    <Col span={3}>
-                                      <FormItem label={`Bottles Out`} className={`${value.bottleStatus ? 'bottle-status-width' : 'full-width'}`}>
-                                        <InputNumber
-                                          value={value.bottleOut}
-                                          formatter={value => `${value}`}
-                                          onChange={this.onChangeItem.bind(this, 'bottlesOut', index, value.id)}
-
-                                        />
-                                      </FormItem>
-                                    </Col>
-                                  ) : null
-                                }
                                 <Col span={1}>
                                   <Icon
                                     className="dynamic-delete-button removeButtonDiscount"
