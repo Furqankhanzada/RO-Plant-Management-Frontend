@@ -11,7 +11,7 @@ const columns = [
     key: 'date',
     render: (text, record) =>{
       return(
-          <span>{moment(text).format("DD/MM/YYYY")}</span>
+          <span>{moment(text).format("ddd DD MMMM YYYY")}</span>
       )
     }
   },
@@ -20,20 +20,17 @@ const columns = [
     dataIndex: 'product.name',
     key: 'name'
   },
+
   {
     title: 'Price',
     dataIndex: 'product.price',
     key: 'price',
-    render: (method) => {
-      return <Tag color='green'>{method}</Tag>
-    }
-  },
-  {
-    title: 'Discount',
-    dataIndex: 'discount',
-    key: 'discount',
-    render: (method) => {
-      return <Tag color='orange'>{method}</Tag>
+    render: (method, price) => {
+      const {discount,quantity} = price
+      if (discount === method){
+        return <Tag color='green'><span className="discount-price">{method}</span> <span>{method-(discount/quantity)}</span></Tag>
+      }
+      return <Tag color='green'><span>{method}</span></Tag>
     }
   },
   {
@@ -65,7 +62,7 @@ class Detail extends PureComponent {
       <Query query={GET_TRANSACTION} variables={{ id }}>
         {({ data: { transaction }, loading }) => {
           if(loading) return <Spin />;
-          let { status, user: { name, mobile, address, bottleBalance }, payment, items }  = transaction;
+          let { status, user: { name, mobile, address, bottleBalance }, payment, items, createdAt }  = transaction;
           return (
             <Layout className="user-main-div">
               <Row className="margin-bottom">
@@ -74,7 +71,7 @@ class Detail extends PureComponent {
                     <Descriptions.Item label="Customer">{name}</Descriptions.Item>
                     <Descriptions.Item label="Mobile">{mobile}</Descriptions.Item>
                     <Descriptions.Item label="Have Bottles (Count)"><Tag color='red'>{bottleBalance}</Tag></Descriptions.Item>
-                    <Descriptions.Item label="Order time">2018-04-24 18:00:00</Descriptions.Item>
+                    <Descriptions.Item label="Order month">{moment(createdAt).format('MMMM YYYY')}</Descriptions.Item>
                     <Descriptions.Item label="Address" span={3}>
                       {`${address.house} ${address.area} ${address.block} ${address.town}`}
                     </Descriptions.Item>
