@@ -67,7 +67,7 @@ class Detail extends PureComponent {
             <Layout className="user-main-div">
               <Row className="margin-bottom">
                 <Col>
-                  <Descriptions bordered className='transaction-detail' column={{ xxl: 4, xl: 3, lg: 2, md: 1, sm: 1, xs: 1 }}>
+                  <Descriptions bordered className='transaction-detail' column={{ xxl: 3, xl: 3, lg: 2, md: 1, sm: 1, xs: 1 }}>
                     <Descriptions.Item label="Customer">{name}</Descriptions.Item>
                     <Descriptions.Item label="Mobile">{mobile}</Descriptions.Item>
                     <Descriptions.Item label="Have Bottles (Count)"><Tag color='red'>{bottleBalance}</Tag></Descriptions.Item>

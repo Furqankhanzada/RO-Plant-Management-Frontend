@@ -679,6 +679,10 @@ img {
 .dashboard .referrals-icon {
     color: rgb(246, 152, 153);
 }
+.line-through {
+    margin-right: 10px;
+    text-decoration: line-through;
+}
 /*//// dashboard ////*/
 
 /*/// extra small media query start here ///*/
