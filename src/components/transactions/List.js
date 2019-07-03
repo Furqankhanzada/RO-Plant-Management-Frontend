@@ -46,7 +46,7 @@ class List extends PureComponent {
             },
             update: (proxy, { data: { deleteTransaction } }) => {
               // Read the data from our cache for this query.
-              const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables:{where:{}} });
+              const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: { payment: {} } } });
               // Add our comment from the mutation to the end.
               _.remove(data.transactions, (transaction) => {
                 return transaction.id === deleteTransaction.id
@@ -54,7 +54,7 @@ class List extends PureComponent {
 
               data.transactions = [...data.transactions];
               // Write our data back to the cache.
-              proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables:{where:{}}});
+              proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables: { where: { payment: {} } } });
               this.setState({loading: false});
             }
           })
@@ -192,7 +192,7 @@ class List extends PureComponent {
         scroll={{ x: 1200 }}
         columns={columns}
         simple
-        rowKey={record => record.id}
+        rowKey={(record, i) => i}
         loading={this.state.loading}
       />
     )

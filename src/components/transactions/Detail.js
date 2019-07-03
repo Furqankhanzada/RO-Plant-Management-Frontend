@@ -60,7 +60,7 @@ class Detail extends PureComponent {
 
     return (
       <Query query={GET_TRANSACTION} variables={{ id }}>
-        {({ data: { transaction }, loading }) => {
+        {({ data: { transaction } = {}, loading }) => {
           if(loading) return <Spin />;
           let { status, user: { name, mobile, address, bottleBalance }, payment, items, createdAt }  = transaction;
           return (

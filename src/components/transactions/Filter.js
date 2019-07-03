@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import {Button, Form, Input, Row, Icon, Col, DatePicker, Select } from 'antd';
+import {Button, Form, Row, Icon, Col, DatePicker, Select } from 'antd';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
-const { Option, type } = Select;
-const { Search } = Input;
-const { MonthPicker, RangePicker } = DatePicker;
+const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const ColProps = {
     xs: 24,

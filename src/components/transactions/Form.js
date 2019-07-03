@@ -125,30 +125,30 @@ class MainForm extends Component {
       if (!ev) {
         delete itemsObject.bottleOut
       }
-      items.map((value) => {
+      items.forEach((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
-        }) : null
+        }) : null;
         const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
 
         balancedPrice = balancedPrice + productPrice;
       })
     } else if (type === "bottlesOut") {
       itemsObject.bottleOut = ev;
-      items.map((value) => {
+      items.forEach((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
-        }) : null
+        }) : null;
         const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
 
         balancedPrice = balancedPrice + productPrice;
       })
     } else if (type === "transactionAt") {
       itemsObject.transactionAt = new Date(ev);
-      items.map((value) => {
+      items.forEach((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
-        }) : null
+        }) : null;
         const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
 
         balancedPrice = balancedPrice + productPrice;
@@ -162,10 +162,10 @@ class MainForm extends Component {
         id: selectedProduct.id,
         selected: true
       };
-      items.map((value) => {
+      items.forEach((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
-        }) : null
+        }) : null;
         const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
 
         balancedPrice = balancedPrice + productPrice;
@@ -175,7 +175,7 @@ class MainForm extends Component {
       itemsObject.edit = true;
       itemsObject.itemtId = itemtId
     }
-    payment.balance = balancedPrice - payment.paid
+    payment.balance = balancedPrice - payment.paid;
     items[index] = itemsObject;
     this.setState({
       items,
@@ -197,13 +197,13 @@ class MainForm extends Component {
       }
       items.splice(index, 1);
 
-      items.map((value) => {
+      items.forEach((value) => {
         const discountedProduct = discounts ? discounts.find((discountObject) => {
           return value.product.id === discountObject.product.id
-        }) : null
+        }) : null;
         const productPrice = discountedProduct ? value.quantity * discountedProduct.discount : value.quantity * value.product.price;
         balancedPrice = balancedPrice + productPrice;
-      })
+      });
 
 
       this.setState({
@@ -297,7 +297,7 @@ class MainForm extends Component {
         // create transaction object
         let balance;
         if (!id) {
-          balance = JSON.parse(user).bottleBalance
+          balance = JSON.parse(user).bottleBalance;
           user = JSON.parse(user).id
         }
         let transaction = {
@@ -392,12 +392,12 @@ class MainForm extends Component {
             refetchQueries: [{ query: GET_CUSTOMERS, variables: {where: {name_contains: this.state.searchValue}, first: 3} }],
             update: (proxy, { data: { createTransaction } }) => {
               // Read the data from our cache for this query.
-              const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: {} } });
+              const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: { payment: {} } } });
               // Add our comment from the mutation to the end.
               data.transactions.unshift(createTransaction);
               data.transactions = [...data.transactions];
               // Write our data back to the cache.
-              proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables: { where: {} } });
+              proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables: { where: { payment: {} } } });
             }
           }).then(result => {
             this.setState({
@@ -621,7 +621,7 @@ class MainForm extends Component {
                         parser={value => value.replace('Rs', '')}
                         onChange={this.getPaidValue}
                         min={0}
-                        max={payment.balance + payment.paid}
+                        max={(payment.balance + payment.paid) || 0}
                       />)}
                     </FormItem>
                     <FormItem label={`Balance`} >
@@ -650,7 +650,7 @@ class MainForm extends Component {
                               <Row gutter={16}>
                                 <Col span={3}>
                                   <FormItem label={`Is Returnable?`} colon={false} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
-                                    <Button type="primary" size="medium" onClick={this.onChangeItem.bind(this, 'bottle', index, value.id, !value.bottleStatus)} >
+                                    <Button type="primary" size="default" onClick={this.onChangeItem.bind(this, 'bottle', index, value.id, !value.bottleStatus)} >
                                       {value.bottleStatus ? 'Yes' : 'No'}
                                     </Button>
                                   </FormItem>
@@ -717,20 +717,6 @@ class MainForm extends Component {
                                   />
                                 </Col>
                               </Row>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             </div>
                           )
 

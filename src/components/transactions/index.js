@@ -7,9 +7,6 @@ import { GET_DRAWER_STATUS } from '../../client'
 import { Query } from 'react-apollo'
 
 class User extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
   render() {
     const { loading, history, transactions } = this.props;
     const {location: {pathname}} = history;
