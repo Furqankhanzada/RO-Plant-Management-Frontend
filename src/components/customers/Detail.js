@@ -58,6 +58,7 @@ class Detail extends PureComponent {
             console.log(value, 'items')
 
 
+
             value.items.map((item)=>{
             quantity = quantity + item.quantity
             })
@@ -95,9 +96,8 @@ class Detail extends PureComponent {
                                                 customer.discounts.map((value, index) => {
                                                     return(
                                                         <div className="product-details">
-                                                            <h3>Discount : <span>{value.discount ? (100 - (value.discount / value.product.price) * 100).toFixed() : 0}%</span></h3>
                                                             <h3>Product : <span>{value.product.name}</span></h3>
-                                                            <h3>Price : <span>{value.product.price}</span></h3>
+                                                            <h3>Discounted Price : <span>{value.discount}</span> <span className={ value.discount ? "line-through" :""}>{value.product.price}</span></h3>
                                                         </div>
                                                     )
                                                 })
