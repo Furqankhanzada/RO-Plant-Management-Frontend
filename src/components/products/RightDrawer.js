@@ -33,7 +33,7 @@ class RightDrawer extends Component {
       <Row gutter={24}>
         <Drawer
           className="new-account drawer-custom-style"
-          title={id ? 'Update Customer' : 'Create Customer'}
+          title={id ? 'Update Product' : 'Create Product'}
           width={720}
           onClose={this.onClose.bind(this)}
           visible={visible}

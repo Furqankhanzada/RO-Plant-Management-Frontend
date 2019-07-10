@@ -12,6 +12,10 @@
     box-shadow: 0 0 100px rgba(0, 0, 0, 0.08);
 }
 
+.btn-right {
+    justify-content: flex-end;
+}
+
 .ant-form-item-control {
     line-height: inherit;
     zoom: 1;

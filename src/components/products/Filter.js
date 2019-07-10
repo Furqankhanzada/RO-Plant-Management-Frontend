@@ -91,11 +91,11 @@ class Filter extends Component {
             <Row gutter={24}>
                 <Col
                     {...TwoColProps}
-                    xl={{ span: 15 }}
-                    md={{ span: 32 }}
+                    xl={{ span: 24 }}
+                    md={{ span: 24 }}
                     sm={{ span: 24 }}
                 >
-                    <Row type="flex" align="middle" justify="space-between">
+                    <Row className="btn-right" type="flex" align="middle">
                         <Button type="primary" onClick={this.openDrawer}>
                           <Icon type="plus" />
                           <span>Create</span>

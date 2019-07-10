@@ -3,7 +3,7 @@ import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { PRODUCTS_QUERY } from '../../graphql/queries/product';
-import { CREATE_CUSTOMER_MUTATION, UPDATE_CUSTOMER_MUTATION } from '../../graphql/mutations/customer';
+import { CREATE_PRODUCT_MUTATION } from '../../graphql/mutations/product';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
@@ -20,14 +20,7 @@ class MainForm extends Component {
         }
       ],
       name: '',
-      password: '',
-      mobile: '',
-      town: '',
-      area: '',
-      block: '',
-      house: '',
-      products: [],
-      result: [],
+      price: '',
       drawer: false,
       disableBtn: false,
       selectedValue: '',
@@ -40,7 +33,7 @@ class MainForm extends Component {
 
   add() {
     const { discounts } = this.state;
-    const { customer: { id } = {} } = this.props;
+    const { product: { id } = {} } = this.props;
 
     const discountsObj = {
       discount: 0,
@@ -58,9 +51,8 @@ class MainForm extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.product.id) {
-
       const { product } = nextProps;
-      const { id, name, mobile, address: { town, area, block, house } } = product;
+      const { id, name, price } = product;
       const { adding } = this.state;
       // If updating product
       if (id) {
@@ -71,11 +63,11 @@ class MainForm extends Component {
             return value
           });
           // set product to state
-          this.setState({ name, town, area, block, house, mobile, discounts: discountArray })
+          this.setState({ name, price })
         }
       }
     } else {
-      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '' })
+      this.setState({ name: '', price: '' })
     }
   }
 
@@ -124,7 +116,7 @@ class MainForm extends Component {
   }
   handledSubmit(e) {
     e.preventDefault();
-    const { product: { id } = {}, form, createCustomer, updateCustomer } = this.props;
+    const { product: { id } = {}, form, createProduct, updateProduct } = this.props;
     const { validateFields, resetFields } = form;
 
     let { discounts, deleteDiscount, addressId } = this.state;
@@ -137,7 +129,7 @@ class MainForm extends Component {
           disableBtn: true,
           loading: true
         });
-        const { name, mobile, town, area, block, house } = values;
+        const { name, price } = values;
 
         for (let i = 0; i < discounts.length; i++) {
           if (discounts[i].discount !== 0 && discounts[i].product) {
@@ -175,34 +167,27 @@ class MainForm extends Component {
 
         let product = {
           data: {
-            mobile,
-            name,
-            password: `${mobile}-labbaik`,
-            address: {
-              create: {
-                town,
-                area,
-                block,
-                house
-              }
-            },
-            discounts: {
-              create: dupDiscount
-            }
+            price,
+            name
+            // address: {
+            //   create: {
+            //
+            //   }
+            // },
+            // discounts: {
+            //   create: dupDiscount
+            // }
           }
         };
 
         if (id) {
-          delete product.password;
-          delete product.mobile;
+          delete product.name;
+          delete product.price;
           product.id = id;
           delete product.data.address;
           product.data.address = {
             update: {
-              town,
-              area,
-              block,
-              house
+
             }
           }
           if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
@@ -218,9 +203,8 @@ class MainForm extends Component {
           if (editDup.length > 0) {
             product.data.discounts.update = editDup;
           }
-          updateCustomer({
+          updateProduct({
             variables: product,
-            // refetchQueries: [{ query: CUSTOMER_QUERY, variables: product }],
           }).then(result => {
             this.setState({
               disableBtn: false,
@@ -255,27 +239,28 @@ class MainForm extends Component {
           if (dupDiscount.length < 1) {
             delete product.data.discounts
           }
-          createCustomer({
+          createProduct({
             variables: product,
-            update: (proxy, { data: { createCustomer } }) => {
+            update: (proxy, { data: { createProduct } }) => {
               // Read the data from our cache for this query.
               const data = proxy.readQuery({ query: PRODUCTS_QUERY, variables: { where: {}} });
               // Add our comment from the mutation to the end.
-              data.products.push(createCustomer);
+              data.products.push(createProduct);
               data.products = [...data.products];
               // Write our data back to the cache.
               proxy.writeQuery({ query: PRODUCTS_QUERY, data, variables: { where: {}} });
             }
-          }).then(result => {
-            this.setState({
+          })
+            .then(result => {
+              this.setState({
               disableBtn: false,
-              discounts: [
-                {
-                  discount: 0,
-                  product: ''
-                }
-              ],
-              adding: false
+              // discounts: [
+              //   {
+              //     discount: 0,
+              //     product: ''
+              //   }
+              // ],
+              // adding: false
             }, () => {
               resetFields();
               message.success('Product has been created successfully');
@@ -307,7 +292,7 @@ class MainForm extends Component {
     });
   }
 
-  getCustomerDetails(ev) {
+  getProductDetails(ev) {
     const { setFieldsValue } = this.props.form;
     setFieldsValue({
       [ev.target.name]: ev.target.value
@@ -339,7 +324,7 @@ class MainForm extends Component {
     const { form, product: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
-    const { name, mobile, town, area, block, house } = this.state;
+    const { name, price, town, area, block, house } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -356,16 +341,6 @@ class MainForm extends Component {
                 <Row gutter={16}>
                   <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
                     <h3>General</h3>
-                    <FormItem label={`Mobile Number`} >
-                      {getFieldDecorator('mobile', {
-                        initialValue: mobile,
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(<Input name="mobile" onChange={this.getCustomerDetails.bind(this)} />)}
-                    </FormItem>
                     <FormItem label={`Name`} >
                       {getFieldDecorator('name', {
                         initialValue: name,
@@ -375,124 +350,136 @@ class MainForm extends Component {
                             message: `The input is not valid phone!`
                           }
                         ]
-                      })(<Input name="name" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="name" onChange={this.getProductDetails.bind(this)} />)}
                     </FormItem>
-                  </Col>
-                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
-                    <h3>Address</h3>
-                    <FormItem label={`Town`} >
-                      {getFieldDecorator('town', {
-                        initialValue: town,
+                    <FormItem label={`Price`} >
+                      {getFieldDecorator('price', {
+                        initialValue: price,
                         rules: [
                           {
                             required: true
                           }
                         ]
-                      })(<Input name="town" onChange={this.getCustomerDetails.bind(this)} />)}
+                      })(<Input name="price" onChange={this.getProductDetails.bind(this)} />)}
                     </FormItem>
-                    <FormItem label={`Area`} >
-                      {getFieldDecorator('area', {
-                        initialValue: area,
-                        rules: [
-                          {
-                            required: true
-                          }
-                        ]
-                      })(<Input name="area" onChange={this.getCustomerDetails.bind(this)} />)}
-                    </FormItem>
-                    <FormItem label={`Block`} >
-                      {getFieldDecorator('block', {
-                        initialValue: block,
-                        rules: [
-                          {
-                            required: true,
-                            message: `The input is not valid phone!`
-                          }
-                        ]
-                      })(<Input name="block" onChange={this.getCustomerDetails.bind(this)} />)}
-                    </FormItem>
-                    <FormItem label={`House`} >
-                      {getFieldDecorator('house', {
-                        initialValue: house,
-                        rules: [
-                          {
-                            required: true,
-                            message: `The input is not valid Address!`
-                          }
-                        ]
-                      })(<Input name="house" onChange={this.getCustomerDetails.bind(this)} />)}
-                    </FormItem>
-                  </Col>
-                  <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
-                    <h3>Discount</h3>
-                    <div className="discount-details">
-                      {
-                        discounts.map((value, index) => {
-                          const productPrice = value.product.price;
-                          return (
-                            <div className="discounts" key={index}>
-                              <Row gutter={16}>
-                                <Col xl={{ span: 8 }} lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 12 }}>
-                                  <Form.Item label={'Select Product'}>
-
-                                    <AutoComplete
-                                        className="certain-category-search"
-                                        dropdownClassName="certain-category-search-dropdown"
-                                        dropdownMatchSelectWidth={false}
-                                        dropdownStyle={{ width: 300 }}
-                                        style={{ width: '100%' }}
-                                        dataSource={options}
-                                        placeholder="Products"
-                                        value={value.product ? value.product.selected ? value.product.name : '' : ''}
-                                        onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}
-                                        >
-                                      <Input suffix={<Icon type="search" className="certain-category-icon" />} />
-                                    </AutoComplete>
-
-                                  </Form.Item>
-                                </Col>
-                                <Col xl={{ span: 8 }} lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 12 }}>
-                                  <Form.Item label={'Add Discount'}>
-                                    <InputNumber
-                                        value={value.discount ? (100 - (value.discount / productPrice) * 100).toFixed() : 0}
-                                        min={0}
-                                        max={90}
-                                        formatter={value => `${value}%`}
-                                        parser={value => value.replace('%', '')}
-                                        onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}
-                                        />
-                                  </Form.Item>
-                                </Col>
-                                <Col xl={{ span: 7 }} lg={{ span: 7 }} md={{ span: 6 }} sm={{ span: 10 }}>
-                                  <FormItem label={`Discounted Price`} >
-                                    <InputNumber disabled = {true}
-                                                 value={value.discount === 0 ? productPrice : value.discount}
-                                                 formatter={value => `PKR ${value}`}
-                                                 parser={value => value.replace('PKR', '')}
-                                        />
-                                  </FormItem>
-                                </Col>
-                                <Col xl={{ span: 1 }} lg={{ span: 1 }} md={{ span: 2 }} sm={{ span: 2 }}>
-                                  <Icon
-                                      className="dynamic-delete-button removeButtonDiscount"
-                                      type="minus-circle-o"
-                                      onClick={this.removeDiscount.bind(this, index, value)}
-                                      />
-                                </Col>
-                              </Row>
-                            </div>
-                          )
-
-                        })
-                      }
-                      <Form.Item className="fields-adds" {...formItemLayoutWithOutLabel}>
-                        <Button type="dashed" onClick={this.add.bind(this)} style={{ width: '100%' }}>
-                          <Icon type="plus" /> Add field
-                        </Button>
-                      </Form.Item>
-                    </div>
 
                   </Col>
+                  {/*<div>*/}
+                  {/*<Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>*/}
+                  {/*  <h3>Address</h3>*/}
+                  {/*  <FormItem label={`Town`} >*/}
+                  {/*    {getFieldDecorator('town', {*/}
+                  {/*      initialValue: town,*/}
+                  {/*      rules: [*/}
+                  {/*        {*/}
+                  {/*          required: true*/}
+                  {/*        }*/}
+                  {/*      ]*/}
+                  {/*    })(<Input name="town" onChange={this.getCustomerDetails.bind(this)} />)}*/}
+                  {/*  </FormItem>*/}
+                  {/*  <FormItem label={`Area`} >*/}
+                  {/*    {getFieldDecorator('area', {*/}
+                  {/*      initialValue: area,*/}
+                  {/*      rules: [*/}
+                  {/*        {*/}
+                  {/*          required: true*/}
+                  {/*        }*/}
+                  {/*      ]*/}
+                  {/*    })(<Input name="area" onChange={this.getCustomerDetails.bind(this)} />)}*/}
+                  {/*  </FormItem>*/}
+                  {/*  <FormItem label={`Block`} >*/}
+                  {/*    {getFieldDecorator('block', {*/}
+                  {/*      initialValue: block,*/}
+                  {/*      rules: [*/}
+                  {/*        {*/}
+                  {/*          required: true,*/}
+                  {/*          message: `The input is not valid phone!`*/}
+                  {/*        }*/}
+                  {/*      ]*/}
+                  {/*    })(<Input name="block" onChange={this.getCustomerDetails.bind(this)} />)}*/}
+                  {/*  </FormItem>*/}
+                  {/*  <FormItem label={`House`} >*/}
+                  {/*    {getFieldDecorator('house', {*/}
+                  {/*      initialValue: house,*/}
+                  {/*      rules: [*/}
+                  {/*        {*/}
+                  {/*          required: true,*/}
+                  {/*          message: `The input is not valid Address!`*/}
+                  {/*        }*/}
+                  {/*      ]*/}
+                  {/*    })(<Input name="house" onChange={this.getCustomerDetails.bind(this)} />)}*/}
+                  {/*  </FormItem>*/}
+                  {/*</Col>*/}
+                  {/*<Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>*/}
+                  {/*  <h3>Discount</h3>*/}
+                  {/*  <div className="discount-details">*/}
+                  {/*    {*/}
+                  {/*      discounts.map((value, index) => {*/}
+                  {/*        const productPrice = value.product.price;*/}
+                  {/*        return (*/}
+                  {/*          <div className="discounts" key={index}>*/}
+                  {/*            <Row gutter={16}>*/}
+                  {/*              <Col xl={{ span: 8 }} lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 12 }}>*/}
+                  {/*                <Form.Item label={'Select Product'}>*/}
+
+                  {/*                  <AutoComplete*/}
+                  {/*                      className="certain-category-search"*/}
+                  {/*                      dropdownClassName="certain-category-search-dropdown"*/}
+                  {/*                      dropdownMatchSelectWidth={false}*/}
+                  {/*                      dropdownStyle={{ width: 300 }}*/}
+                  {/*                      style={{ width: '100%' }}*/}
+                  {/*                      dataSource={options}*/}
+                  {/*                      placeholder="Products"*/}
+                  {/*                      value={value.product ? value.product.selected ? value.product.name : '' : ''}*/}
+                  {/*                      onChange={this.onChangeDiscount.bind(this, 'product', index, value.id)}*/}
+                  {/*                      >*/}
+                  {/*                    <Input suffix={<Icon type="search" className="certain-category-icon" />} />*/}
+                  {/*                  </AutoComplete>*/}
+
+                  {/*                </Form.Item>*/}
+                  {/*              </Col>*/}
+                  {/*              <Col xl={{ span: 8 }} lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 12 }}>*/}
+                  {/*                <Form.Item label={'Add Discount'}>*/}
+                  {/*                  <InputNumber*/}
+                  {/*                      value={value.discount ? (100 - (value.discount / productPrice) * 100).toFixed() : 0}*/}
+                  {/*                      min={0}*/}
+                  {/*                      max={90}*/}
+                  {/*                      formatter={value => `${value}%`}*/}
+                  {/*                      parser={value => value.replace('%', '')}*/}
+                  {/*                      onChange={this.onChangeDiscount.bind(this, 'percentage', index, value.id)}*/}
+                  {/*                      />*/}
+                  {/*                </Form.Item>*/}
+                  {/*              </Col>*/}
+                  {/*              <Col xl={{ span: 7 }} lg={{ span: 7 }} md={{ span: 6 }} sm={{ span: 10 }}>*/}
+                  {/*                <FormItem label={`Discounted Price`} >*/}
+                  {/*                  <InputNumber disabled = {true}*/}
+                  {/*                               value={value.discount === 0 ? productPrice : value.discount}*/}
+                  {/*                               formatter={value => `PKR ${value}`}*/}
+                  {/*                               parser={value => value.replace('PKR', '')}*/}
+                  {/*                      />*/}
+                  {/*                </FormItem>*/}
+                  {/*              </Col>*/}
+                  {/*              <Col xl={{ span: 1 }} lg={{ span: 1 }} md={{ span: 2 }} sm={{ span: 2 }}>*/}
+                  {/*                <Icon*/}
+                  {/*                    className="dynamic-delete-button removeButtonDiscount"*/}
+                  {/*                    type="minus-circle-o"*/}
+                  {/*                    onClick={this.removeDiscount.bind(this, index, value)}*/}
+                  {/*                    />*/}
+                  {/*              </Col>*/}
+                  {/*            </Row>*/}
+                  {/*          </div>*/}
+                  {/*        )*/}
+
+                  {/*      })*/}
+                  {/*    }*/}
+                  {/*    <Form.Item className="fields-adds" {...formItemLayoutWithOutLabel}>*/}
+                  {/*      <Button type="dashed" onClick={this.add.bind(this)} style={{ width: '100%' }}>*/}
+                  {/*        <Icon type="plus" /> Add field*/}
+                  {/*      </Button>*/}
+                  {/*    </Form.Item>*/}
+                  {/*  </div>*/}
+
+                {/*  </Col>*/}
                 </Row>
 
                 <div className="create-button-div">
@@ -515,11 +502,11 @@ class MainForm extends Component {
 
 const ComposedForm = Form.create({ name: 'product' })(MainForm);
 
-const CustomerForm = compose(
-  graphql(CREATE_CUSTOMER_MUTATION, { name: "createCustomer" }),
-  graphql(UPDATE_CUSTOMER_MUTATION, { name: "updateCustomer" })
+const ProductForm = compose(
+  graphql(CREATE_PRODUCT_MUTATION, { name: "createProduct" }),
+  // graphql(UPDATE_CUSTOMER_MUTATION, { name: "updateCustomer" })
 )(ComposedForm);
 
-withRouter(CustomerForm);
+withRouter(ProductForm);
 
-export default CustomerForm;
+export default ProductForm;

@@ -30,6 +30,7 @@ class List extends PureComponent {
   }
   handleMenuClick (record, e) {
     const { deleteProduct } = this.props;
+
     if (e.key === '1') {
       this.onEditItem(record);
     } else if (e.key === '2') {
@@ -101,7 +102,7 @@ class List extends PureComponent {
         title: <span>Operation</span>,
         key: 'id',
         fixed: 'right',
-        render: this.actionColumn.bind(this)
+          render: this.actionColumn.bind(this)
       }
     ];
 
