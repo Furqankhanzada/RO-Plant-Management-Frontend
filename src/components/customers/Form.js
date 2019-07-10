@@ -259,12 +259,12 @@ class MainForm extends Component {
             variables: customer,
             update: (proxy, { data: { createCustomer } }) => {
               // Read the data from our cache for this query.
-              const data = proxy.readQuery({ query: GET_CUSTOMERS, variables: { where: {} } });
+              const data = proxy.readQuery({ query: GET_CUSTOMERS, variables: { where: {}} });
               // Add our comment from the mutation to the end.
               data.customers.push(createCustomer);
               data.customers = [...data.customers];
               // Write our data back to the cache.
-              proxy.writeQuery({ query: GET_CUSTOMERS, data, variables: { where: {} } });
+              proxy.writeQuery({ query: GET_CUSTOMERS, data, variables: { where: {}} });
             }
           }).then(result => {
             this.setState({

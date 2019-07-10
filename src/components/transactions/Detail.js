@@ -3,6 +3,7 @@ import { Query } from 'react-apollo';
 import moment from 'moment';
 import { Layout, Row, Col, Statistic, Spin, Table, Tag, Descriptions, Badge } from 'antd';
 import { GET_TRANSACTION } from '../../graphql/queries/transaction'
+import {GET_CUSTOMERS} from "../../graphql/queries/customer";
 
 const columns = [
   {
@@ -60,8 +61,9 @@ class Detail extends PureComponent {
 
     return (
       <Query query={GET_TRANSACTION} variables={{ id }}>
-        {({ data: { transaction } = {}, loading }) => {
+        {({ data: { transaction}, loading }) => {
           if(loading) return <Spin />;
+
           let { status, user: { name, mobile, address, bottleBalance }, payment, items, createdAt }  = transaction;
           return (
             <Layout className="user-main-div">
@@ -78,7 +80,7 @@ class Detail extends PureComponent {
                     <Descriptions.Item label="Status" span={3}>
                       <Badge status="processing" text={status} />
                     </Descriptions.Item>
-                    <Descriptions.Item label="Payment Method" span={1.5}><Tag color='magenta'>{payment.method.replace("_", " ")}</Tag></Descriptions.Item>
+                    <Descriptions.Item label="Payment Method" span={1.5}><Tag color='magenta'>{payment.method?payment.method.replace("_", " "):""}</Tag></Descriptions.Item>
                     <Descriptions.Item label="Payment Status" span={1.5}><Tag color='green'>{payment.status}</Tag></Descriptions.Item>
                     <Descriptions.Item label="Total Amount"><Tag color='green'>Rs</Tag><Statistic value={payment.balance + payment.paid || 0} precision={2} /></Descriptions.Item>
                     <Descriptions.Item label="Paid Amount"><Tag color='lightgrey'>Rs</Tag><Statistic value={ payment.paid } precision={2} /></Descriptions.Item>

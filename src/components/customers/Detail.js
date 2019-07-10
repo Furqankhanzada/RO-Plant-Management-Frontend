@@ -55,7 +55,6 @@ class Detail extends PureComponent {
         paymentTransaction = transactions ? transactions.map((value)=>{
             paid = paid + value.payment.paid
             due = due + value.payment.balance
-            console.log(value, 'items')
 
 
 

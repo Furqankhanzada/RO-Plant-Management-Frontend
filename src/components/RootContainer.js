@@ -7,7 +7,7 @@ import {
     withRouter
 } from 'react-router-dom'
 import LoginPage from './LoginPage'
-import ProductPage from './Products'
+import ProductPage from './ProductsPage'
 import CustomersPage from './CustomersPage'
 import CustomersDetail from "./customers/Detail";
 import TransactionsPage from './TransactionsPage'

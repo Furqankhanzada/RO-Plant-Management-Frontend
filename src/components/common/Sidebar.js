@@ -39,10 +39,12 @@ class Sidebar extends Component {
                                         <span>Transactions</span>
                                       </Menu.Item>
 
-                                        <SubMenu key="sub2" title={<span><Icon type="shopping" />Products</span>}>
-                                            <Menu.Item key="3" onClick={() => history.push('/products/create')}>Create</Menu.Item>
-                                            <Menu.Item key="4" onClick={() => history.push('/products')}>List</Menu.Item>
-                                        </SubMenu>
+                                        <Menu.Item key="4" onClick={() => history.push('/products')}>
+                                            <Icon type="shopping" />
+                                            <span>Products</span>
+                                            {/*<Menu.Item key="3" >Create</Menu.Item>*/}
+                                            {/*<Menu.Item key="4" onClick={() => history.push('/products')}>List</Menu.Item>*/}
+                                        </Menu.Item>
                                     </Menu>
                                 </Sider>
                             )

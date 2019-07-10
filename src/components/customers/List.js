@@ -85,6 +85,7 @@ class List extends PureComponent {
     }
   }
   render() {
+    console.log(this.props, "====customer props")
     const { ...tableProps } = this.props;
     const columns = [
       {
