@@ -924,7 +924,9 @@ img {
 /*/// medium media query start here ///*/
 @media (min-width: 992px) and (max-width: 1199px) {
 
-
+    .space-left {
+        padding-left: 15px;
+    }
 
 }
 /*/// medium media query end here ///*/
