@@ -32,7 +32,7 @@ class RightDrawer extends Component {
     return (
       <Row gutter={24}>
         <Drawer
-          className="new-account drawer-custom-style"
+          className="new-account drawer-custom-style small-screen"
           title={id ? 'Update Transaction' : 'Create Transaction'}
           width={800}
           onClose={this.onClose.bind(this)}

@@ -463,7 +463,7 @@ class MainForm extends Component {
                                         />
                                   </Form.Item>
                                 </Col>
-                                <Col xl={{ span: 7 }} lg={{ span: 7 }} md={{ span: 6 }} sm={{ span: 10 }}>
+                                <Col xl={{ span: 7 }} lg={{ span: 7 }} md={{ span: 6 }} sm={{ span: 12 }}>
                                   <FormItem label={`Discounted Price`} >
                                     <InputNumber disabled = {true}
                                                  value={value.discount === 0 ? productPrice : value.discount}
@@ -472,7 +472,7 @@ class MainForm extends Component {
                                         />
                                   </FormItem>
                                 </Col>
-                                <Col xl={{ span: 1 }} lg={{ span: 1 }} md={{ span: 2 }} sm={{ span: 2 }}>
+                                <Col xl={{ span: 1 }} lg={{ span: 1 }} md={{ span: 2 }} sm={{ span: 12 }}>
                                   <Icon
                                       className="dynamic-delete-button removeButtonDiscount"
                                       type="minus-circle-o"

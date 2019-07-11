@@ -648,19 +648,19 @@ class MainForm extends Component {
                           return (
                             <div className="discounts" key={index}>
                               <Row gutter={16}>
-                                <Col span={3}>
+                                <Col xl={{ span: 3 }} lg={{ span: 3 }} md={{ span: 3 }} sm={{ span: 4 }}>
                                   <FormItem label={`Is Returnable?`} colon={false} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <Button type="primary" size="default" onClick={this.onChangeItem.bind(this, 'bottle', index, value.id, !value.bottleStatus)} >
                                       {value.bottleStatus ? 'Yes' : 'No'}
                                     </Button>
                                   </FormItem>
                                 </Col>
-                                <Col span={5}>
+                                <Col xl={{ span: 5 }} lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 7 }}>
                                   <FormItem label={`Transaction At`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <DatePicker defaultValue={moment(value.transactionAt, dateFormat)} onChange={this.onChangeItem.bind(this, 'transactionAt', index, value.id)} format={dateFormat} />
                                   </FormItem>
                                 </Col>
-                                <Col span={value.bottleStatus ? 5 : 8}>
+                                <Col xl={{span: value.bottleStatus ? 5 : 8}} lg={{ span: value.bottleStatus ? 5 : 8 }} md={{ span: value.bottleStatus ? 5 : 8 }} sm={{ span: 7 }}>
                                   <Form.Item label={'Select Product'} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <AutoComplete
                                       className="certain-category-search"
@@ -677,7 +677,7 @@ class MainForm extends Component {
                                     </AutoComplete>
                                   </Form.Item>
                                 </Col>
-                                <Col span={3}>
+                                <Col xl={{ span: 3 }} lg={{ span: 3 }} md={{ span: 3 }} sm={{ span: 6 }}>
                                   <FormItem label={`Quantity / In`} className='bottle-status-width'>
                                     <InputNumber
                                       value={value.quantity}
@@ -688,7 +688,7 @@ class MainForm extends Component {
                                 </Col>
                                   {
                                     value.bottleStatus ? (
-                                      <Col span={3}>
+                                      <Col xl={{ span: 3 }} lg={{ span: 3 }} md={{ span: 3 }} sm={{ span: 6 }}>
                                         <FormItem label={`Bottles Out`} className={`${value.bottleStatus ? 'bottle-status-width' : 'full-width'}`}>
                                           <InputNumber
                                             value={value.bottleOut}
@@ -700,7 +700,7 @@ class MainForm extends Component {
                                       </Col>
                                     ) : null
                                   }
-                                <Col span={4}>
+                                <Col xl={{ span: 4 }} lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 6 }}>
                                   <FormItem label={`Total`} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <InputNumber disabled={true}
                                       value={productPrice ? productPrice : 0}
@@ -709,7 +709,7 @@ class MainForm extends Component {
                                     />
                                   </FormItem>
                                 </Col>
-                                <Col span={1}>
+                                <Col xl={{ span: 1 }} lg={{ span: 1 }} md={{ span: 1 }} sm={{ span: 1 }} xs={{ span: 24 }}>
                                   <Icon
                                     className="dynamic-delete-button removeButtonDiscount"
                                     type="minus-circle-o"

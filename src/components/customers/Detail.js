@@ -56,15 +56,11 @@ class Detail extends PureComponent {
             paid = paid + value.payment.paid
             due = due + value.payment.balance
             console.log(value, 'items')
-
-
-
             value.items.map((item)=>{
-            quantity = quantity + item.quantity
+                quantity = quantity + item.quantity
             })
 
         }) :[]
-
 
         const { params } = match;
         const { id } = params;
@@ -86,11 +82,11 @@ class Detail extends PureComponent {
                                                 />
                                             }
                                             actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
-                                        >
+                                            >
                                             <h3>{customer.name}</h3>
                                             <p
                                                 style={{ fontWeight:600 }}
-                                            >{customer.mobile}</p>
+                                                >{customer.mobile}</p>
                                             <p>{`${customer.address.house} ${customer.address.area} ${customer.address.block} ${customer.address.town}`}</p>
                                             {
                                                 customer.discounts.map((value, index) => {
@@ -110,46 +106,39 @@ class Detail extends PureComponent {
                             </Query>
                         </div>
                     </Col>
-
                     <Col className="flex-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }} xl={{ span: 18 }}>
-
-                                    <div className="quantity">
-                                        <div className="card">
-
-                                                        <Row gutter={16}>
-                                                            <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
-                                                                <Statistic title="Total Amount" value={paid+due} precision={2} />
-                                                            </Col>
-                                                            <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
-                                                                <Statistic title="Amount Recived" value={ paid } precision={2} />
-                                                            </Col>
-                                                            <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
-                                                                <Statistic title="Due Amount" value={due} precision={2} />
-                                                            </Col>
-                                                            <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
-                                                                <Statistic title="Bottles Deliver" value={quantity} />
-                                                            </Col>
-                                                        </Row>
-
-
-                                            <Divider />
-                                            <Empty
-                                                style={{ marginTop: 60 }}
-                                                description={
-                                                    <span>
+                        <div className="quantity">
+                            <div className="card">
+                                <Row gutter={16}>
+                                    <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                        <Statistic title="Total Amount" value={paid+due} precision={2} />
+                                    </Col>
+                                    <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                        <Statistic title="Amount Recived" value={ paid } precision={2} />
+                                    </Col>
+                                    <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                        <Statistic title="Due Amount" value={due} precision={2} />
+                                    </Col>
+                                    <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                        <Statistic title="Bottles Deliver" value={quantity} />
+                                    </Col>
+                                </Row>
+                                <Divider />
+                                <Empty
+                                    style={{ marginTop: 60 }}
+                                    description={
+                                        <span>
                                            Chart Will be here
                                         </span>
-                                                }
-                                            >
-                                            </Empty>
-                                        </div>
-                                    </div>
+                                    }
+                                    >
+                                </Empty>
+                            </div>
+                        </div>
                     </Col>
                 </Row>
                 <div className="card padding-none space-bottom">
-
                     <Transaction transactions={transactions} loading={transactions ? false : true} history={history} />
-
                 </div>
             </Layout>
         )

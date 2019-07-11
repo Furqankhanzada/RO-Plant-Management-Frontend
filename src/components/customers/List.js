@@ -96,10 +96,10 @@ class List extends PureComponent {
         render: text => <Avatar style={{ marginLeft: 8 }} src={require('../../assests/images/user.png')} />,
       },
       {
-        title: <span>Name</span>,
+        title: <span className="space-left">Name</span>,
         dataIndex: 'name',
         key: 'name',
-        render: (text, record) => <Link to={`/customers/${record.id}`}>{text}</Link>,
+        render: (text, record) => <Link className="space-left" to={`/customers/${record.id}`}>{text}</Link>,
       },
       {
         title: <span>Mobile</span>,

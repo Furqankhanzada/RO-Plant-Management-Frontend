@@ -18,7 +18,7 @@ class Sidebar extends Component {
                         if (MainDrawer) {
                             const { open } = MainDrawer;
                             return (
-                                <Sider className={` ${open ? 'showHideView' : ''}`} width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
+                                <Sider className={` ${open ? 'showHideView drawer-icon' : 'drawer-icon'}`} width={200} style={{ background: '#ffffff', boxShadow: '0 0 28px 0 rgba(24,144,255,.1)' }}>
                                     <Menu
                                         mode="inline"
                                         defaultSelectedKeys={defaultSelectedKeys ? defaultSelectedKeys : []}
