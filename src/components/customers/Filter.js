@@ -89,7 +89,7 @@ class Filter extends Component {
 
         return (
             <Row gutter={24}>
-                <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
+                <Col {...ColProps} xl={{ span: 4 }} md={{ span: 12 }}>
                     {getFieldDecorator('name', { initialValue: name })(
                         <Search
                             placeholder={`Search Name`}
@@ -100,7 +100,7 @@ class Filter extends Component {
                 <Col
                     {...ColProps}
                     xl={{ span: 5 }}
-                    md={{ span: 8 }}
+                    md={{ span: 12 }}
                     id="addressCascader"
                 >
                     {getFieldDecorator('mobile', { initialValue: mobile })(
