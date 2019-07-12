@@ -30,7 +30,8 @@ class List extends PureComponent {
   }
   handleMenuClick (record, e) {
     const { deleteCustomer } = this.props;
-    if (e.key === '1') {
+
+      if (e.key === '1') {
       this.onEditItem(record);
     } else if (e.key === '2') {
       confirm({
@@ -85,7 +86,6 @@ class List extends PureComponent {
     }
   }
   render() {
-    console.log(this.props, "====customer props")
     const { ...tableProps } = this.props;
     const columns = [
       {
