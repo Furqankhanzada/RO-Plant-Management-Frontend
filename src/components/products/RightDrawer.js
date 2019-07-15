@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import { Row, Drawer, Select } from 'antd';
 import { PRODUCTS_QUERY } from '../../graphql/queries/product'
-import { CUSTOMER_QUERY } from '../../graphql/queries/customer.js'
+import { PRODUCT_QUERY } from '../../graphql/queries/product.js'
 import { Query } from 'react-apollo';
 import { Layout } from 'antd';
-import CustomerForm from './Form';
+import ProductForm from './Form';
 import { client } from '../../index'
 import gql from 'graphql-tag';
 
@@ -55,10 +55,10 @@ class RightDrawer extends Component {
                   <Layout>
                     <Layout className="dashboard-main">
                       <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                        <Query query={CUSTOMER_QUERY} variables={{ id }} >
+                        <Query query={PRODUCT_QUERY} variables={{ id }} >
                           {({ data: { product }, loading }) => {
                             return (
-                              <CustomerForm options={options} product={product || {}} loading={loading} />
+                                <ProductForm options={options} product={product || {}} loading={loading} />
                             )
                           }}
                         </Query>

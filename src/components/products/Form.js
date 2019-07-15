@@ -57,11 +57,6 @@ class MainForm extends Component {
       // If updating product
       if (id) {
         if (!adding) {
-          // make discounts
-          const discountArray = product.discounts.map((value) => {
-            value.product.selected = true;
-            return value
-          });
           // set product to state
           this.setState({ name, price })
         }
@@ -119,7 +114,7 @@ class MainForm extends Component {
     const { product: { id } = {}, form, createProduct, updateProduct } = this.props;
     const { validateFields, resetFields } = form;
 
-    let { discounts, deleteDiscount, addressId } = this.state;
+    let { discounts, deleteDiscount } = this.state;
     const dupDiscount = [];
     const editDup = [];
     validateFields(async (err, values) => {
@@ -174,12 +169,7 @@ class MainForm extends Component {
           delete product.name;
           delete product.price;
           product.id = id;
-          delete product.data.address;
-          product.data.address = {
-            update: {
 
-            }
-          }
           if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
             delete product.data.discounts.create;
             product.data.discounts.delete = deleteDiscount

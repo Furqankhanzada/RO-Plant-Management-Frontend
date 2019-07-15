@@ -3,6 +3,7 @@ import { gql } from 'apollo-boost';
 export const CREATE_PRODUCT_MUTATION = gql`
     mutation createProduct($data: ProductCreateInput!) {
         createProduct(data: $data){
+            id
             name
         }
     }
@@ -15,10 +16,11 @@ export const DELETE_PRODUCT_MUTATION = gql`
     }
 `;
 export const UPDATE_PRODUCT_MUTATION = gql`
-    mutation updateProduct($where: ProductWhereUniqueInput!) {
-        updateProduct(where: $where, id: $id){
-            id
-            
-        }
+    mutation updateProduct($data: ProductUpdateInput!, $id:ID) {
+        updateProduct(data: $data, id: $id){
+                    id
+                    price
+                    name
+            }
     }
 `;
