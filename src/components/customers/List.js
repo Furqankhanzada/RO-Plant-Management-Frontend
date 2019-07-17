@@ -89,18 +89,18 @@ class List extends PureComponent {
     const { ...tableProps } = this.props;
     const columns = [
       {
-        title: <span>Avatar</span>,
+        title: <span>Sr. no</span>,
         dataIndex: 'avatar',
         key: 'avatar',
         width: 72,
         fixed: 'left',
-        render: text => <Avatar style={{ marginLeft: 8 }} src={require('../../assests/images/user.png')} />,
+        render: (text, record, i) => <Avatar style={{ marginLeft: 8 }}>{i+1}</Avatar>,
       },
       {
-        title: <span>Name</span>,
+        title: <span className="space-left">Name</span>,
         dataIndex: 'name',
         key: 'name',
-        render: (text, record) => <Link to={`/customers/${record.id}`}>{text}</Link>,
+        render: (text, record) => <Link className="space-left" to={`/customers/${record.id}`}>{text}</Link>,
       },
       {
         title: <span>Mobile</span>,

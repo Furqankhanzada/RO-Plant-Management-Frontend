@@ -771,12 +771,25 @@ img {
     .dashboard .ant-card {
         margin-bottom: 12px;
     }
+    .space-left {
+        padding-left: 15px;
+    }
+    .small-screen .ant-form .ant-form-item-children {
+        display: inline-block;
+    }
+    .small-screen .ant-form .ant-form-item-children span {
+        width: 100%;
+    }
+    .small-screen .ant-form .ant-form-item-children span i {
+        float: right;
+    }
 
 }
 @media (min-width: 320px) and (max-width: 430px) {
 
     .new-account .ant-drawer-body .ant-form .ant-form-item {
-        width: 100%;
+        width: 100% !important;
+        margin-left: 0;
     }
     .discount-details .discounts .ant-form-item {
         width: 100% !important;
@@ -785,19 +798,19 @@ img {
     .discount-details .discounts .ant-form-item:nth-of-type(2) {
         width: 50% !important;
     }
-    .discount-details .discounts .ant-form-item:last-of-type {
-        width: 45% !important;
-        margin-left: 13px;
-    }
+    /*.discount-details .discounts .ant-form-item:last-of-type {*/
+        /*width: 45% !important;*/
+        /*margin-left: 13px;*/
+    /*}*/
     .new-account .ant-drawer-body .discount-details .discounts {
-        padding: 0 10px;
+        padding: 10px 10px;
         border-radius: 4px;
         margin-bottom: 4px;
         box-shadow: 0 0 5px 0 #cecece;
     }
     .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
         color: red;
-        margin: 9px 0 0 10px;
+        margin: 0 0 0 10px;
     }
     .quantity {
         padding: 20px 0 0 0;
@@ -824,16 +837,22 @@ img {
         width: 47% !important;
     }
     .new-account .ant-drawer-body .create-main-div .removeButtonDiscount {
-        margin: 35px 0 0 5px;
+        margin: 0 0 0 5px;
     }
     .discount-details .discounts .ant-form-item {
-        width: 34% !important;
+        width: 100% !important;
     }
     .discount-details .discounts .ant-form-item:last-of-type {
         margin-right: 0;
     }
     .quantity {
         padding: 25px 0 0 0;
+    }
+    .new-account .ant-drawer-body .discount-details .discounts {
+        padding: 10px 10px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        box-shadow: 0 0 5px 0 #cecece;
     }
 
 }
@@ -886,6 +905,22 @@ img {
     .dashboard .ant-card {
         margin-bottom: 12px;
     }
+    .space-left {
+        padding-left: 15px;
+    }
+    .drawer-icon {
+        max-width: 75px !important;
+        min-width: 75px !important;
+    }
+    .drawer-icon ul li span {
+        font-size: 0;
+    }
+    .drawer-icon ul li i {
+        font-size: 24px !important;
+    }
+    .small-screen .ant-drawer-content-wrapper {
+        width: 750px !important;
+    }
 
 }
 /*/// small media query end here ///*/
@@ -893,7 +928,9 @@ img {
 /*/// medium media query start here ///*/
 @media (min-width: 992px) and (max-width: 1199px) {
 
-
+    .space-left {
+        padding-left: 15px;
+    }
 
 }
 /*/// medium media query end here ///*/
