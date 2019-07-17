@@ -32,7 +32,7 @@ class ProductsPage extends Component {
     }
 
     onRouteChanged() {
-        const { customersQuery: { refetch }, location: { search } } = this.props;
+        const { productsQuery: { refetch }, location: { search } } = this.props;
         const query = parse(search);
         let where = {};
         if (query.name) {
@@ -49,7 +49,7 @@ class ProductsPage extends Component {
         // this.props.subscribeToCustomer();
     }
     componentWillReceiveProps(nextProps) {
-        const { error } = nextProps.customersQuery;
+        const { error } = nextProps.productsQuery;
         if (error) {
             const { graphQLErrors } = error;
             graphQLErrors.forEach((value) => {
@@ -74,7 +74,7 @@ class ProductsPage extends Component {
     };
 
     render() {
-        const { products, loading } = this.props.customersQuery;
+        const { products, loading } = this.props.productsQuery;
         return (
             <Product products={products} loading={loading} history={this.props.history} />
         )
@@ -84,7 +84,7 @@ class ProductsPage extends Component {
 withRouter(ProductsPage);
 
 export default graphql(PRODUCTS_QUERY, {
-    name: 'customersQuery', // name of the injected prop: this.props.customersQuery...
+    name: 'productsQuery', // name of the injected prop: this.props.productsQuery...
     options: ({ location: { search = {} } }) => {
         const query = parse(search);
         let where = {};

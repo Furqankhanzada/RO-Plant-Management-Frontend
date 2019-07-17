@@ -13,41 +13,13 @@ class MainForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      discounts: [
-        {
-          discount: 0,
-          product: ''
-        }
-      ],
       name: '',
       price: 0,
       drawer: false,
       disableBtn: false,
       selectedValue: '',
-      deleteDiscount: [],
-      editDiscount: [],
       adding: false,
-      addressId: ''
     }
-  }
-
-  add() {
-    const { discounts } = this.state;
-    const { product: { id } = {} } = this.props;
-
-    const discountsObj = {
-      discount: 0,
-      product: ''
-    };
-    if (id) {
-      discountsObj.new = true
-    }
-    // can use data-binding to get
-    discounts.push(discountsObj);
-    this.setState({
-      discounts,
-      adding: true
-    })
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.product.id) {
@@ -66,57 +38,11 @@ class MainForm extends Component {
     }
   }
 
-  onChangeDiscount(type, index, discountId, ev) {
-    const { discounts, editDiscount } = this.state;
-    const discountsObject = discounts[index];
-    if (type === "percentage") {
-      discountsObject.discount = parseInt((discountsObject.product.price - (ev / 100) * discountsObject.product.price).toFixed());
-    } else {
-      const selectedProduct = JSON.parse(ev);
-      discountsObject.product = {
-        name: selectedProduct.name,
-        price: selectedProduct.price,
-        id: selectedProduct.id,
-        selected: true
-      };
-    }
-    if (discountId) {
-      discountsObject.edit = true;
-      discountsObject.discountId = discountId
-    }
-
-    discounts[index] = discountsObject;
-    this.setState({
-      discounts,
-      discountsObject,
-      editDiscount
-    })
-  }
-  removeDiscount(index, value) {
-    const { discounts, deleteDiscount } = this.state;
-    const { product: { id } = {} } = this.props;
-
-    if (id) {
-      const deleteDiscountObj = { id: value.id };
-      deleteDiscount.push(deleteDiscountObj);
-      this.setState({
-        deleteDiscount
-      })
-    }
-    discounts.splice(index, 1);
-    this.setState({
-      discounts,
-      adding: true
-    })
-  }
   handledSubmit(e) {
     e.preventDefault();
     const { product: { id } = {}, form, createProduct, updateProduct } = this.props;
     const { validateFields, resetFields } = form;
 
-    let { discounts, deleteDiscount } = this.state;
-    const dupDiscount = [];
-    const editDup = [];
     validateFields(async (err, values) => {
 
       if (!err) {
@@ -125,40 +51,6 @@ class MainForm extends Component {
           loading: true
         });
         const { name, price } = values;
-        for (let i = 0; i < discounts.length; i++) {
-          if (discounts[i].discount !== 0 && discounts[i].product) {
-            let discountsObj = {
-              discount: discounts[i].discount,
-              product: {
-                connect: {
-                  id: discounts[i].product.id
-                }
-              }
-            };
-            if (discounts[i].edit) {
-              const editObj = {
-                where: {
-                  id: discounts[i].discountId
-                },
-                data: {
-                  discount: discounts[i].discount,
-                  product: {
-                    connect: {
-                      id: discounts[i].product.id
-                    }
-                  }
-                }
-              };
-              editDup.push(editObj)
-            }
-            if (id && discounts[i].new === true) {
-              dupDiscount.push(discountsObj)
-            } else if (!id) {
-              dupDiscount.push(discountsObj)
-            }
-          }
-        }
-
         let product = {
           data: {
             price: parseInt(price),
@@ -170,26 +62,11 @@ class MainForm extends Component {
           delete product.price;
           product.id = id;
 
-          if (dupDiscount.length < 1 && deleteDiscount.length > 0) {
-            delete product.data.discounts.create;
-            product.data.discounts.delete = deleteDiscount
-          }
-          else if (dupDiscount.length < 1 && deleteDiscount.length < 1 && editDup.length < 1) {
-            delete product.data.discounts
-          }
-          else if (dupDiscount.length > 0 && deleteDiscount.length > 0) {
-            product.data.discounts.delete = deleteDiscount
-          }
-          if (editDup.length > 0) {
-            product.data.discounts.update = editDup;
-          }
           updateProduct({
             variables: product,
           }).then(result => {
             this.setState({
               disableBtn: false,
-              editDiscount: [],
-              deleteDiscount: [],
               adding: false
             });
             client.mutate({
@@ -216,9 +93,6 @@ class MainForm extends Component {
               });
             })
         } else {
-          if (dupDiscount.length < 1) {
-            delete product.data.discounts
-          }
           createProduct({
             variables: product,
             update: (proxy, { data: { createProduct } }) => {
@@ -295,9 +169,9 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form, product: { id } = {}, options, loading } = this.props;
+    const { form, product: { id } = {}, loading } = this.props;
     const { getFieldDecorator } = form;
-    const { discounts, disableBtn } = this.state;
+    const { disableBtn } = this.state;
     const { name, price } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
@@ -354,7 +228,6 @@ class MainForm extends Component {
       </div>
     )
   }
-
 }
 
 const ComposedForm = Form.create({ name: 'product' })(MainForm);

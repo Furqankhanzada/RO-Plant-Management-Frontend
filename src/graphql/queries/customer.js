@@ -30,16 +30,25 @@ export const GET_CUSTOMERS = gql`
 export const CUSTOMER_SUBSCRIPTION = gql`
     subscription UserSubscription {
         userSubscription {
-            name
             id
+            name
             mobile
             address{
                 town
-                house
-                block
                 area
+                block
+                house
+                id
             }
-            createdAt
+            discounts{
+                id
+                product{
+                    id
+                    price
+                    name
+                }
+                discount
+            }
         }
     }
 `;
