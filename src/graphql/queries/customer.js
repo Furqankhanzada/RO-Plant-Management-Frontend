@@ -1,8 +1,8 @@
 import {gql} from "apollo-boost/lib/index";
 
 export const GET_CUSTOMERS = gql`
-    query customers($where: UserWhereInput) {
-        customers(where: $where) {
+    query customers($where: UserWhereInput, $first: Int) {
+        customers(where: $where, first: $first) {
             name
             id
             mobile
@@ -10,10 +10,18 @@ export const GET_CUSTOMERS = gql`
                 town
                 house
                 block
+                area
             }
             createdAt
-            bottle{
-                balance
+            bottleBalance
+            discounts{
+                product{
+                    id
+                    price
+                    name
+                }
+                discount
+                id
             }
         }
     }
@@ -29,35 +37,44 @@ export const CUSTOMER_SUBSCRIPTION = gql`
                 town
                 house
                 block
+                area
             }
             createdAt
-            bottle{
-                balance
-            }
         }
     }
 `;
 
 export const CUSTOMER_QUERY = gql`
-query customerDetail($id:ID){
-    customer(where:{id:$id}){
-        name
-        mobile
-        address{
-          town
-          area
-          block
-          house
-        }
-        discounts{
-        id
-        product{
+    query customerDetail($id: ID){
+        customer(where:{id: $id}) {
             id
-            price
+            name
+            mobile
+            address{
+                town
+                area
+                block
+                house
+                id
+            }
+            discounts{
+                id
+                product{
+                    id
+                    price
+                    name
+                }
+                discount
+            }
+        }
+    }
+`;
+export const ME = gql`
+    query MeQuery {
+        me {
+            id
+            mobile
             name
         }
-          discount
-        }
-      }
-}
+    }
 `;

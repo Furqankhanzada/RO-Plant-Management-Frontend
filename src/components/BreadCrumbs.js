@@ -22,6 +22,8 @@ class BreadCrumbs extends Component {
             '/customers/update': { name: 'Update', iconType: 'edit' },
             '/products': { name: 'Products', iconType: 'team' },
             '/products/create': { name: 'Create', iconType: 'user-add' },
+            '/dashboard': { name: 'Dashboard', iconType: 'appstore' },
+            '/transactions': { name: 'Transactions', iconType: 'bar-chart' },
         };
         if (!breadcrumbNameMap[pathname]) {
             if (!pathname.split('/')[3]) {

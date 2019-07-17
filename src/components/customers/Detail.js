@@ -1,137 +1,208 @@
 import React, { PureComponent } from 'react'
 import { Table, Divider, Tag } from 'antd';
+import {graphql, Query} from 'react-apollo';
+import { Layout, Card, Icon, Empty, Row, Col, Statistic, Spin } from 'antd';
+import {CUSTOMER_QUERY, GET_CUSTOMERS} from '../../graphql/queries/customer'
+import {GET_TRANSACTION, GET_TRANSACTIONS, TRANSACTION_SUBSCRIPTION} from '../../graphql/queries/transaction'
+import Transaction from '../transactions/index.js'
+import moment from "../TransactionsPage";
+import { parse } from 'qs'
 
-import { Layout, Card, Icon, Empty, Row, Col, Statistic } from 'antd';
 
-const columns = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-    },
-    {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: tags => (
-            <span>
-        {tags.map(tag => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-                color = 'volcano';
-            }
-            return (
-                <Tag color={color} key={tag}>
-                    {tag.toUpperCase()}
-                </Tag>
-            );
-        })}
-      </span>
-        )
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-            <span>
-        <p>Invite {record.name}</p>
-        <Divider type="vertical" />
-        <p>Delete</p>
-      </span>
-        )
-    }
-];
-
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-    },
-];
 
 class Detail extends PureComponent {
-    render() {
-        return (
-                <Layout className="user-main-div">
-                    <Row>
-                        <Col span={6}>
-                            <Card
-                                style={{ width: 300, marginBottom: 25 }}
-                                cover={
-                                    <img
-                                        alt="example"
-                                        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                                    />
-                                }
-                                actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
-                            >
-                                <h3>Abdul Raheem</h3>
-                                <p>03462799866</p>
-                                <p>FL-1, R-3, Sector-1, Sultanabad Manghopir Road Karachi</p>
-                                <Tag color="#87d068">Cash</Tag>
-                                <Tag color="#2db7f5">Monthly</Tag>
-                            </Card>
-                        </Col>
-                        <Col span={18}>
-                            <Row gutter={16}>
-                                <Col span={6}>
-                                    <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
-                                </Col>
-                                <Col span={6}>
-                                    <Statistic title="Active Users" value={112893} />
-                                </Col>
-                                <Col span={6}>
-                                    <Statistic title="Active Users" value={112893} />
-                                </Col>
-                                <Col span={6}>
-                                    <Statistic title="Account Balance (CNY)" value={112893} precision={2} />
-                                </Col>
-                            </Row>
-                            <Divider />
-                            <Empty
-                                style={{ marginTop: 60 }}
-                                description={
-                                    <span>
-                                       Chart Will be here
-                                    </span>
-                                }
-                            >
-                            </Empty>
+    componentDidUpdate(prevProps) {
+        if (this.props.location !== prevProps.location) {
+            this.onRouteChanged();
+        }
+    }
+    onRouteChanged() {
+        let { transactionsQuery: { refetch }, location: { search, pathname } } = this.props;
+        pathname = pathname.split("/")[2]
+        const query = parse(search);
+        let where = {payment:{}};
+        where.user = {
+            id: pathname
+        }
+        if (query.type) {
+            where.type = query.type
+        }
+        if (query.status) {
+            where.status = query.status
+        }
 
-                        </Col>
-                    </Row>
-                    <Table columns={columns} dataSource={data} bordered simple />
-                </Layout>
-            )
+        if (query.payment ) {
+            where.payment.status = query.payment
+        }
+
+        if (query.transactionAt) {
+            where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
+            where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
+        }
+
+        refetch({
+            where
+        })
+    }
+    render() {
+
+        const { history, match, transactionsQuery } = this.props;
+        let { transactions } = transactionsQuery;
+        let paymentTransaction = [];
+        let paid = 0;
+        let due = 0;
+        let quantity = 0;
+        paymentTransaction = transactions ? transactions.map((value)=>{
+            paid = paid + value.payment.paid
+            due = due + value.payment.balance
+            console.log(value, 'items')
+            value.items.map((item)=>{
+                quantity = quantity + item.quantity
+            })
+
+        }) :[]
+
+        const { params } = match;
+        const { id } = params;
+        return (
+            <Layout className="user-main-div">
+                <Row className="flex-box">
+                    <Col className="flex-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                        <div className="card padding-none loading-center">
+                            <Query query={CUSTOMER_QUERY} variables={{ id }}>
+                                {({ data: { customer }, loading }) => {
+                                    if(loading) return <Spin />;
+                                    return (
+                                        <Card
+                                            style={{ width: '100%' }}
+                                            cover={
+                                                <img
+                                                    alt="example"
+                                                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                                                />
+                                            }
+                                            actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
+                                            >
+                                            <h3>{customer.name}</h3>
+                                            <p
+                                                style={{ fontWeight:600 }}
+                                                >{customer.mobile}</p>
+                                            <p>{`${customer.address.house} ${customer.address.area} ${customer.address.block} ${customer.address.town}`}</p>
+                                            {
+                                                customer.discounts.map((value, index) => {
+                                                    return(
+                                                        <div className="product-details">
+                                                            <h3>Product : <span>{value.product.name}</span></h3>
+                                                            <h3>Discounted Price : <span>{value.discount}</span> <span className={ value.discount ? "line-through" :""}>{value.product.price}</span></h3>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                            <Tag color="#87d068">Cash</Tag>
+                                            <Tag color="#2db7f5">Monthly</Tag>
+                                        </Card>
+                                    )
+                                }}
+                            </Query>
+                        </div>
+                    </Col>
+                    <Col className="flex-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 18 }} xl={{ span: 18 }}>
+                        <div className="quantity">
+                            <div className="card">
+                                <Row gutter={16}>
+                                    <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                        <Statistic title="Total Amount" value={paid+due} precision={2} />
+                                    </Col>
+                                    <Col className="bottom-space" xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                        <Statistic title="Amount Recived" value={ paid } precision={2} />
+                                    </Col>
+                                    <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                        <Statistic title="Due Amount" value={due} precision={2} />
+                                    </Col>
+                                    <Col xs={{ span: 12 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 6 }}>
+                                        <Statistic title="Bottles Deliver" value={quantity} />
+                                    </Col>
+                                </Row>
+                                <Divider />
+                                <Empty
+                                    style={{ marginTop: 60 }}
+                                    description={
+                                        <span>
+                                           Chart Will be here
+                                        </span>
+                                    }
+                                    >
+                                </Empty>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+                <div className="card padding-none space-bottom">
+                    <Transaction transactions={transactions} loading={transactions ? false : true} history={history} />
+                </div>
+            </Layout>
+        )
     }
 }
 
+export default graphql(GET_TRANSACTIONS, {
+    name: 'transactionsQuery', // name of the injected prop: this.props.transactionsQuery...
+    options: ({ location: { search = {}, pathname } = {} }) => {
+        pathname = pathname.split("/")[2]
+        const query = parse(search);
+        let where = {payment:{}};
+        where.user = {
+            id: pathname
+        }
+        if (query.type) {
+            where.type = query.type
+        }
+        if (query.status) {
+            where.status = query.status
+        }
 
-export default Detail
+        if (query.payment  ) {
+            where.payment.status  = query.payment
+        }
+        if (query.transactionAt) {
+            where.createdAt_gte = moment(query.transactionAt[0]).startOf('day');
+            where.createdAt_lte = moment(query.transactionAt[1]).endOf('day');
+        }
+
+        return {
+            variables: {
+                where
+            }
+        }
+    },
+    props: props => {
+        return Object.assign({}, props, {
+            subscribeToTransaction: params => {
+                return props.transactionsQuery.subscribeToMore({
+                    document: TRANSACTION_SUBSCRIPTION,
+                    updateQuery: (prev, { subscriptionData }) => {
+                        if (!subscriptionData.data) {
+                            return prev
+                        }
+                        const newTransaction = subscriptionData.data.transactionSubscription;
+                        if (newTransaction) {
+                            if (prev.transactions.find(transaction => transaction.id === newTransaction.id)) {
+                                return prev
+                            }
+                            return Object.assign({}, prev, {
+                                transactions: [...prev.transactions, newTransaction]
+                            })
+                        }
+                        // Execute when delete item
+                        return Object.assign({}, prev, {
+                            transactions: [...prev.transactions]
+                        })
+                    }
+                })
+            }
+        })
+    }
+})(Detail)
+
+
+

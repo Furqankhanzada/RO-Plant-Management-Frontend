@@ -54,7 +54,7 @@ class Products extends Component {
                     return (
                         <div className="create-main-div">
                             <div className="products-table">
-                                <Table columns={columns} dataSource={products} rowKey="id" />
+                                <Table columns={columns} pagination={false} dataSource={products} rowKey="id" />
                             </div>
                         </div>
                     )

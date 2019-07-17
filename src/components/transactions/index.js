@@ -7,18 +7,17 @@ import { GET_DRAWER_STATUS } from '../../client'
 import { Query } from 'react-apollo'
 
 class User extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
   render() {
-    const { loading, history, customers } = this.props;
+    const { loading, history, transactions } = this.props;
+    const {location: {pathname}} = history;
+    // const {user} = transactions;
     // Fill filters input by url query params
     const { location: { search } } = history;
     const query = parse(search.replace('?', ''));
 
     const handleRefresh = newQuery => {
       this.props.history.push({
-        pathname: '/customers',
+        pathname: pathname === "/transactions" ? "/transactions" : pathname,
         search: stringify(
           {
             ...query,
@@ -30,7 +29,7 @@ class User extends PureComponent {
     };
 
     const listProps = {
-      dataSource: customers,
+      dataSource: transactions,
       loading,
       onChange(page) {
         handleRefresh({
@@ -51,11 +50,10 @@ class User extends PureComponent {
         })
       }
     };
-
     return (
       <div className="contents">
         <Filter {...filterProps} history={history} />
-        <List history={history} {...listProps} />
+        <List  {...listProps} history={history} />
         <Query query={GET_DRAWER_STATUS}>
           {
             ({ data: { Drawer } }) => {
