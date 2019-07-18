@@ -21,17 +21,16 @@ const columns = [
     dataIndex: 'product.name',
     key: 'name'
   },
-
   {
     title: 'Price',
     dataIndex: 'product.price',
     key: 'price',
     render: (method, price) => {
-      const {discount,quantity} = price
-      if (discount === method){
-        return <Tag color='green'><span className="discount-price">{method}</span> <span>{method-(discount/quantity)}</span></Tag>
+      let totalPrice = price.discount ? price.total : method;
+      if (method !== totalPrice){
+        return <Tag color='green'><span className="discount-price">{method}</span> <span>{totalPrice}</span></Tag>
       }
-      return <Tag color='green'><span>{method}</span></Tag>
+      return <Tag color='green'><span>{totalPrice}</span></Tag>
     }
   },
   {
