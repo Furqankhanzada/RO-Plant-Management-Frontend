@@ -6,6 +6,7 @@ import { PRODUCTS_QUERY } from '../../graphql/queries/product';
 import { CREATE_PRODUCT_MUTATION, UPDATE_PRODUCT_MUTATION } from '../../graphql/mutations/product';
 import { client } from '../../index'
 import gql from 'graphql-tag';
+import {GET_CUSTOMERS} from "../../graphql/queries/customer";
 
 const FormItem = Form.Item;
 class MainForm extends Component {
@@ -96,7 +97,7 @@ class MainForm extends Component {
           createProduct({
             variables: product,
             update: (proxy, { data: { createProduct } }) => {
-              // Read the data from our cache for this query.
+               // Read the data from our cache for this query.
               const data = proxy.readQuery({ query: PRODUCTS_QUERY, variables: { where: {}} });
               // Add our comment from the mutation to the end.
               data.products.push(createProduct);
