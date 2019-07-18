@@ -30,7 +30,8 @@ class List extends PureComponent {
   }
   handleMenuClick (record, e) {
     const { deleteCustomer } = this.props;
-    if (e.key === '1') {
+
+      if (e.key === '1') {
       this.onEditItem(record);
     } else if (e.key === '2') {
       confirm({

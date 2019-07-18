@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react'
 import { Table, Divider, Tag } from 'antd';
 import {graphql, Query} from 'react-apollo';
 import { Layout, Card, Icon, Empty, Row, Col, Statistic, Spin } from 'antd';
-import {CUSTOMER_QUERY, GET_CUSTOMERS} from '../../graphql/queries/customer'
-import {GET_TRANSACTION, GET_TRANSACTIONS, TRANSACTION_SUBSCRIPTION} from '../../graphql/queries/transaction'
+import {CUSTOMER_QUERY} from '../../graphql/queries/customer'
+import {GET_TRANSACTIONS, TRANSACTION_SUBSCRIPTION} from '../../graphql/queries/transaction'
 import Transaction from '../transactions/index.js'
 import moment from "../TransactionsPage";
 import { parse } from 'qs'
@@ -18,12 +18,12 @@ class Detail extends PureComponent {
     }
     onRouteChanged() {
         let { transactionsQuery: { refetch }, location: { search, pathname } } = this.props;
-        pathname = pathname.split("/")[2]
+        pathname = pathname.split("/")[2];
         const query = parse(search);
         let where = {payment:{}};
         where.user = {
             id: pathname
-        }
+        };
         if (query.type) {
             where.type = query.type
         }
@@ -55,7 +55,6 @@ class Detail extends PureComponent {
         paymentTransaction = transactions ? transactions.map((value)=>{
             paid = paid + value.payment.paid
             due = due + value.payment.balance
-            console.log(value, 'items')
             value.items.map((item)=>{
                 quantity = quantity + item.quantity
             })

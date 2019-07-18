@@ -9,3 +9,13 @@ export const PRODUCTS_QUERY = gql`
         }
     }
 `;
+export const PRODUCT_QUERY = gql`
+    query productDetail($id: ID){
+        product(where:{id: $id}) {
+            id
+            name
+            price
+            
+        }
+    }
+`;
