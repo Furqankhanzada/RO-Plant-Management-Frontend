@@ -28,7 +28,7 @@ const columns = [
     render: (method, price) => {
       let totalPrice = price.discount ? price.total : method;
       if (method !== totalPrice){
-        return <Tag color='green'><span className="discount-price">{method}</span> <span>{totalPrice}</span></Tag>
+        return <Tag color='green'><span className="discount-price">{method}</span> <span>{totalPrice/price.quantity}</span></Tag>
       }
       return <Tag color='green'><span>{totalPrice}</span></Tag>
     }
