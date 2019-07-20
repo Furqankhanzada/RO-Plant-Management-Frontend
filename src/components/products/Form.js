@@ -6,7 +6,6 @@ import { PRODUCTS_QUERY } from '../../graphql/queries/product';
 import { CREATE_PRODUCT_MUTATION, UPDATE_PRODUCT_MUTATION } from '../../graphql/mutations/product';
 import { client } from '../../index'
 import gql from 'graphql-tag';
-import {GET_CUSTOMERS} from "../../graphql/queries/customer";
 
 const FormItem = Form.Item;
 class MainForm extends Component {
