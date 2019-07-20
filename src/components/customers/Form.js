@@ -26,6 +26,7 @@ class MainForm extends Component {
       area: '',
       block: '',
       house: '',
+      bottleBalance: '',
       products: [],
       result: [],
       drawer: false,
@@ -33,8 +34,7 @@ class MainForm extends Component {
       selectedValue: '',
       deleteDiscount: [],
       editDiscount: [],
-      adding: false,
-      addressId: ''
+      adding: false
     }
   }
 
@@ -60,7 +60,7 @@ class MainForm extends Component {
     if (nextProps.customer.id) {
 
       const { customer } = nextProps;
-      const { id, name, mobile, address: { town, area, block, house } } = customer;
+      const { id, name, mobile, address: { town, area, block, house },  bottleBalance } = customer;
       const { adding } = this.state;
       // If updating customer
       if (id) {
@@ -71,11 +71,11 @@ class MainForm extends Component {
             return value
           });
           // set customer to state
-          this.setState({ name, town, area, block, house, mobile, discounts: discountArray })
+          this.setState({ name, town, area, block, house, mobile, bottleBalance, discounts: discountArray })
         }
       }
     } else {
-      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '' })
+      this.setState({ name: '', password: '', town: '', area: '', block: '', house: '', mobile: '', bottleBalance: '0' })
     }
   }
 
@@ -127,18 +127,16 @@ class MainForm extends Component {
     const { customer: { id } = {}, form, createCustomer, updateCustomer } = this.props;
     const { validateFields, resetFields } = form;
 
-    let { discounts, deleteDiscount, addressId } = this.state;
+    let { discounts, deleteDiscount } = this.state;
     const dupDiscount = [];
     const editDup = [];
     validateFields(async (err, values) => {
-
       if (!err) {
         this.setState({
           disableBtn: true,
           loading: true
         });
-        const { name, mobile, town, area, block, house } = values;
-
+        const { name, mobile, town, area, block, house, bottleBalance } = values;
         for (let i = 0; i < discounts.length; i++) {
           if (discounts[i].discount !== 0 && discounts[i].product) {
             let discountsObj = {
@@ -177,6 +175,7 @@ class MainForm extends Component {
           data: {
             mobile,
             name,
+            bottleBalance: parseInt(bottleBalance),
             password: `${mobile}-labbaik`,
             address: {
               create: {
@@ -339,7 +338,7 @@ class MainForm extends Component {
     const { form, customer: { id } = {}, options, loading } = this.props;
     const { getFieldDecorator } = form;
     const { discounts, disableBtn } = this.state;
-    const { name, mobile, town, area, block, house } = this.state;
+    const { name, mobile, town, area, block, house, bottleBalance } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -421,6 +420,14 @@ class MainForm extends Component {
                           }
                         ]
                       })(<Input name="house" onChange={this.getCustomerDetails.bind(this)} />)}
+                    </FormItem>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>
+                  <h3>Bottles</h3>
+                    <FormItem className="bottle_Balance" label={`Bottle Balance`}>
+                      {getFieldDecorator('bottleBalance', {
+                        initialValue: bottleBalance,
+                      })(<Input name="bottleBalance" onChange={this.getCustomerDetails.bind(this)} />)}
                     </FormItem>
                   </Col>
                   <Col className="discount-box" xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 24 }}>

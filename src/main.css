@@ -943,3 +943,7 @@ img {
     margin-right: 5px;
     text-decoration: line-through;
 }
+
+.bottle_Balance{
+    width: 100% !important;
+}
