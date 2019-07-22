@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin } from 'antd';
+import { Button, Form, Input, Row, Col, message, Spin } from 'antd';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import { PRODUCTS_QUERY, PRODUCT_QUERY } from '../../graphql/queries/product';
+import { PRODUCTS_QUERY } from '../../graphql/queries/product';
 import { CREATE_PRODUCT_MUTATION, UPDATE_PRODUCT_MUTATION } from '../../graphql/mutations/product';
 import { client } from '../../index'
 import gql from 'graphql-tag';
@@ -174,12 +174,6 @@ class MainForm extends Component {
     const { disableBtn } = this.state;
     const { product } = this.props;
     const { name, price } = product;
-    const formItemLayoutWithOutLabel = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 24, offset: 0 }
-      }
-    };
 
     return (
       <div className="create-main-div">
