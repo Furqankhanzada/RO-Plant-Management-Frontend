@@ -64,7 +64,6 @@ class MainForm extends Component {
 
           updateProduct({
             variables: product,
-            refetchQueries: [{ query: PRODUCT_QUERY, variables: product }],
           }).then(result => {
             this.setState({
               disableBtn: false,
