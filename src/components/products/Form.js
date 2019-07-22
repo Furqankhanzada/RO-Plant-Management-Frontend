@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin } from 'antd';
+import { Button, Form, Input, Row, Col, message, Spin } from 'antd';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { PRODUCTS_QUERY } from '../../graphql/queries/product';
@@ -169,16 +169,11 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form, product: { id } = {}, loading } = this.props;
+    const { form, product: { id }, loading } = this.props;
     const { getFieldDecorator } = form;
     const { disableBtn } = this.state;
-    const { name, price } = this.state;
-    const formItemLayoutWithOutLabel = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 24, offset: 0 }
-      }
-    };
+    const { product } = this.props;
+    const { name, price } = product;
 
     return (
       <div className="create-main-div">
