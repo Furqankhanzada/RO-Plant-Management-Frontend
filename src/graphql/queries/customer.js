@@ -7,6 +7,7 @@ export const GET_CUSTOMERS = gql`
             id
             mobile
             address{
+                id
                 town
                 house
                 block
@@ -34,6 +35,7 @@ export const CUSTOMER_SUBSCRIPTION = gql`
             name
             mobile
             address{
+                id
                 town
                 area
                 block
@@ -59,6 +61,7 @@ export const CUSTOMER_QUERY = gql`
             id
             name
             mobile
+            bottleBalance
             address{
                 town
                 area
