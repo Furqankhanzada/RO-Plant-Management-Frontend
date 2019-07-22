@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Form, Input, InputNumber, Row, AutoComplete, Icon, Col, message, Spin } from 'antd';
 import { graphql, compose } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import { PRODUCTS_QUERY } from '../../graphql/queries/product';
+import { PRODUCTS_QUERY, PRODUCT_QUERY } from '../../graphql/queries/product';
 import { CREATE_PRODUCT_MUTATION, UPDATE_PRODUCT_MUTATION } from '../../graphql/mutations/product';
 import { client } from '../../index'
 import gql from 'graphql-tag';
@@ -64,6 +64,7 @@ class MainForm extends Component {
 
           updateProduct({
             variables: product,
+            refetchQueries: [{ query: PRODUCT_QUERY, variables: product }],
           }).then(result => {
             this.setState({
               disableBtn: false,
@@ -169,10 +170,11 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form, product: { id } = {}, loading } = this.props;
+    const { form, product: { id }, loading } = this.props;
     const { getFieldDecorator } = form;
     const { disableBtn } = this.state;
-    const { name, price } = this.state;
+    const { product } = this.props;
+    const { name, price } = product;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         xs: { span: 24, offset: 0 },
