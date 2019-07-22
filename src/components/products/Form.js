@@ -96,7 +96,7 @@ class MainForm extends Component {
           createProduct({
             variables: product,
             update: (proxy, { data: { createProduct } }) => {
-              // Read the data from our cache for this query.
+               // Read the data from our cache for this query.
               const data = proxy.readQuery({ query: PRODUCTS_QUERY, variables: { where: {}} });
               // Add our comment from the mutation to the end.
               data.products.push(createProduct);

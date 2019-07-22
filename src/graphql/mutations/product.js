@@ -5,6 +5,7 @@ export const CREATE_PRODUCT_MUTATION = gql`
         createProduct(data: $data){
             id
             name
+            price
         }
     }
 `;

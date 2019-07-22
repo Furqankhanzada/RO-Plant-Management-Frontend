@@ -2,10 +2,7 @@ import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import { parse } from 'qs'
-
 import Product from './products/index.js'
-
-
 import { PRODUCTS_QUERY } from '../graphql/queries/product'
 
 
@@ -46,7 +43,7 @@ class ProductsPage extends Component {
         })
     }
     componentDidMount() {
-        // this.props.subscribeToCustomer();
+        // this.props.subscribeToProducts();
     }
     componentWillReceiveProps(nextProps) {
         const { error } = nextProps.productsQuery;
