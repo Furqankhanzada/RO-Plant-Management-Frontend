@@ -90,8 +90,8 @@ class List extends PureComponent {
     const columns = [
       {
         title: <span>Transaction At</span>,
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        dataIndex: 'transactionAt',
+        key: 'transactionAt',
         render: (text, record) => <Link to={`/transactions/${record.id}`}>{moment(text).format('MMMM Do YYYY')}</Link>,
       },
       {
