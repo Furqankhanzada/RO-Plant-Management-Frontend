@@ -6,6 +6,7 @@ export const GET_TRANSACTIONS = gql`
             id
             type
             status
+            transactionAt
             createdAt
             user {
                 id
@@ -35,6 +36,7 @@ export const TRANSACTION_SUBSCRIPTION = gql`
             id
             type
             status
+            transactionAt
             createdAt
             user {
                 id
@@ -66,6 +68,7 @@ export const GET_TRANSACTION = gql`
             id
             type
             status
+            transactionAt
             createdAt
             user {
                 id
