@@ -25,7 +25,7 @@ class MainForm extends Component {
           quantity: 0,
           product: '',
           total: 0,
-          bottleStatus: false,
+          bottleStatus: true,
           transactionAt: new Date()
         }
       ],
@@ -52,7 +52,8 @@ class MainForm extends Component {
       quantity: 0,
       product: '',
       total: 0,
-      transactionAt: new Date()
+      transactionAt: new Date(),
+      bottleStatus: true
     };
     if (id) {
       itemsObj.new = true
@@ -220,15 +221,19 @@ class MainForm extends Component {
       })
     }
   }
+
   handledSubmit(e) {
     e.preventDefault();
     const { form, createTransaction, updateTransaction } = this.props;
     const { validateFields, resetFields } = form;
     const id = this.props.updateStatus;
     let { items, deleteItem } = this.state;
-    let { bottleBalance, id: userId } = this.state.userUpdateDiscount;
+    const userID = this.state.user;
+    const { bottleBalance } = userID;
+    let  balance  = bottleBalance || 0;
     const dupItem = [];
     const editDup = [];
+    let userBottleBalance =  0;
     validateFields(async (err, values) => {
       if (!err) {
         this.setState({
@@ -245,7 +250,6 @@ class MainForm extends Component {
             } else {
               userDiscount = JSON.parse(user).discounts
             }
-
             if (userDiscount) {
               userDiscount = userDiscount.find((value) => {
                 return value.product.id === items[i].product.id
@@ -285,18 +289,17 @@ class MainForm extends Component {
               editDup.push(editObj)
             }
             if (id && items[i].new === true) {
-              bottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + bottleBalance : items[i].quantity
+              userBottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + userBottleBalance : items[i].quantity + userBottleBalance
               dupItem.push(itemsObj)
             } else if (!id) {
-              bottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + bottleBalance : items[i].quantity
+              userBottleBalance = items[i].bottleOut ? ( items[i].quantity - items[i].bottleOut ) + userBottleBalance : items[i].quantity + userBottleBalance
               dupItem.push(itemsObj)
             }
           }
         }
         // create transaction object
-        let balance;
         if (!id) {
-          balance = JSON.parse(user).bottleBalance;
+          balance = JSON.parse(user).bottleBalance
           user = JSON.parse(user).id
         }
         let transaction = {
@@ -316,24 +319,14 @@ class MainForm extends Component {
             transactionAt,
             items: {
               create: dupItem
-            }
+            },
           },
-          bottleBalance: balance ? balance + bottleBalance : bottleBalance
+          bottleBalance: balance ? balance + userBottleBalance : userBottleBalance
         };
-
         if (id) {
-
-          transaction.data.payment = {
-            update: {
-            ...payment
-            }
-          };
-
           delete transaction.data.user;
-          transaction.userID = userId;
+          transaction.userID = userID.id
           transaction.where = { id };
-
-
           if (dupItem.length < 1 && deleteItem.length > 0) {
             delete transaction.data.items.create;
             transaction.data.items.delete = deleteItem
@@ -361,29 +354,30 @@ class MainForm extends Component {
             }, () => {
               client.mutate({
                 mutation: gql`
-                    mutation openDrawer($status: Boolean!, $id: String) {
-                        openDrawer(status: $status, id: $id) @client {
-                            Drawer
-                        }
+                  mutation openDrawer($status: Boolean!, $id: String) {
+                    openDrawer(status: $status, id: $id) @client {
+                      Drawer
                     }
+                  }
                 `,
                 variables: { status: false, id: '' }
               })
             });
           })
-            .catch(err => {
-              this.setState({
-                disableBtn: false
-              });
-              const { graphQLErrors } = err;
-              graphQLErrors.forEach(element => {
-                message.error(element.message);
-              });
-              this.setState({
-                loading: false
-              });
-            })
-        } else {
+          .catch(err => {
+            this.setState({
+              disableBtn: false
+            });
+            const { graphQLErrors } = err;
+            graphQLErrors.forEach(element => {
+              message.error(element.message);
+            });
+            this.setState({
+              loading: false
+            });
+          })
+        }
+        else {
           if (dupItem.length < 1) {
             delete transaction.data.items
           }
@@ -392,12 +386,12 @@ class MainForm extends Component {
             refetchQueries: [{ query: GET_CUSTOMERS, variables: {where: {name_contains: this.state.searchValue}, first: 3} }],
             update: (proxy, { data: { createTransaction } }) => {
               // Read the data from our cache for this query.
-              const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: { payment: {} } } });
+              const data = proxy.readQuery({ query: GET_TRANSACTIONS, variables: { where: {} } });
               // Add our comment from the mutation to the end.
               data.transactions.unshift(createTransaction);
               data.transactions = [...data.transactions];
               // Write our data back to the cache.
-              proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables: { where: { payment: {} } } });
+              proxy.writeQuery({ query: GET_TRANSACTIONS, data, variables: { where: {} } });
             }
           }).then(result => {
             this.setState({
@@ -417,11 +411,11 @@ class MainForm extends Component {
               message.success('Transaction has been created successfully');
               client.mutate({
                 mutation: gql`
-                    mutation openDrawer($status: Boolean!, $id: String) {
-                        openDrawer(status: $status, id: $id) @client {
-                            Drawer
-                        }
+                  mutation openDrawer($status: Boolean!, $id: String) {
+                    openDrawer(status: $status, id: $id) @client {
+                      Drawer
                     }
+                  }
                 `,
                 variables: { status: false, id: '' }
               })
@@ -442,7 +436,6 @@ class MainForm extends Component {
       }
     });
   }
-
   getTransactionDetails(ev) {
     const { setFieldsValue } = this.props.form;
     setFieldsValue({
@@ -657,7 +650,7 @@ class MainForm extends Component {
                                 <Col xl={{ span: 3 }} lg={{ span: 3 }} md={{ span: 3 }} sm={{ span: 4 }}>
                                   <FormItem label={`Is Returnable?`} colon={false} className={`${value.bottleStatus ? 'small-width' : 'full-width'}`}>
                                     <Button type="primary" size="default" onClick={this.onChangeItem.bind(this, 'bottle', index, value.id, !value.bottleStatus)} >
-                                      {value.bottleStatus ? 'No' : 'Yes'}
+                                      {value.bottleStatus ? 'Yes' : 'No'}
                                     </Button>
                                   </FormItem>
                                 </Col>
@@ -693,7 +686,7 @@ class MainForm extends Component {
                                   </FormItem>
                                 </Col>
                                   {
-                                    !value.bottleStatus ? (
+                                    value.bottleStatus ? (
                                       <Col xl={{ span: 3 }} lg={{ span: 3 }} md={{ span: 3 }} sm={{ span: 6 }}>
                                         <FormItem label={`Received`} className={`${value.bottleStatus ? 'bottle-status-width' : 'full-width'}`}>
                                           <InputNumber
