@@ -39,7 +39,8 @@ class MainForm extends Component {
       user: '',
       userUpdateDiscount: '',
       type: '', status: '', transactionAt: '', payment: { paid: 0, balance: 0 },
-      adding: false
+      adding: false,
+      field: false
     };
     this.searchCustomer = debounce(this.searchCustomer, 400);
   }
@@ -66,32 +67,44 @@ class MainForm extends Component {
     })
   }
 
-
   componentWillReceiveProps(nextProps) {
-    if (nextProps.updateStatus) {
-      const { transaction } = nextProps;
-      const { adding } = this.state;
+    const { transaction, updateStatus } = nextProps;
+    const { adding, field } = this.state;
+    if (updateStatus && transaction) {
+
       const { id, type, user, status, transactionAt, payment } = transaction;
+
       // // If updating transaction
       if (id) {
         // make items
         if (!adding) {
-          const discountArray = transaction.items.map((value) => {
+          const discountArray = transaction ? transaction.items.map((value) => {
             value.product.selected = true;
             value.bottleStatus = !!(value.bottleOut || value.bottleOut === 0);
             return value
-          });
+          }): {};
           // set transaction to state
           this.setState({ user: user, type, status, transactionAt, payment, items: discountArray, userUpdateDiscount: user })
         }
       }
-    } else {
+    }
+    else if(!field) {
       this.setState({
         user: '',
         type: 'SELL',
         status: 'PENDING',
         transactionAt: '',
-        quantity: ''
+        quantity: '',
+        payment: { paid: '', balance: ''},
+        items: [
+          {
+            quantity: 0,
+            product: '',
+            total: 0,
+            bottleStatus: true,
+            // transactionAt: new Date()
+          }
+        ]
       })
     }
   }
@@ -183,7 +196,8 @@ class MainForm extends Component {
       items,
       itemsObject,
       editItem,
-      payment
+      payment,
+      field: true
     })
   }
   removeItem(index, value) {
@@ -405,7 +419,8 @@ class MainForm extends Component {
                   transactionAt: new Date()
                 }
               ],
-              adding: false
+              adding: false,
+              field: false
             }, () => {
               resetFields();
               message.success('Transaction has been created successfully');
@@ -492,7 +507,7 @@ class MainForm extends Component {
   }
 
   render() {
-    const { form: { getFieldDecorator }, transaction: { id } = {}, options, loading } = this.props;
+    const { form: { getFieldDecorator }, options, loading } = this.props;
     let { items, disableBtn, searchValue, user, type, status, transactionAt, payment } = this.state;
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
@@ -505,6 +520,7 @@ class MainForm extends Component {
     if (searchValue) {
       where.name_contains = searchValue
     }
+    const id = this.props.updateStatus
     return (
       <div className="create-main-div">
         <Form layout="horizontal" onSubmit={this.handledSubmit.bind(this)} className="form-create-update">
