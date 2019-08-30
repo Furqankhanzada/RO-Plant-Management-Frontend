@@ -95,16 +95,17 @@ class MainForm extends Component {
         status: 'PENDING',
         transactionAt: '',
         quantity: '',
-        payment: { paid: '', balance: ''},
+        payment: { paid: '', balance: '', method: 'CASH'},
         items: [
           {
             quantity: 0,
             product: '',
             total: 0,
             bottleStatus: true,
-            // transactionAt: new Date()
+            transactionAt: new Date()
           }
-        ]
+        ],
+        userUpdateDiscount: ''
       })
     }
   }
