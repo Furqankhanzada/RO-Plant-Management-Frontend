@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { Row, Drawer, Select } from 'antd';
 import { PRODUCTS_QUERY } from '../../graphql/queries/product'
 import { GET_TRANSACTION } from '../../graphql/queries/transaction.js'
-import { Query } from 'react-apollo';
+import {graphql, Query} from 'react-apollo';
 import { Layout } from 'antd';
 import TransactionForm from './Form';
 import { client } from '../../index'
@@ -28,8 +28,16 @@ class RightDrawer extends Component {
     })
   }
   render() {
-    const { id, visible } = this.props;
-    return (
+    let { id, visible, product:{products} } = this.props;
+    const options = products ? products
+        .map(group => (
+            <Option key={group} value={JSON.stringify(group)}>
+              <span>Volume: {group.name}</span>
+              <br />
+              <span>Price: {group.price}</span>
+            </Option>
+        )) : [];
+      return (
       <Row gutter={24}>
         <Drawer
           className="new-account drawer-custom-style small-screen"
@@ -38,41 +46,25 @@ class RightDrawer extends Component {
           onClose={this.onClose.bind(this)}
           visible={visible}
         >
-          <Query query={PRODUCTS_QUERY}>
-            {({ data }) => {
-              const { products } = data;
-              const options = products ? products
-                .map(group => (
-                  <Option key={group} value={JSON.stringify(group)}>
-                    <span>Volume: {group.name}</span>
-                    <br />
-                    <span>Price: {group.price}</span>
-                  </Option>
-                )) : [];
-
-              return (
                 <Fragment>
                   <Layout>
                     <Layout className="dashboard-main">
                       <Layout className="remove-padding" style={{ padding: '30px 24px 0', height: '100vh' }}>
-                        <Query query={GET_TRANSACTION} variables={{ id }} >
-                          {({ data: { transaction }, loading }) => {
-                            return (
-                              <TransactionForm options={options} transaction={transaction || {}} loading={loading} updateStatus={id}/>
-                            )
-                          }}
-                        </Query>
+                       <Query query={GET_TRANSACTION} variables={ {id} } fetchPolicy="no-cache">
+                              {({ loading, data: {transaction} }) => {
+                                  return (
+                                      <TransactionForm options={options} transaction={transaction ? transaction : '' || {}} loading={loading} updateStatus={id}/>
+                                  );
+                              }}
+                       </Query>
                       </Layout>
                     </Layout>
                   </Layout>
                 </Fragment>
-              )
-            }}
-          </Query>
         </Drawer>
       </Row>
     )
   }
 }
 
-export default RightDrawer
+export default graphql(PRODUCTS_QUERY, { name: "product",  fetchPolicy: "no-cache" }) (RightDrawer);
