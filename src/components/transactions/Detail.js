@@ -3,23 +3,23 @@ import { Query } from 'react-apollo';
 import moment from 'moment';
 import { Layout, Row, Col, Statistic, Spin, Table, Tag, Descriptions, Badge } from 'antd';
 import { GET_TRANSACTION } from '../../graphql/queries/transaction'
-import {GET_CUSTOMERS} from "../../graphql/queries/customer";
 
 const columns = [
   {
     title: 'Date',
     dataIndex: 'transactionAt',
     key: 'date',
-    render: (text, record) =>{
-      return(
-          <span>{moment(text).format("ddd DD MMMM YYYY")}</span>
-      )
-    }
+    render: (text) =>{
+      if(text == 'Total'){
+        return <b>{text}</b>
+      }
+        return <span>{moment(text).format("ddd DD MMMM YYYY")}</span>
+    },
   },
   {
     title: 'Name',
     dataIndex: 'product.name',
-    key: 'name'
+    key: 'name',
   },
   {
     title: 'Price',
@@ -31,24 +31,31 @@ const columns = [
         return <Tag color='green'><span className="discount-price">{method}</span> <span>{totalPrice/price.quantity}</span></Tag>
       }
       return <Tag color='green'><span>{totalPrice}</span></Tag>
-    }
+    },
   },
   {
     title: 'Quantity',
     dataIndex: 'quantity',
     key: 'quantity',
     render: (method) => {
+      if (typeof method == 'string'){
+        return <b>{method}</b>
+      }
       return <Tag color='magenta'>{method}</Tag>
-    }
+    },
   },
   {
     title: 'Total',
     dataIndex: 'total',
     key: 'total',
     render: (method) => {
+      if (typeof method == 'string'){
+        return <b>{method}</b>
+      }
       return <Tag color='red'>{method}</Tag>
-    }
-  }
+    },
+  },
+
 ];
 
 class Detail extends PureComponent {
@@ -58,12 +65,30 @@ class Detail extends PureComponent {
     const { params } = match;
     const { id } = params;
 
+    const footerRow = {
+      transactionAt: '',
+      quantity: '',
+      total: ''
+    };
+
     return (
       <Query query={GET_TRANSACTION} variables={{ id }}>
-        {({ data: { transaction}, loading }) => {
+        {({ data: { transaction} = '', loading }) => {
           if(loading) return <Spin />;
-
           let { status, user: { name, mobile, address, bottleBalance }, payment, items, createdAt }  = transaction;
+          items.push(footerRow);
+
+          let totalQuantity = 0;
+          let totalOfTotal = 0;
+          items.forEach((values)=>{
+            totalQuantity = totalQuantity + values.quantity;
+            totalOfTotal = totalOfTotal + values.total;
+          });
+
+          footerRow.transactionAt = 'Total';
+          footerRow.quantity = 'Rs' + totalQuantity;
+          footerRow.total = 'Rs' + totalOfTotal;
+
           return (
             <Layout className="user-main-div">
               <Row className="margin-bottom">
@@ -88,7 +113,8 @@ class Detail extends PureComponent {
                 </Col>
               </Row>
               <div className="card padding-none margin-bottom">
-                <Table columns={columns} pagination={false} dataSource={items} scroll={{ x: 1000 }} bordered simple />
+                <Table columns={columns} pagination={false} dataSource={items} bordered simple scroll={{ x: 1000 }}
+                />
               </div>
             </Layout>
           )
